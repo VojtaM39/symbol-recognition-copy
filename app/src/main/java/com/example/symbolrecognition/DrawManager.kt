@@ -105,7 +105,7 @@ class DrawManager {
         }
     }
 
-    public fun  testArrayX() {
+    public fun  run() {
 
         logMoves()
         var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)

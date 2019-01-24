@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         val myRunnable = Runnable {
             getParametersFromView()
             var drawManager = DrawManager(pointsX, pointsY, touchCount, endsOfMove)
-            drawManager.testArrayX()
+            drawManager.run()
 
         }
         fun resetTimer() {
