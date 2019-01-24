@@ -5,29 +5,34 @@ import android.util.Log
 class DrawManager {
     private var pointsX : Array<Float>
     private var pointsY : Array<Float>
+    private var pointsXResult : Array<Short>
+    private var pointsYResult : Array<Short>
     private var touchCount : Int
     private val endsOfMove : Array<Int>
-    private val SQUARE_SIZE : Int = 100
-    private var movesX = mutableListOf<Array<Float>>()
-    private var movesY = mutableListOf<Array<Float>>()
+    private val SQUARE_SIZE : Int = 500
+    private var movesX = mutableListOf<Array<Short>>()
+    private var movesY = mutableListOf<Array<Short>>()
 
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
         this.endsOfMove = endsOfMove
+        this.pointsXResult = floatToShort(this.pointsX)
+        this.pointsYResult = floatToShort(this.pointsY)
+        processArrays()
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
-    private fun generateMoves(points : Array<Float>, endsOfMove: Array<Int>) :MutableList<Array<Float>> {
+    private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
         //pomocne pole, do ktereho se budou davat body daneho tahu
-        var array = arrayOf<Float>()
+        var array = arrayOf<Short>()
         //list vsech poli
-        var listOfMoves = mutableListOf<Array<Float>>()
+        var listOfMoves = mutableListOf<Array<Short>>()
         for(i in points.indices) {
             array += points[i]
             if(endsOfMove.contains(i)) {
                 listOfMoves.add(array)
-                array = arrayOf<Float>()
+                array = arrayOf<Short>()
 
             }
         }
@@ -60,6 +65,14 @@ class DrawManager {
 
 
     }
+
+    private fun floatToShort(arr : Array<Float>) : Array<Short>{
+        var result = arrayOf<Short>()
+        for(item in arr) {
+            result += item.toShort()
+        }
+        return result
+    }
     //Metoda vola metodu cropArrays, dosazuje do ni v poradi podle toho, ktera osa ma vetsi rozptyl
     private fun processArrays() {
         if((this.pointsX.max()!! - this.pointsX.min()!!) > (this.pointsY.max()!! - this.pointsY.min()!!)) {
@@ -68,8 +81,8 @@ class DrawManager {
         else {
             cropArrays(pointsY, pointsX)
         }
-        this.movesX = generateMoves(pointsX, endsOfMove)
-        this.movesY = generateMoves(pointsY, endsOfMove)
+        this.movesX = generateMoves(pointsXResult, endsOfMove)
+        this.movesY = generateMoves(pointsYResult, endsOfMove)
     }
 
     public fun logArray(tag:String,pointsArray: Array<Float>) {
@@ -93,9 +106,9 @@ class DrawManager {
     }
 
     public fun  testArrayX() {
-        processArrays()
+
         logMoves()
-        var directionsAlgorithm = DirectionsAlgorithm(pointsX,pointsY,touchCount,movesX,movesY)
+        var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
         directionsAlgorithm.run()
     }
 
