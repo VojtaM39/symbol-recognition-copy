@@ -2,6 +2,7 @@ package com.example.symbolrecognition
 
 class ThicknessAlgorithm
 {
+    //zkouska pushe
     private var pointsX: Array<Short>
     private var pointsY: Array<Short>
     private var movesX = mutableListOf<Array<Short>>()
