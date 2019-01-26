@@ -1,12 +1,16 @@
 package com.example.symbolrecognition
 
+import kotlin.math.abs
+import kotlin.math.truncate
+
 class ConnectingPoints
 {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
     private var connectedPoints: Array<Array<Short>>
 
-    constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>) {
+    constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
+    {
         this.movesX = movesX
         this.movesY = movesY
         this.connectedPoints = connectAllPoints(movesX, movesY)
@@ -46,11 +50,45 @@ class ConnectingPoints
      */
     private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : Array<Array<Short>>
     {
-        //vytvorit podminku, pokud jsou stejne
+        //pojistit, aby metoda fungovala i pro x = y
+        var biggerLengthOfX: Boolean
+        var ascending: Boolean
+        var numberOfElements: Double
+        var numberOfAdditionalElements: Int
+
+        var lengthX = rightPointX - leftPointX + 1 //+1 nam da delku vcetne bodu
+        var lengthY = abs(rightPointY - leftPointY) + 1 //+1 nam da delku vcetne bodu
+        if (lengthX > lengthY) //delsi x
+        {
+            biggerLengthOfX = true
+            numberOfElements = truncate(lengthX.toDouble() / lengthY)
+            numberOfAdditionalElements = lengthX % lengthY
+        }
+        else //delsi y
+        {
+            biggerLengthOfX = false
+            numberOfElements = truncate(lengthY.toDouble() / lengthX)
+            numberOfAdditionalElements = lengthY % lengthX
+        }
+
+        if (rightPointY < leftPointY) //stoupa
+            ascending = true
+        else //klesa
+            ascending = false
+
+        return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements, numberOfAdditionalElements, biggerLengthOfX, ascending)
+    }
+
+    private fun addNewPoints(startingPointX: Short, startingPointY: Short, endingPointX: Short, endingPointY: Short, numberOfElements: Double, numberOfAdditionalElements: Int biggerLengthOfX: Boolean, ascending: Boolean) : Array<Array<Short>>
+    {
         var connectedTwoPoints: Array<Array<Short>>
 
+        for()
+        {
 
+        }
 
         return connectedTwoPoints
     }
+
 }
