@@ -18,9 +18,12 @@ class DrawManager {
         this.pointsY = pointsY
         this.touchCount = touchCount
         this.endsOfMove = endsOfMove
+        processArrays()
         this.pointsXResult = floatToShort(this.pointsX)
         this.pointsYResult = floatToShort(this.pointsY)
-        processArrays()
+        this.movesX = generateMoves(pointsXResult, endsOfMove)
+        this.movesY = generateMoves(pointsYResult, endsOfMove)
+
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -81,8 +84,7 @@ class DrawManager {
         else {
             cropArrays(pointsY, pointsX)
         }
-        this.movesX = generateMoves(pointsXResult, endsOfMove)
-        this.movesY = generateMoves(pointsYResult, endsOfMove)
+
     }
 
     public fun logArray(tag:String,pointsArray: Array<Float>) {
@@ -110,6 +112,8 @@ class DrawManager {
         logMoves()
         var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
         directionsAlgorithm.run()
+        val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        //lineDetector.run()
     }
 
 
