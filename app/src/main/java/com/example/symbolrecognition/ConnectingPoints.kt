@@ -27,8 +27,8 @@ class ConnectingPoints
      * */
     private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Array<Array<Short>>
     {
-        var connectedPoints = ArrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
-        var connectedTwoPoints = ArrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
+        var connectedPoints = arrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
+        var connectedTwoPoints = arrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
 
         for (i in 0..movesX.size - 1)
         {
@@ -78,8 +78,8 @@ class ConnectingPoints
      */
     private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean) : Array<Array<Short>>
     {
-        var connectedTwoPoints = ArrayOf<Array<Short>>()
-        var index: Short = 0
+        var connectedTwoPoints = arrayOf<Array<Short>>()
+        var index: Int = 0
         var startingPoint = leftPointLongerAxis //upravit cyklus for, chceme aby druhy for cyklus vzdy pokracoval tam, kde skoncil + 1
 
         for(leftPointShorterAxis in leftPointShorterAxis..rightPointShorterAxis)
@@ -89,14 +89,14 @@ class ConnectingPoints
             {
                 if (biggerLengthOfX)
                 {
-                    connectedTwoPoints[0][index] = leftPointLongerAxis
+                    connectedTwoPoints[0][index] = i
                     connectedTwoPoints[1][index] = leftPointShorterAxis
                     index++
                 }
                 else //biggerLengthOfX = false
                 {
                     connectedTwoPoints[0][index] = leftPointShorterAxis
-                    connectedTwoPoints[1][index] = leftPointLongerAxis
+                    connectedTwoPoints[1][index] = i
                     index++
                 }
             }
