@@ -27,8 +27,8 @@ class ConnectingPoints
      * */
     private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Array<Array<Short>>
     {
-        var connectedPoints: Array<Array<Short>> //connectedPoints[0] - x souradnice, [1] - y souradnice
-        var connectedTwoPoints: Array<Array<Short>> //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
+        var connectedPoints = ArrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
+        var connectedTwoPoints = ArrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
 
         for (i in 0..movesX.size - 1)
         {
@@ -52,40 +52,56 @@ class ConnectingPoints
     {
         //pojistit, aby metoda fungovala i pro x = y
         var biggerLengthOfX: Boolean
-        var ascending: Boolean
         var numberOfElements: Double
         var numberOfAdditionalElements: Int
 
         var lengthX = rightPointX - leftPointX + 1 //+1 nam da delku vcetne bodu
         var lengthY = abs(rightPointY - leftPointY) + 1 //+1 nam da delku vcetne bodu
+
+        numberOfElements = truncate(lengthY.toDouble() / lengthX)
+        numberOfAdditionalElements = lengthY % lengthX
+
         if (lengthX > lengthY) //delsi x
         {
             biggerLengthOfX = true
-            numberOfElements = truncate(lengthX.toDouble() / lengthY)
-            numberOfAdditionalElements = lengthX % lengthY
+            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX)
         }
         else //delsi y
         {
             biggerLengthOfX = false
-            numberOfElements = truncate(lengthY.toDouble() / lengthX)
-            numberOfAdditionalElements = lengthY % lengthX
+            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX)
         }
-
-        if (rightPointY < leftPointY) //stoupa
-            ascending = true
-        else //klesa
-            ascending = false
-
-        return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements, numberOfAdditionalElements, biggerLengthOfX, ascending)
     }
 
-    private fun addNewPoints(startingPointX: Short, startingPointY: Short, endingPointX: Short, endingPointY: Short, numberOfElements: Double, numberOfAdditionalElements: Int biggerLengthOfX: Boolean, ascending: Boolean) : Array<Array<Short>>
+    /**
+     * funkce vyplni mezery mezi body
+     */
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean) : Array<Array<Short>>
     {
-        var connectedTwoPoints: Array<Array<Short>>
+        var connectedTwoPoints = ArrayOf<Array<Short>>()
+        var index: Short = 0
+        var startingPoint = leftPointLongerAxis //upravit cyklus for, chceme aby druhy for cyklus vzdy pokracoval tam, kde skoncil + 1
 
-        for()
+        for(leftPointShorterAxis in leftPointShorterAxis..rightPointShorterAxis)
         {
-
+            //pozn. otestovat druhy for cyklus
+            for (i in startingPoint..(startingPoint + numberOfElements - 1)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
+            {
+                if (biggerLengthOfX)
+                {
+                    connectedTwoPoints[0][index] = leftPointLongerAxis
+                    connectedTwoPoints[1][index] = leftPointShorterAxis
+                    index++
+                }
+                else //biggerLengthOfX = false
+                {
+                    connectedTwoPoints[0][index] = leftPointShorterAxis
+                    connectedTwoPoints[1][index] = leftPointLongerAxis
+                    index++
+                }
+            }
+            startingPoint++
+            //zde pridat metodu pro urcovani obecne rovnice vektoru
         }
 
         return connectedTwoPoints
