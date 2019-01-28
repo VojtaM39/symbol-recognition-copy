@@ -1,5 +1,3 @@
-package com.example.symbolrecognition
-
 import kotlin.math.abs
 import kotlin.math.truncate
 import kotlin.math.round
@@ -8,7 +6,7 @@ class ConnectingPoints
 {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
-    private var connectedPoints: Array<Array<Short>>
+    private var connectedPoints = arrayOf<Array<Short>>()
 
     constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
     {
@@ -19,6 +17,7 @@ class ConnectingPoints
 
     fun connectPoints(): Array<Array<Short>> //public
     {
+        println("Vracim connectedPoints")
         return connectedPoints
     }
 
@@ -28,20 +27,35 @@ class ConnectingPoints
      * */
     private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Array<Array<Short>>
     {
+        println("Vstuptuju do connectAllPoints")
         var connectedPoints = arrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
         var connectedTwoPoints = arrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
+        var helpArray = arrayOf<Short>()
 
-        for (i in 0..movesX.size - 1)
+        for (i in 0..(movesX.size - 1))
         {
-            for (j in 0..movesX[i].size - 1 - 1) //-1 za delku pole a -1 protoze posledni souradnici uz nemame s cim spojovat
+            if (movesX[i].size == 1 ) //pokud se v poli nachazi 1 bod, vrat toto pole
             {
-                if (movesX[i][j] <= movesX[i][j + 1]) //aktualni movesX je vice vlevo
-                    connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1])
-                else //nasledujici movesX je vice vlevo
-                    connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j])
+                connectedPoints += movesX
+                connectedPoints += movesY
+            }
+            else
+            {
+                for (j in 0..(movesX[i].size - 1 - 1)) //-1 za delku pole a -1 protoze posledni souradnici uz nemame s cim spojovat
+                {
+                    if (movesX[i][j] <= movesX[i][j + 1]) //aktualni movesX je vice vlevo
+                        connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1])
+                    else //nasledujici movesX je vice vlevo
+                        connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j])
+                }
+                println("Pozor, toto je ono")
+                for(i in 0..(connectedTwoPoints[0].size - 1))
+                    helpArray += 0
+                connectedPoints += helpArray
+                connectedPoints += helpArray
+                connectedPoints = connectedTwoPoints
             }
         }
-        //zde vlozit hodnoty z connectedTwoPoints do connectedPoints
         return connectedPoints
     }
 
@@ -51,102 +65,157 @@ class ConnectingPoints
      */
     private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : Array<Array<Short>>
     {
+        println("Nachazim se v connectThesePoints")
         //pojistit, aby metoda fungovala i pro x = y
         var biggerLengthOfX: Boolean
         var numberOfElements: Double
         var numberOfAdditionalElements: Int
+        var ascending: Boolean
 
         var lengthX = rightPointX - leftPointX + 1 //+1 nam da delku vcetne bodu
         var lengthY = abs(rightPointY - leftPointY) + 1 //+1 nam da delku vcetne bodu
-
-        numberOfElements = truncate(lengthY.toDouble() / lengthX)
-        numberOfAdditionalElements = lengthY % lengthX
 
         //obecna rovnice - hodnoty a, b, c
         val a = rightPointY - leftPointY
         val b = -(rightPointX - leftPointX)
         val c = -(a * leftPointX + b * leftPointY)
 
+        if(rightPointY < leftPointY)
+            ascending = true
+        else
+            ascending = false
 
         if (lengthX > lengthY) //delsi x
         {
             biggerLengthOfX = true
-            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c)
+            numberOfElements = truncate(lengthX.toDouble() / lengthY)
+            numberOfAdditionalElements = lengthX % lengthY
+            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending)
         }
         else //delsi y
         {
             biggerLengthOfX = false
-            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c)
+            numberOfElements = truncate(lengthY.toDouble() / lengthX)
+            numberOfAdditionalElements = lengthY % lengthX
+            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending)
         }
     }
 
     /**
      * funkce vyplni mezery mezi body
      */
-    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int) : Array<Array<Short>>
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : Array<Array<Short>>
     {
+        //vzdy zaciname zleva
+        println("Nachazim se v addNewPoints")
         var connectedTwoPoints = arrayOf<Array<Short>>()
+
+        var distance: Int
+        if((ascending) && (!biggerLengthOfX))
+            distance = (numberOfElements * -1) + 1
+        else
+            distance = numberOfElements - 1
+
+
+
+        //prvotni vyplneni pole, abychom jej pote mohli prepsat
+        if(biggerLengthOfX)
+        {
+            for(i in 0..1)
+            {
+                var helpArray = arrayOf<Short>()
+                for (j in 0..(numberOfElements * leftPointShorterAxis + numberOfAdditionalElements - 1))
+                    helpArray += 0
+                connectedTwoPoints += helpArray
+            }
+        }
+        else
+        {
+            for(i in 0..1)
+            {
+                var helpArray = arrayOf<Short>()
+                for (j in 0..(numberOfElements * rightPointShorterAxis + numberOfAdditionalElements - 1))
+                    helpArray += 0
+                connectedTwoPoints += helpArray
+            }
+        }
+
         var index: Int = 0
         var startingPointLongerAxis = leftPointLongerAxis.toInt()
         var addedAdditionalElements = 0
+        var startingPointShorterAxis = leftPointShorterAxis.toInt()
+        var endingPointShorterAxis = rightPointShorterAxis.toInt()
 
-        //obecna rovnice vektoru
-
-
-        for(i in leftPointShorterAxis..rightPointShorterAxis)
+        for(i in startingPointShorterAxis toward endingPointShorterAxis)
         {
-            for (j in startingPointLongerAxis..(startingPointLongerAxis + numberOfElements - 1)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
+            for (j in startingPointLongerAxis toward (startingPointLongerAxis + distance)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
             {
+                println("Jsem ve for cyklu j: ${j}")
                 if (biggerLengthOfX)
                 {
                     connectedTwoPoints[0][index] = j.toShort() //x
                     connectedTwoPoints[1][index] = i.toShort() //y
                     index++
+                    startingPointLongerAxis++
                 }
                 else //biggerLengthOfX == false
                 {
                     connectedTwoPoints[0][index] = i.toShort() //x
                     connectedTwoPoints[1][index] = j.toShort() //y
                     index++
+                    startingPointLongerAxis--
                 }
-                startingPointLongerAxis++
-                if ((numberOfAdditionalElements != 0) && (addedAdditionalElements < numberOfAdditionalElements))
+            }
+            if ((numberOfAdditionalElements != 0) && (addedAdditionalElements < numberOfAdditionalElements))
+            {
+                println("jsem v podmince")
+                if(biggerLengthOfX)
                 {
-                    if(biggerLengthOfX)
+                    if(addAdditionalPoint(a, b, c, startingPointLongerAxis, i))
                     {
-                        if(addAdditionalPoint(a, b, c, j, i))
-                        {
-                            connectedTwoPoints[0][index] = j.toShort() //x
-                            connectedTwoPoints[1][index] = i.toShort() //y
-                            index++
-                            addedAdditionalElements++
-                            startingPointLongerAxis++
-                        }
+                        connectedTwoPoints[0][index] = startingPointLongerAxis.toShort() //x
+                        connectedTwoPoints[1][index] = i.toShort() //y
+                        index++
+                        addedAdditionalElements++
+                        startingPointLongerAxis++
                     }
-                    else //biggerLengthOfX == false
+                }
+                else //biggerLengthOfX == false
+                {
+                    if(addAdditionalPoint(a, b, c, i, startingPointLongerAxis))
                     {
-                        if(addAdditionalPoint(a, b, c, i, j))
-                        {
-                            connectedTwoPoints[0][index] = i.toShort() //x
-                            connectedTwoPoints[1][index] = j.toShort() //y
-                            index++
-                            addedAdditionalElements++
-                            startingPointLongerAxis++
-                        }
+                        connectedTwoPoints[0][index] = i.toShort() //x
+                        connectedTwoPoints[1][index] = startingPointLongerAxis.toShort() //y
+                        index++
+                        addedAdditionalElements++
+                        startingPointLongerAxis--
                     }
                 }
             }
-
+            println("Vybelh jsem z for cyklu")
         }
         return connectedTwoPoints
     }
     private fun addAdditionalPoint(a: Int, b: Int, c: Int, actualX: Int, actualY: Int) : Boolean
     {
+        println("Nachazim se v addAdditionalPoint")
         var y: Double = round((a * actualX + c).toDouble() / -b)
-        if (y == actualY.toDouble())
+        if (y == actualY.toDouble()) {
+            println("Hura, pouzil jsem vektorovou rovnici")
             return true
-        else
+        }
+        else {
+            println("Nevyuzil jsem vektorovou rovnici")
             return false
+        }
     }
 
+    /**
+     * funkce, ktera dokaze vest cyklus for smerem od mensiho cisla k vetsimu, tak take od vetsiho k mensimu
+     */
+    private infix fun Int.toward(to: Int): IntProgression
+    {
+        val step = if (this > to) -1 else 1
+        return IntProgression.fromClosedRange(this, to, step)
+    }
 }
