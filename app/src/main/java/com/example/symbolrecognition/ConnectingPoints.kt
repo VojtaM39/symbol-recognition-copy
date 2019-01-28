@@ -2,6 +2,7 @@ package com.example.symbolrecognition
 
 import kotlin.math.abs
 import kotlin.math.truncate
+import kotlin.math.round
 
 class ConnectingPoints
 {
@@ -61,50 +62,91 @@ class ConnectingPoints
         numberOfElements = truncate(lengthY.toDouble() / lengthX)
         numberOfAdditionalElements = lengthY % lengthX
 
+        //obecna rovnice - hodnoty a, b, c
+        val a = rightPointY - leftPointY
+        val b = -(rightPointX - leftPointX)
+        val c = -(a * leftPointX + b * leftPointY)
+
+
         if (lengthX > lengthY) //delsi x
         {
             biggerLengthOfX = true
-            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX)
+            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c)
         }
         else //delsi y
         {
             biggerLengthOfX = false
-            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX)
+            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c)
         }
     }
 
     /**
      * funkce vyplni mezery mezi body
      */
-    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean) : Array<Array<Short>>
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int) : Array<Array<Short>>
     {
         var connectedTwoPoints = arrayOf<Array<Short>>()
         var index: Int = 0
-        var startingPoint = leftPointLongerAxis //upravit cyklus for, chceme aby druhy for cyklus vzdy pokracoval tam, kde skoncil + 1
+        var startingPointLongerAxis = leftPointLongerAxis.toInt()
+        var addedAdditionalElements = 0
 
-        for(leftPointShorterAxis in leftPointShorterAxis..rightPointShorterAxis)
+        //obecna rovnice vektoru
+
+
+        for(i in leftPointShorterAxis..rightPointShorterAxis)
         {
-            //pozn. otestovat druhy for cyklus
-            for (i in startingPoint..(startingPoint + numberOfElements - 1)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
+            for (j in startingPointLongerAxis..(startingPointLongerAxis + numberOfElements - 1)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
             {
                 if (biggerLengthOfX)
                 {
-                    connectedTwoPoints[0][index] = i
-                    connectedTwoPoints[1][index] = leftPointShorterAxis
+                    connectedTwoPoints[0][index] = j.toShort() //x
+                    connectedTwoPoints[1][index] = i.toShort() //y
                     index++
                 }
-                else //biggerLengthOfX = false
+                else //biggerLengthOfX == false
                 {
-                    connectedTwoPoints[0][index] = leftPointShorterAxis
-                    connectedTwoPoints[1][index] = i
+                    connectedTwoPoints[0][index] = i.toShort() //x
+                    connectedTwoPoints[1][index] = j.toShort() //y
                     index++
+                }
+                startingPointLongerAxis++
+                if ((numberOfAdditionalElements != 0) && (addedAdditionalElements < numberOfAdditionalElements))
+                {
+                    if(biggerLengthOfX)
+                    {
+                        if(addAdditionalPoint(a, b, c, j, i))
+                        {
+                            connectedTwoPoints[0][index] = j.toShort() //x
+                            connectedTwoPoints[1][index] = i.toShort() //y
+                            index++
+                            addedAdditionalElements++
+                            startingPointLongerAxis++
+                        }
+                    }
+                    else //biggerLengthOfX == false
+                    {
+                        if(addAdditionalPoint(a, b, c, i, j))
+                        {
+                            connectedTwoPoints[0][index] = i.toShort() //x
+                            connectedTwoPoints[1][index] = j.toShort() //y
+                            index++
+                            addedAdditionalElements++
+                            startingPointLongerAxis++
+                        }
+                    }
                 }
             }
-            startingPoint++
-            //zde pridat metodu pro urcovani obecne rovnice vektoru
-        }
 
+        }
         return connectedTwoPoints
+    }
+    private fun addAdditionalPoint(a: Int, b: Int, c: Int, actualX: Int, actualY: Int) : Boolean
+    {
+        var y: Double = round((a * actualX + c).toDouble() / -b)
+        if (y == actualY.toDouble())
+            return true
+        else
+            return false
     }
 
 }
