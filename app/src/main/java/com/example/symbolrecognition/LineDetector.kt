@@ -7,7 +7,7 @@ import kotlin.math.sqrt
 //TODO overit ze se nezmenila line v pravem uhlu (stejny pomer, takze by pokracovala)
 //TODO dodelat angle
 //TODO dodelat slucovani lines
-//TODO zpravit overeni vzdalenosti line (pred vytvorenim)
+//TODO opravit overeni vzdalenosti line (pred vytvorenim)
 class LineDetector {
     private var pointsX : Array<Short>
     private var pointsY : Array<Short>
@@ -50,13 +50,14 @@ class LineDetector {
             for(j in movesX[i].indices) {
                 //prvni bod neresime
                 if(j!=0) {
+                    Log.i("Current line lenght", currentLineLenght.toString())
                     currentRatio = (movesX[i][j] - movesX[i][j-1]).absoluteValue/sqrt((movesX[i][j] - movesX[i][j-1]).toDouble().pow(2) + (movesY[i][j] - movesY[i][j-1]).toDouble().pow(2)).toFloat()
                     currentPointLenght = sqrt((movesX[i][j] - movesX[i][j-1]).toDouble().pow(2) + (movesY[i][j] - movesY[i][j-1]).toDouble().pow(2)).toFloat()
                     //ratio je moc velke => zakladame novou line
                     //Druhy bod => prvni dvojice => vzdy zapisujem novou linu
                     //posledni bod => musime ulozit pripadnou line
                     //zalozeni nove line
-                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF || j == movesX[i].size) {
+                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF || j == movesX[i].size-1) {
                         //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
                         if(currentLineLenght > MINIMAL_SIDE_PERCANTAGE) {
                             lines.add(Line(0,startingX,startingY,endingX,endingY))

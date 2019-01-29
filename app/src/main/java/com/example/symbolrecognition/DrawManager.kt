@@ -110,10 +110,10 @@ class DrawManager {
     public fun  run() {
 
         logMoves()
-        var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        directionsAlgorithm.run()
+       // var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+       // directionsAlgorithm.run()
         val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        //lineDetector.run()
+        lineDetector.run()
     }
 
 
