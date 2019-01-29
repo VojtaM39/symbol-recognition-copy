@@ -15,7 +15,7 @@ class ConnectingPointsWithList
         this.connectedPoints = connectAllPoints(movesX, movesY)
     }
 
-    fun connectPoints(): mutableList<Array<Short>> //public
+    fun connectPoints(): MutableList<Array<Short>> //public
     {
         println("Vracim connectedPoints")
         return connectedPoints
@@ -28,7 +28,7 @@ class ConnectingPointsWithList
     private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): MutableList<Array<Short>>
     {
         println("Vstuptuju do connectAllPoints")
-        var connectedPoints = arrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
+        var connectedPoints = mutableListOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
         var connectedTwoPoints = arrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
         var helpArray = arrayOf<Short>()
 
@@ -36,8 +36,8 @@ class ConnectingPointsWithList
         {
             if (movesX[i].size == 1 ) //pokud se v poli nachazi 1 bod, vrat toto pole
             {
-                connectedPoints += movesX
-                connectedPoints += movesY
+                connectedPoints[0] += movesX[i]
+                connectedPoints[1] += movesY[i]
             }
             else
             {
@@ -51,9 +51,8 @@ class ConnectingPointsWithList
                 println("Pozor, toto je ono")
                 for(i in 0..(connectedTwoPoints[0].size - 1))
                     helpArray += 0
-                connectedPoints += helpArray
-                connectedPoints += helpArray
-                connectedPoints = connectedTwoPoints
+                connectedPoints[0] += connectedTwoPoints[0]
+                connectedPoints[1] += connectedTwoPoints[1]
             }
         }
         return connectedPoints
@@ -63,7 +62,7 @@ class ConnectingPointsWithList
      * spojuje konkretni 2 body
      * hodnoty vraci ve dvourozmernem poli [0] - x souradnice, [1] - y souradnice
      */
-    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : MutableList<Array<Short>>
+    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : Array<Array<Short>>
     {
         println("Nachazim se v connectThesePoints")
         //pojistit, aby metoda fungovala i pro x = y
@@ -104,12 +103,11 @@ class ConnectingPointsWithList
     /**
      * funkce vyplni mezery mezi body
      */
-    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : MutableList<Array<Short>>
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : Array<Array<Short>>
     {
         //vzdy zaciname zleva
         println("Nachazim se v addNewPoints")
         var connectedTwoPoints = arrayOf<Array<Short>>()
-        var connectedTwoPointsList = mutableListOf<Array<Short>>()
 
         var distance: Int
         if((ascending) && (!biggerLengthOfX))
