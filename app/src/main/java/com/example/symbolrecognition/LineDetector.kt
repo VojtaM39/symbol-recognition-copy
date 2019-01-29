@@ -59,8 +59,8 @@ class LineDetector {
                     //zalozeni nove line
                     if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF || j == movesX[i].size-1) {
                         //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
-                        if(currentLineLenght > MINIMAL_SIDE_PERCANTAGE) {
-                            lines.add(Line(0,startingX,startingY,endingX,endingY))
+                        if(currentLineLenght > (MINIMAL_SIDE_PERCANTAGE*Constants.SQUARE_SIZE/100)) {
+                            lines.add(Line(startingX,startingY,endingX,endingY))
                         }
                         //Nova Line
                         Log.i("Line Debug", "Nova Line")
@@ -94,6 +94,15 @@ class LineDetector {
         }
     }
 
+    //Metoda bude prochazet lines a ty lines ktere maji podobny smer a jsou blizko sebe bude slucovat
+    private fun mergeLines() {
+        //cyklus prochazi vsechny lines a hleda podobne
+        for(line in lines) {
+
+        }
+    }
+
+    private fun getAngle()
     public fun run() {
         logLines()
     }

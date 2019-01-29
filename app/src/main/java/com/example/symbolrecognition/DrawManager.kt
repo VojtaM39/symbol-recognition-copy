@@ -51,7 +51,7 @@ class DrawManager {
         val differenceBig = bigger.min()!!
         val differenceSmall = smaller.min()!!
         //pomer ve kterem se musi obrazec zmensit aby se dostal na pozadovanou velikost
-        val ratio = (bigger.max()!!-bigger.min()!!)/SQUARE_SIZE
+        val ratio = (bigger.max()!!-bigger.min()!!)/Constants.SQUARE_SIZE
         //Pole projde kazdy bod z obou poli, posune je na kraj (odecte rozdil od kraje) a zmensi v pomeru, ve kterem je original vetsi od pozadovaneho vysledku
         for(i in 0..bigger.size-1) {
             bigger[i] -=  differenceBig
