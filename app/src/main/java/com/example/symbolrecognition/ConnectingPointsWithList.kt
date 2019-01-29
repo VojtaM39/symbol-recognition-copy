@@ -2,11 +2,11 @@ import kotlin.math.abs
 import kotlin.math.truncate
 import kotlin.math.round
 
-class ConnectingPoints
+class ConnectingPointsWithList
 {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
-    private var connectedPoints = arrayOf<Array<Short>>()
+    private var connectedPoints = mutableListOf<Array<Short>>()
 
     constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
     {
@@ -15,7 +15,7 @@ class ConnectingPoints
         this.connectedPoints = connectAllPoints(movesX, movesY)
     }
 
-    fun connectPoints(): Array<Array<Short>> //public
+    fun connectPoints(): mutableList<Array<Short>> //public
     {
         println("Vracim connectedPoints")
         return connectedPoints
@@ -25,7 +25,7 @@ class ConnectingPoints
      * metoda spojujici body
      * vystupem je dvojrozmerne pole se spojenymi body
      * */
-    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Array<Array<Short>>
+    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): MutableList<Array<Short>>
     {
         println("Vstuptuju do connectAllPoints")
         var connectedPoints = arrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
@@ -63,7 +63,7 @@ class ConnectingPoints
      * spojuje konkretni 2 body
      * hodnoty vraci ve dvourozmernem poli [0] - x souradnice, [1] - y souradnice
      */
-    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : Array<Array<Short>>
+    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : MutableList<Array<Short>>
     {
         println("Nachazim se v connectThesePoints")
         //pojistit, aby metoda fungovala i pro x = y
@@ -104,11 +104,12 @@ class ConnectingPoints
     /**
      * funkce vyplni mezery mezi body
      */
-    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : Array<Array<Short>>
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : MutableList<Array<Short>>
     {
         //vzdy zaciname zleva
         println("Nachazim se v addNewPoints")
         var connectedTwoPoints = arrayOf<Array<Short>>()
+        var connectedTwoPointsList = mutableListOf<Array<Short>>()
 
         var distance: Int
         if((ascending) && (!biggerLengthOfX))
