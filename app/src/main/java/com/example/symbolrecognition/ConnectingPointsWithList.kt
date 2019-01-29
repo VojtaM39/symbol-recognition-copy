@@ -49,10 +49,8 @@ class ConnectingPointsWithList
                         connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j])
                 }
                 println("Pozor, toto je ono")
-                for(i in 0..(connectedTwoPoints[0].size - 1))
-                    helpArray += 0
-                connectedPoints[0] += connectedTwoPoints[0]
-                connectedPoints[1] += connectedTwoPoints[1]
+                connectedPoints.add(connectedTwoPoints[0]) //doladit, aby se hodnoty pri vice bodech neprepisovaly
+                connectedPoints.add(connectedTwoPoints[1])
             }
         }
         return connectedPoints
@@ -118,12 +116,12 @@ class ConnectingPointsWithList
 
 
         //prvotni vyplneni pole, abychom jej pote mohli prepsat
-        if(biggerLengthOfX)
+        if((!biggerLengthOfX) && (ascending))
         {
             for(i in 0..1)
             {
                 var helpArray = arrayOf<Short>()
-                for (j in 0..(numberOfElements * leftPointShorterAxis + numberOfAdditionalElements - 1))
+                for (j in 0..(leftPointLongerAxis - rightPointLongerAxis))
                     helpArray += 0
                 connectedTwoPoints += helpArray
             }
@@ -133,7 +131,7 @@ class ConnectingPointsWithList
             for(i in 0..1)
             {
                 var helpArray = arrayOf<Short>()
-                for (j in 0..(numberOfElements * rightPointShorterAxis + numberOfAdditionalElements - 1))
+                for (j in 0..(rightPointLongerAxis - leftPointLongerAxis))
                     helpArray += 0
                 connectedTwoPoints += helpArray
             }
@@ -164,7 +162,10 @@ class ConnectingPointsWithList
                     connectedTwoPoints[1][index] = j.toShort() //y
                     index++
                 }
-                startingPointLongerAxis = forStartingPointLongerAxis
+                if((ascending) && (!biggerLengthOfX))
+                    startingPointLongerAxis--
+                else
+                    startingPointLongerAxis++
             }
             if ((numberOfAdditionalElements != 0) && (addedAdditionalElements < numberOfAdditionalElements))
             {
