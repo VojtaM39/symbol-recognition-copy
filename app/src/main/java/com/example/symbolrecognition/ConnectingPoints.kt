@@ -6,7 +6,7 @@ class ConnectingPoints
 {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
-    private var connectedPoints = arrayOf<Array<Short>>()
+    private var connectedPoints = mutableListOf<Array<Short>>()
 
     constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
     {
@@ -15,9 +15,8 @@ class ConnectingPoints
         this.connectedPoints = connectAllPoints(movesX, movesY)
     }
 
-    fun connectPoints(): Array<Array<Short>> //public
+    fun connectPoints(): MutableList<Array<Short>> //public
     {
-        println("Vracim connectedPoints")
         return connectedPoints
     }
 
@@ -25,37 +24,35 @@ class ConnectingPoints
      * metoda spojujici body
      * vystupem je dvojrozmerne pole se spojenymi body
      * */
-    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Array<Array<Short>>
+    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): MutableList<Array<Short>>
     {
-        println("Vstuptuju do connectAllPoints")
-        var connectedPoints = arrayOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
+        var connectedPoints = mutableListOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
         var connectedTwoPoints = arrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
-        var helpArray = arrayOf<Short>()
+        var helpArrayX = arrayOf<Short>() //pomocne pole do ktereho budeme pridavat pole bodu po vygenerovani
+        var helpArrayY = arrayOf<Short>() //pomocne pole do ktereho budeme pridavat pole bodu po vygenerovani
 
-        for (i in 0..(movesX.size - 1))
+        for (i in 0..(movesX.size - 1)) //projede vsechny cary
         {
             if (movesX[i].size == 1 ) //pokud se v poli nachazi 1 bod, vrat toto pole
             {
-                connectedPoints += movesX
-                connectedPoints += movesY
+                connectedPoints[0] += movesX[i]
+                connectedPoints[1] += movesY[i]
             }
             else
             {
                 for (j in 0..(movesX[i].size - 1 - 1)) //-1 za delku pole a -1 protoze posledni souradnici uz nemame s cim spojovat
                 {
                     if (movesX[i][j] <= movesX[i][j + 1]) //aktualni movesX je vice vlevo
-                        connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1])
+                        connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1]) //jako prvni posilame ten bod, ktery je vice vlevo
                     else //nasledujici movesX je vice vlevo
-                        connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j])
+                        connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j]) //jako prvni posilame ten bod, ktery je vice vpravo
+                    helpArrayX += connectedTwoPoints[0]
+                    helpArrayY += connectedTwoPoints[1]
                 }
-                println("Pozor, toto je ono")
-                for(i in 0..(connectedTwoPoints[0].size - 1))
-                    helpArray += 0
-                connectedPoints += helpArray
-                connectedPoints += helpArray
-                connectedPoints = connectedTwoPoints
             }
         }
+        connectedPoints.add(0, helpArrayX) //pridame body pro X
+        connectedPoints.add(1, helpArrayY) //pridame body pro Y
         return connectedPoints
     }
 
@@ -65,12 +62,10 @@ class ConnectingPoints
      */
     private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short) : Array<Array<Short>>
     {
-        println("Nachazim se v connectThesePoints")
-        //pojistit, aby metoda fungovala i pro x = y
-        var biggerLengthOfX: Boolean
-        var numberOfElements: Double
-        var numberOfAdditionalElements: Int
-        var ascending: Boolean
+        var biggerLengthOfX: Boolean //vetsi vzdalenost je mezi vzdalenostmi x nez y
+        var ascending: Boolean //kdyz jdeme z leva do prava, tak funkce stoupa
+        var numberOfElements: Double //pocet bodu, ktere musime minimalne doplnit do kazdeho
+        var numberOfAdditionalElements: Int //pocet bodu, ktere musime navic doplnit
 
         var lengthX = rightPointX - leftPointX + 1 //+1 nam da delku vcetne bodu
         var lengthY = abs(rightPointY - leftPointY) + 1 //+1 nam da delku vcetne bodu
@@ -80,11 +75,9 @@ class ConnectingPoints
         val b = -(rightPointX - leftPointX)
         val c = -(a * leftPointX + b * leftPointY)
 
-        if(rightPointY < leftPointY)
-            ascending = true
-        else
-            ascending = false
+        ascending = (rightPointY < leftPointY) //stoupani
 
+        //dosadime podle delky os funkce
         if (lengthX > lengthY) //delsi x
         {
             biggerLengthOfX = true
@@ -107,7 +100,6 @@ class ConnectingPoints
     private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean) : Array<Array<Short>>
     {
         //vzdy zaciname zleva
-        println("Nachazim se v addNewPoints")
         var connectedTwoPoints = arrayOf<Array<Short>>()
 
         var distance: Int
@@ -116,15 +108,13 @@ class ConnectingPoints
         else
             distance = numberOfElements - 1
 
-
-
         //prvotni vyplneni pole, abychom jej pote mohli prepsat
-        if(biggerLengthOfX)
+        if((!biggerLengthOfX) && (ascending)) //podminky, kdy funkce klesa
         {
             for(i in 0..1)
             {
                 var helpArray = arrayOf<Short>()
-                for (j in 0..(numberOfElements * leftPointShorterAxis + numberOfAdditionalElements - 1))
+                for (j in 0..(leftPointLongerAxis - rightPointLongerAxis))
                     helpArray += 0
                 connectedTwoPoints += helpArray
             }
@@ -134,13 +124,13 @@ class ConnectingPoints
             for(i in 0..1)
             {
                 var helpArray = arrayOf<Short>()
-                for (j in 0..(numberOfElements * rightPointShorterAxis + numberOfAdditionalElements - 1))
+                for (j in 0..(rightPointLongerAxis - leftPointLongerAxis))
                     helpArray += 0
                 connectedTwoPoints += helpArray
             }
         }
 
-        var index: Int = 0
+        var index = 0
         var startingPointLongerAxis = leftPointLongerAxis.toInt()
         var forStartingPointLongerAxis: Int
         var addedAdditionalElements = 0
@@ -150,26 +140,26 @@ class ConnectingPoints
         for(i in startingPointShorterAxis toward endingPointShorterAxis)
         {
             forStartingPointLongerAxis = startingPointLongerAxis //oprava for cyklu, otestovat doma
-            for (j in forStartingPointLongerAxis toward (forStartingPointLongerAxis + distance)) //odecitame 1, abychom dochazeli k cislu primo odpovidajicimu numberOfElements
+            for (j in forStartingPointLongerAxis toward (forStartingPointLongerAxis + distance))
             {
-                println("Jsem ve for cyklu j: ${j}")
                 if (biggerLengthOfX)
                 {
                     connectedTwoPoints[0][index] = j.toShort() //x
                     connectedTwoPoints[1][index] = i.toShort() //y
-                    index++
                 }
                 else //biggerLengthOfX == false
                 {
                     connectedTwoPoints[0][index] = i.toShort() //x
                     connectedTwoPoints[1][index] = j.toShort() //y
-                    index++
                 }
-                startingPointLongerAxis = forStartingPointLongerAxis
+                index++
+                if((ascending) && (!biggerLengthOfX)) //podminky, kdy funkce klesa
+                    startingPointLongerAxis--
+                else
+                    startingPointLongerAxis++
             }
             if ((numberOfAdditionalElements != 0) && (addedAdditionalElements < numberOfAdditionalElements))
             {
-                println("jsem v podmince")
                 if(biggerLengthOfX)
                 {
                     if(addAdditionalPoint(a, b, c, startingPointLongerAxis, i))
@@ -193,22 +183,13 @@ class ConnectingPoints
                     }
                 }
             }
-            println("Vybelh jsem z for cyklu")
         }
         return connectedTwoPoints
     }
     private fun addAdditionalPoint(a: Int, b: Int, c: Int, actualX: Int, actualY: Int) : Boolean
     {
-        println("Nachazim se v addAdditionalPoint")
         var y: Double = round((a * actualX + c).toDouble() / -b)
-        if (y == actualY.toDouble()) {
-            println("Hura, pouzil jsem vektorovou rovnici")
-            return true
-        }
-        else {
-            println("Nevyuzil jsem vektorovou rovnici")
-            return false
-        }
+        return y == actualY.toDouble() //vrati true, pokud se vypoctene Y rovna aktualnimu Y
     }
 
     /**
