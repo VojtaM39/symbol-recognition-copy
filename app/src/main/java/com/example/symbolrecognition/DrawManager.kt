@@ -110,15 +110,18 @@ class DrawManager {
     public fun  run() {
 
         logMoves()
-        var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        directionsAlgorithm.run()
-        val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        lineDetector.run()
+        //var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        //directionsAlgorithm.run()
+        //val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        //lineDetector.run()
         val connectingPoints = ConnectingPoints(movesX, movesY)
         var connectedPoints = connectingPoints.connectPoints()
-       // printPointsOfMutableList(connectedPoints)
+        printPointsOfMutableList(connectedPoints)
     }
 
+    /**
+     * funkce vypise body z connectedPoints a priradi je do pole
+     */
     private fun printPointsOfMutableList(connectedPoints: MutableList<Array<Short>>)
     {
         var arr = arrayOf<Array<Short>>()
@@ -131,7 +134,7 @@ class DrawManager {
             }
             arr += helpArr
         }
-        for(i in 0..(connectedPoints[0].size))
+        for(i in 0..(connectedPoints[0].size - 1))
         {
             print("${connectedPoints[0][i]} ${connectedPoints[1][i]} / ")
             arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1.toShort()
