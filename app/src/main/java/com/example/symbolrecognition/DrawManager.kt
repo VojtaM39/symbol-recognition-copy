@@ -9,7 +9,7 @@ class DrawManager {
     private var pointsYResult : Array<Short>
     private var touchCount : Int
     private val endsOfMove : Array<Int>
-    private val SQUARE_SIZE : Int = 500
+    private val SQUARE_SIZE : Int = Constants.SQUARE_SIZE
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
 
@@ -51,7 +51,7 @@ class DrawManager {
         val differenceBig = bigger.min()!!
         val differenceSmall = smaller.min()!!
         //pomer ve kterem se musi obrazec zmensit aby se dostal na pozadovanou velikost
-        val ratio = (bigger.max()!!-bigger.min()!!)/Constants.SQUARE_SIZE
+        val ratio = (bigger.max()!!-bigger.min()!!)/SQUARE_SIZE
         //Pole projde kazdy bod z obou poli, posune je na kraj (odecte rozdil od kraje) a zmensi v pomeru, ve kterem je original vetsi od pozadovaneho vysledku
         for(i in 0..bigger.size-1) {
             bigger[i] -=  differenceBig
@@ -110,13 +110,13 @@ class DrawManager {
     public fun  run() {
 
         logMoves()
-        //var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        //directionsAlgorithm.run()
-        //val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        //lineDetector.run()
+        var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        directionsAlgorithm.run()
+        val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        lineDetector.run()
         val connectingPoints = ConnectingPoints(movesX, movesY)
         var connectedPoints = connectingPoints.connectPoints()
-        printPointsOfMutableList(connectedPoints)
+       // printPointsOfMutableList(connectedPoints)
     }
 
     private fun printPointsOfMutableList(connectedPoints: MutableList<Array<Short>>)
