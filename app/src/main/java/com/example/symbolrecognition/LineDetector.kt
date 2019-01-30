@@ -16,7 +16,7 @@ class LineDetector {
     private var lines = mutableListOf<Line>()
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
     private val MINIMAL_SIDE_PERCANTAGE = 40
-    private val MAX_RATIO_DIFF = 0.1f
+    private val MAX_RATIO_DIFF = 0.2f
     constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.pointsX = pointsX
         this.pointsY = pointsY
@@ -58,10 +58,11 @@ class LineDetector {
                     //Druhy bod => prvni dvojice => vzdy zapisujem novou linu
                     //posledni bod => musime ulozit pripadnou line
                     //zalozeni nove line
-                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF) {
+                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF || j == movesX[i].size-1) {
                         //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
                         if(currentLineLenght > (MINIMAL_SIDE_PERCANTAGE*Constants.SQUARE_SIZE/100)) {
-                            alreadyCreated = true
+                            endingX = movesX[i][j]
+                            endingY = movesY[i][j]
                             lines.add(Line(getAngle(startingX,startingY,endingX, endingY),startingX,startingY,endingX,endingY))
                         }
                         //Nova Line
@@ -81,17 +82,9 @@ class LineDetector {
                         currentLinePointsCount++
                         ratioSum += currentRatio
                         currentLineLenght += currentPointLenght
-                        endingX = movesX[i][j]
-                        endingY = movesY[i][j]
                     }
 
-                    //posledni bod => vzdy pokus o zalozeni (pokud uz teda nebyla zalozena)
-                    if(j == movesX[i].size-1 && !alreadyCreated) {
-                        //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
-                        if(currentLineLenght > (MINIMAL_SIDE_PERCANTAGE*Constants.SQUARE_SIZE/100)) {
-                            lines.add(Line(getAngle(startingX,startingY,endingX, endingY),startingX,startingY,endingX,endingY))
-                        }
-                    }
+
                 }
                 alreadyCreated = false
             }
