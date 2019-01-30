@@ -101,11 +101,11 @@ class LineDetector {
 
         }
     }
-
+/*
     private fun getAngle()
     public fun run() {
         logLines()
-    }
+    }*/
 
 
 

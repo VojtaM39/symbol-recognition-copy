@@ -1,3 +1,5 @@
+package com.example.symbolrecognition
+
 import kotlin.math.abs
 import kotlin.math.truncate
 import kotlin.math.round
