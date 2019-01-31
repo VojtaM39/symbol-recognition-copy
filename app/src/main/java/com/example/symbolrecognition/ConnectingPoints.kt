@@ -145,15 +145,9 @@ class ConnectingPoints
             for (j in forStartingPointLongerAxis toward (forStartingPointLongerAxis + distance))
             {
                 if (biggerLengthOfX)
-                {
-                    connectedTwoPoints[0][index] = j.toShort() //x
-                    connectedTwoPoints[1][index] = i.toShort() //y
-                }
+                    addValueToArray(connectedTwoPoints, j.toShort(), i.toShort(), index)
                 else //biggerLengthOfX == false
-                {
-                    connectedTwoPoints[0][index] = i.toShort() //x
-                    connectedTwoPoints[1][index] = j.toShort() //y
-                }
+                    addValueToArray(connectedTwoPoints, i.toShort(), j.toShort(), index)
                 index++
                 if((ascending) && (!biggerLengthOfX)) //podminky, kdy funkce klesa
                     startingPointLongerAxis--
@@ -166,8 +160,7 @@ class ConnectingPoints
                 {
                     if(addAdditionalPoint(a, b, c, startingPointLongerAxis, i))
                     {
-                        connectedTwoPoints[0][index] = startingPointLongerAxis.toShort() //x
-                        connectedTwoPoints[1][index] = i.toShort() //y
+                        addValueToArray(connectedTwoPoints, startingPointLongerAxis.toShort(), i.toShort(), index)
                         index++
                         addedAdditionalElements++
                         startingPointLongerAxis++
@@ -177,8 +170,7 @@ class ConnectingPoints
                 {
                     if(addAdditionalPoint(a, b, c, i, startingPointLongerAxis))
                     {
-                        connectedTwoPoints[0][index] = i.toShort() //x
-                        connectedTwoPoints[1][index] = startingPointLongerAxis.toShort() //y
+                        addValueToArray(connectedTwoPoints, i.toShort(), startingPointLongerAxis.toShort(), index)
                         index++
                         addedAdditionalElements++
                         startingPointLongerAxis--
@@ -188,10 +180,23 @@ class ConnectingPoints
         }
         return connectedTwoPoints
     }
+
+    /**
+     * prida bod, pokud bod nalezi rovnici vektoru
+     */
     private fun addAdditionalPoint(a: Int, b: Int, c: Int, actualX: Int, actualY: Int) : Boolean
     {
         var y: Double = round((a * actualX + c).toDouble() / -b)
         return y == actualY.toDouble() //vrati true, pokud se vypoctene Y rovna aktualnimu Y
+    }
+
+    /**
+     * funkce priradi body X a Y do pole
+     */
+    private fun addValueToArray(connectedTwoPoints: Array<Array<Short>>, x: Short, y: Short, index: Int)
+    {
+        connectedTwoPoints[0][index] = x
+        connectedTwoPoints[1][index] = y
     }
 
     /**
