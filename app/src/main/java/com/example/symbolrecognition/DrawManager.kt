@@ -139,6 +139,7 @@ class DrawManager {
             print("${connectedPoints[0][i]} ${connectedPoints[1][i]} / ")
             arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1.toShort()
         }
+        /*
         for(y in (0..SQUARE_SIZE))
         {
             for(x in (0..SQUARE_SIZE))
@@ -146,6 +147,16 @@ class DrawManager {
                 print("${arr[y][x]} ")
             }
             println()
+        }*/
+        var result: String
+        for(i in 0..arr.size - 1)
+        {
+            result = ""
+            for(j in 0..arr[i].size - 1)
+            {
+                result += arr[i][j].toString() + " "
+            }
+            Log.i("", result)
         }
     }
 }
