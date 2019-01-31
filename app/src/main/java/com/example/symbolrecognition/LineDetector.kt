@@ -4,8 +4,6 @@ import android.util.Log
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.sqrt
-//TODO overit ze se nezmenila line v pravem uhlu (stejny pomer, takze by pokracovala)
-//TODO dodelat angle
 //TODO dodelat slucovani lines
 //TODO opravit overeni vzdalenosti line (pred vytvorenim)
 class LineDetector {
@@ -16,7 +14,7 @@ class LineDetector {
     private var lines = mutableListOf<Line>()
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
     private val MINIMAL_SIDE_PERCANTAGE = 40
-    private val MAX_RATIO_DIFF = 0.1f
+    private val MAX_RATIO_DIFF = 0.2f
     constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.pointsX = pointsX
         this.pointsY = pointsY
@@ -58,11 +56,12 @@ class LineDetector {
                     //Druhy bod => prvni dvojice => vzdy zapisujem novou linu
                     //posledni bod => musime ulozit pripadnou line
                     //zalozeni nove line
-                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF) {
+                    if(j==1 || (currentRatio-startingRatio).absoluteValue > MAX_RATIO_DIFF || j == movesX[i].size-1) {
                         //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
                         if(currentLineLenght > (MINIMAL_SIDE_PERCANTAGE*Constants.SQUARE_SIZE/100)) {
-                            alreadyCreated = true
-                            lines.add(Line(getAngle(startingX,startingY,endingX, endingY),startingX,startingY,endingX,endingY))
+                            endingX = movesX[i][j]
+                            endingY = movesY[i][j]
+                            lines.add(Line(startingX,startingY,endingX,endingY))
                         }
                         //Nova Line
                         Log.i("Line Debug", "Nova Line")
@@ -81,17 +80,9 @@ class LineDetector {
                         currentLinePointsCount++
                         ratioSum += currentRatio
                         currentLineLenght += currentPointLenght
-                        endingX = movesX[i][j]
-                        endingY = movesY[i][j]
                     }
 
-                    //posledni bod => vzdy pokus o zalozeni (pokud uz teda nebyla zalozena)
-                    if(j == movesX[i].size-1 && !alreadyCreated) {
-                        //pokud byla predesla line dostatecne dlouha, vytvorime novou line do listu
-                        if(currentLineLenght > (MINIMAL_SIDE_PERCANTAGE*Constants.SQUARE_SIZE/100)) {
-                            lines.add(Line(getAngle(startingX,startingY,endingX, endingY),startingX,startingY,endingX,endingY))
-                        }
-                    }
+
                 }
                 alreadyCreated = false
             }
@@ -101,7 +92,7 @@ class LineDetector {
 
     private fun logLines() {
         for(line in lines) {
-            Log.i("Line", "Starting: " + line.x1.toString() + ", " + line.y1.toString() + ". Ending: " + line.x2.toString() + ", " + line.y2.toString() + ", Angle: " + line.angle.toString())
+            Log.i("Line", "Starting: " + line.x1.toString() + ", " + line.y1.toString() + ". Ending: " + line.x2.toString() + ", " + line.y2.toString() + ", Angle: " + line.angle.toString() + ", Shift: " + line.shiftCoefficient.toString())
         }
     }
 
@@ -114,20 +105,7 @@ class LineDetector {
     }
 
 
-    //Metoda vraci uhel dane line
-    //Pomer x/(x+y)
-    //Pokud je line nasmerovana zleva nahore - dolu doprava => zaporna hodnota
-    private fun getAngle(x1 : Short,y1: Short,x2: Short,y2: Short) : Float{
-        val xDiff = (x1 - x2).absoluteValue
-        val yDiff = (y1 - y2).absoluteValue
-        var angle : Float = xDiff.toFloat()/(xDiff.toFloat()+yDiff.toFloat())
-        //Pokud je bod, ktery je vic nahore i vic vpravo (line smeruje doleva a dolu) => zaporna hodnota
-        if(((x1 < x2) && (y1 < y2)) || ((x2 < x1) && (y2 < y1))) {
-            angle *=-1
-        }
-        return angle
 
-    }
 
     public fun run() {
         logLines()
