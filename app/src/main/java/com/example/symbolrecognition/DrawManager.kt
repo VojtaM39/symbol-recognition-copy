@@ -116,13 +116,14 @@ class DrawManager {
         //lineDetector.run()
         val connectingPoints = ConnectingPoints(movesX, movesY)
         var connectedPoints = connectingPoints.connectPoints()
-        printPointsOfMutableList(connectedPoints)
+        var thickness = connectingPoints.getThickness()
+        printPointsOfMutableList(connectedPoints, thickness)
     }
 
     /**
      * funkce vypise body z connectedPoints a priradi je do pole
      */
-    private fun printPointsOfMutableList(connectedPoints: MutableList<Array<Short>>)
+    private fun printPointsOfMutableList(connectedPoints: MutableList<Array<Short>>, thickness: MutableList<Array<Short>>)
     {
         var arr = arrayOf<Array<Short>>()
         for(y in (0..SQUARE_SIZE))
@@ -139,6 +140,12 @@ class DrawManager {
             print("${connectedPoints[0][i]} ${connectedPoints[1][i]} / ")
             arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1.toShort()
         }
+        for(i in 0..(thickness[0].size - 1))
+        {
+            print("${thickness[0][i]} ${thickness[1][i]} / ")
+            arr[thickness[1][i].toInt()][thickness[0][i].toInt()] = 1.toShort()
+        }
+        /*
         for(y in (0..SQUARE_SIZE))
         {
             for(x in (0..SQUARE_SIZE))
@@ -146,6 +153,16 @@ class DrawManager {
                 print("${arr[y][x]} ")
             }
             println()
+        }*/
+        var result: String
+        for(i in 0..arr.size - 1)
+        {
+            result = ""
+            for(j in 0..arr[i].size - 1)
+            {
+                result += arr[i][j].toString() + " "
+            }
+            Log.i("", result)
         }
     }
 }
