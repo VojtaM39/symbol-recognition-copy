@@ -12,6 +12,9 @@ class LineDetector {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
     private var lines = mutableListOf<Line>()
+    private val MAX_ANGLE_DIFF_MERGE = 0.2f
+    //konstanta je urcena relativne k velikosti ctverce
+    private val MAX_SHIFT_DIFF = Constants.SQUARE_SIZE*20/100
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
     private val MINIMAL_SIDE_PERCANTAGE = 40
     private val MAX_RATIO_DIFF = 0.2f
@@ -92,15 +95,53 @@ class LineDetector {
 
     private fun logLines() {
         for(line in lines) {
-            Log.i("Line", "Starting: " + line.x1.toString() + ", " + line.y1.toString() + ". Ending: " + line.x2.toString() + ", " + line.y2.toString() + ", Angle: " + line.angle.toString() + ", Shift: " + line.shiftCoefficient.toString())
+            Log.i("Line", "Starting: " + line.x1.toString() + ", " + line.y1.toString() + ". Ending: " + line.x2.toString() + ", " + line.y2.toString() + ", Angle: " + line.angle.toString() + ", ShiftX: " + line.shiftCoefficientX.toString()+ ", ShiftY: " + line.shiftCoefficientY.toString())
         }
     }
 
     //Metoda bude prochazet lines a ty lines ktere maji podobny smer a jsou blizko sebe bude slucovat
     private fun mergeLines() {
-        //cyklus prochazi vsechny lines a hleda podobne
-        for(line in lines) {
+        /**
+         * cyklus prochazi vsechny lines a hleda podobne
+         */
+        for(i in lines.indices) {
+            for(j in i..lines.size-1) {
 
+            }
+        }
+    }
+
+    /**
+     * Metoda vraci true, pokud se tyto dve lines daji sloucit
+     * Zkousi:
+     * 1. Angle
+     * 2. Shift
+     * 3. Vzdalenost
+     */
+    private fun testLines(line1 : Line, line2 : Line) : Boolean {
+        var result = false
+        var shift1 : Short
+        var shift2 : Short
+        //Lines maji podobny angle
+        if ((line1.angle - line2.angle).absoluteValue < MAX_ANGLE_DIFF_MERGE) {
+            /**
+             * Pokud je line1 spise vertikalni, pak testujeme shiftCoefficient na ose X, jinak na ose Y
+             */
+            if(line1.angle.absoluteValue < 0.5f) {
+                shift1 = line1.shiftCoefficientX
+                shift2 = line2.shiftCoefficientX
+            }
+            else {
+                shift1 = line1.shiftCoefficientY
+                shift2 = line2.shiftCoefficientY
+            }
+            /**
+             * Shift coefs jsou dostatecne male
+             */
+            if((shift1-shift2).absoluteValue < MAX_SHIFT_DIFF) {
+                //TODO dodelat test vzdalenosti
+
+            }
         }
     }
 
