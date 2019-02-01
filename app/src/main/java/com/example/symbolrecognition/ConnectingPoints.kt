@@ -10,17 +10,25 @@ class ConnectingPoints
     private var movesY = mutableListOf<Array<Short>>()
     private var connectedPoints = mutableListOf<Array<Short>>()
     private var thickness = mutableListOf<Array<Short>>()
+    private var helpArrayXThickness = arrayOf<Short>()
+    private var helpArrayYThickness = arrayOf<Short>()
     private val SQUARE_SIZE: Int
+    private var unitOfThickness: Int
 
     constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
     {
         this.movesX = movesX
         this.movesY = movesY
         this.SQUARE_SIZE = Constants.SQUARE_SIZE
-        this.connectedPoints = connectAllPoints(movesX, movesY, this.thickness, SQUARE_SIZE)
+        this.unitOfThickness = SQUARE_SIZE / 10 - 3 //unitOfThickness = 2 //jedna se o jednotky tloustky +n dalsi body do kazde strany
+        this.connectedPoints = connectAllPoints(movesX, movesY, SQUARE_SIZE, unitOfThickness)
+        this.helpArrayXThickness = helpArrayXThickness
+        this.helpArrayYThickness = helpArrayYThickness
+        this.thickness.add(0, helpArrayXThickness)
+        this.thickness.add(1, helpArrayYThickness)
     }
 
-    fun connectPoints(): MutableList<Array<Short>> //public
+    fun connectPoints(): MutableList<Array<Short>>
     {
         return connectedPoints
     }
@@ -33,10 +41,11 @@ class ConnectingPoints
      * metoda spojujici body
      * vystupem je dvojrozmerne pole se spojenymi body
      * */
-    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, thickness: MutableList<Array<Short>>, SQUARE_SIZE: Int): MutableList<Array<Short>>
+    private fun connectAllPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, SQUARE_SIZE: Int, unitOfThickness: Int): MutableList<Array<Short>>
     {
         var connectedPoints = mutableListOf<Array<Short>>() //connectedPoints[0] - x souradnice, [1] - y souradnice
         var connectedTwoPoints = arrayOf<Array<Short>>() //connectedTwoPoints[0] - x souradnice, [1] - y souradnice
+        var addedThicknessPoints = arrayOf<Array<Short>>()
         var helpArrayX = arrayOf<Short>() //pomocne pole do ktereho budeme pridavat pole bodu po vygenerovani
         var helpArrayY = arrayOf<Short>() //pomocne pole do ktereho budeme pridavat pole bodu po vygenerovani
 
@@ -44,17 +53,26 @@ class ConnectingPoints
         {
             if (movesX[i].size == 1 ) //pokud se v poli nachazi 1 bod, vrat toto pole
             {
-                connectedPoints[0] += movesX[i]
-                connectedPoints[1] += movesY[i]
+                helpArrayX += movesX[i]
+                helpArrayY += movesY[i]
+                addedThicknessPoints = addBasicPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, SQUARE_SIZE)
+                helpArrayXThickness += addedThicknessPoints[0]
+                helpArrayYThickness += addedThicknessPoints[1]
+                addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, true, true, SQUARE_SIZE)
+                helpArrayXThickness += addedThicknessPoints[0]
+                helpArrayYThickness += addedThicknessPoints[1]
+                addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, false, true, SQUARE_SIZE)
+                helpArrayXThickness += addedThicknessPoints[0]
+                helpArrayYThickness += addedThicknessPoints[1]
             }
             else
             {
                 for (j in 0..(movesX[i].size - 1 - 1)) //-1 za delku pole a -1 protoze posledni souradnici uz nemame s cim spojovat
                 {
                     if (movesX[i][j] <= movesX[i][j + 1]) //aktualni movesX je vice vlevo
-                        connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1], thickness, SQUARE_SIZE) //jako prvni posilame ten bod, ktery je vice vlevo
+                        connectedTwoPoints = connectThesePoints(movesX[i][j], movesY[i][j], movesX[i][j + 1], movesY[i][j + 1], SQUARE_SIZE, unitOfThickness) //jako prvni posilame ten bod, ktery je vice vlevo
                     else //nasledujici movesX je vice vlevo
-                        connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j], thickness, SQUARE_SIZE) //jako prvni posilame ten bod, ktery je vice vpravo
+                        connectedTwoPoints = connectThesePoints(movesX[i][j + 1], movesY[i][j + 1], movesX[i][j], movesY[i][j], SQUARE_SIZE, unitOfThickness) //jako prvni posilame ten bod, ktery je vice vpravo
                     helpArrayX += connectedTwoPoints[0]
                     helpArrayY += connectedTwoPoints[1]
                 }
@@ -69,7 +87,7 @@ class ConnectingPoints
      * spojuje konkretni 2 body
      * hodnoty vraci ve dvourozmernem poli [0] - x souradnice, [1] - y souradnice
      */
-    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short, thickness: MutableList<Array<Short>>, SQUARE_SIZE: Int) : Array<Array<Short>>
+    private fun connectThesePoints(leftPointX: Short, leftPointY: Short, rightPointX: Short, rightPointY: Short, SQUARE_SIZE: Int, unitOfThickness: Int) : Array<Array<Short>>
     {
         var biggerLengthOfX: Boolean //vetsi vzdalenost je mezi vzdalenostmi x nez y
         var ascending: Boolean //kdyz jdeme z leva do prava, tak funkce stoupa
@@ -92,25 +110,25 @@ class ConnectingPoints
             biggerLengthOfX = true
             numberOfElements = truncate(lengthX.toDouble() / lengthY)
             numberOfAdditionalElements = lengthX % lengthY
-            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending, thickness, SQUARE_SIZE)
+            return addNewPoints(leftPointX, leftPointY, rightPointX, rightPointY, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending, SQUARE_SIZE, unitOfThickness)
         }
         else //delsi y
         {
             biggerLengthOfX = false
             numberOfElements = truncate(lengthY.toDouble() / lengthX)
             numberOfAdditionalElements = lengthY % lengthX
-            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending, thickness, SQUARE_SIZE)
+            return addNewPoints(leftPointY, leftPointX, rightPointY, rightPointX, numberOfElements.toInt(), numberOfAdditionalElements, biggerLengthOfX, a, b, c, ascending, SQUARE_SIZE, unitOfThickness)
         }
     }
 
     /**
      * funkce vyplni mezery mezi body
      */
-    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean, thickness: MutableList<Array<Short>>, SQUARE_SIZE: Int) : Array<Array<Short>>
+    private fun addNewPoints(leftPointLongerAxis: Short, leftPointShorterAxis: Short, rightPointLongerAxis: Short, rightPointShorterAxis: Short, numberOfElements: Int, numberOfAdditionalElements: Int, biggerLengthOfX: Boolean, a: Int, b: Int, c: Int, ascending: Boolean, SQUARE_SIZE: Int, unitOfThickness: Int) : Array<Array<Short>>
     {
         //vzdy zaciname zleva
         var connectedTwoPoints = arrayOf<Array<Short>>()
-        var thicknessPoints = mutableListOf<Array<Short>>()
+        var addedThickness = arrayOf<Array<Short>>()
 
         var distance: Int
         if((ascending) && (!biggerLengthOfX))
@@ -199,8 +217,9 @@ class ConnectingPoints
             }
         }
         //ziskame tloustku
-        thicknessPoints.add(0, addThicknessPoints(connectedTwoPoints, biggerLengthOfX, ascending, SQUARE_SIZE)[0])
-        thicknessPoints.add(1, addThicknessPoints(connectedTwoPoints, biggerLengthOfX, ascending, SQUARE_SIZE)[1])
+        addedThickness = addThicknessPoints(connectedTwoPoints, biggerLengthOfX, ascending, SQUARE_SIZE, unitOfThickness)
+        helpArrayXThickness += addedThickness[0]
+        helpArrayYThickness += addedThickness[1]
         return connectedTwoPoints
     }
 
@@ -225,28 +244,62 @@ class ConnectingPoints
     /**
      * funkce prida do pole poli shortove souradnice X a Y bodu, ktere vytvori tloustku konkretnich krivek
      */
-    private fun addThicknessPoints(connectedTwoPoints: Array<Array<Short>>, biggerLengthOfX: Boolean, ascending: Boolean, SQUARE_SIZE: Int) : Array<Array<Short>>
+    private fun addThicknessPoints(connectedTwoPoints: Array<Array<Short>>, biggerLengthOfX: Boolean, ascending: Boolean, SQUARE_SIZE: Int, unitOfThickness: Int) : Array<Array<Short>>
     {
-        var addedThickness = arrayOf<Array<Short>>()
+        var addedAllPoints = arrayOf<Array<Short>>()
+        var addedPoints = arrayOf<Array<Short>>()
         var helpArrayX = arrayOf<Short>()
-        var helpArrayY = arrayOf<Short>()
-        var unitOfThickness = (SQUARE_SIZE / 10) - 3 //unitOfThickness = 2 //jedna se o jednotky tloustky
-        if(connectedTwoPoints[0].size == 1) //pouze bod
-        {
+        var helpArrayY = arrayOf<Short>()//unitOfThickness = 2 //jedna se o jednotky tloustky +n dalsi body do kazde strany
 
-        }
-        else
+        //pridani zakladnich bodu
+        for(i in 0..(connectedTwoPoints[0].size - 1))
         {
-            for(i in 0..(connectedTwoPoints[0].size - 1))
-            {
-                //pridani zakladnich bodu
-                if(biggerLengthOfX)
-                    addedThickness += addBasicPoints(connectedTwoPoints[1][i], connectedTwoPoints[0][i], unitOfThickness, biggerLengthOfX, SQUARE_SIZE)
-                else
-                    addedThickness += addBasicPoints(connectedTwoPoints[1][i], connectedTwoPoints[0][i], unitOfThickness, biggerLengthOfX, SQUARE_SIZE)
-            }
+            if(biggerLengthOfX)
+                addedPoints = addBasicPoints(connectedTwoPoints[1][i], connectedTwoPoints[0][i], unitOfThickness, biggerLengthOfX, SQUARE_SIZE)
+            else
+                addedPoints = addBasicPoints(connectedTwoPoints[0][i], connectedTwoPoints[1][i], unitOfThickness, biggerLengthOfX, SQUARE_SIZE)
+            helpArrayX += addedPoints[0]
+            helpArrayY += addedPoints[1]
         }
-        return addedThickness
+        //pridani prvniho bodu
+        if(biggerLengthOfX)
+        {
+            addedPoints = addSpecialPoints(connectedTwoPoints[1][0], connectedTwoPoints[0][0], unitOfThickness, biggerLengthOfX, true, ascending, SQUARE_SIZE)
+        }
+        else //biggerLengthOfX == false
+        {
+            addedPoints = addSpecialPoints(connectedTwoPoints[0][0], connectedTwoPoints[1][0], unitOfThickness, biggerLengthOfX, true, ascending, SQUARE_SIZE)
+        }
+        if(addedPoints.isNotEmpty())
+        {
+            helpArrayX += addedPoints[0]
+            helpArrayY += addedPoints[1]
+        }
+        //pridani posledniho bodu
+        if(biggerLengthOfX)
+        {
+            addedPoints = addSpecialPoints(connectedTwoPoints[1][0], connectedTwoPoints[0][0], unitOfThickness, biggerLengthOfX, false, ascending, SQUARE_SIZE)
+        }
+        else //biggerLengthOfX == false
+        {
+            addedPoints = addSpecialPoints(connectedTwoPoints[0][0], connectedTwoPoints[1][0], unitOfThickness, biggerLengthOfX, false, ascending, SQUARE_SIZE)
+        }
+        if(addedPoints.isNotEmpty())
+        {
+            helpArrayX += addedPoints[0]
+            helpArrayY += addedPoints[1]
+        }
+
+        for(i in 0..1)
+        {
+            var helpArray = arrayOf<Short>()
+            for (j in 0..(helpArrayX.size - 1))
+                helpArray += 0
+            addedAllPoints += helpArray
+        }
+        addedAllPoints[0] = helpArrayX
+        addedAllPoints[1] = helpArrayY
+        return addedAllPoints
     }
 
     /**
@@ -273,20 +326,115 @@ class ConnectingPoints
             }
         }
 
+        //prvotni vyplneni addedBasicPoints
+        for(i in 0..1)
+        {
+            var helpArray = arrayOf<Short>()
+            for (j in 0..(helpArrayAdding.size - 1))
+                helpArray += 0
+            addedBasicPoints += helpArray
+        }
         //prirazeni do dvourozmerneho pole
         if(biggerLengthOfX)
         {
-            addedBasicPoints[0] += helpArrayStill
-            addedBasicPoints[1] += helpArrayAdding
+            addedBasicPoints[0] = helpArrayStill
+            addedBasicPoints[1] = helpArrayAdding
         }
         else
         {
-            addedBasicPoints[0] += helpArrayAdding
-            addedBasicPoints[1] += helpArrayStill
+            addedBasicPoints[0] = helpArrayAdding
+            addedBasicPoints[1] = helpArrayStill
         }
         return addedBasicPoints
     }
 
+    /**
+     * funkce prida souradnice zaobleni krajnich bodu
+     */
+    private fun addSpecialPoints(addingAxis: Short, stillAxis: Short, unitOfThickness: Int, biggerLengthOfX: Boolean, firstPoint: Boolean, ascending: Boolean, SQUARE_SIZE: Int) : Array<Array<Short>>
+    {
+        var addedPoints = arrayOf<Array<Short>>()
+        var helpArrayX = arrayOf<Short>()
+        var helpArrayY = arrayOf<Short>()
+        var stillAxisRW = stillAxis
+        var unitOfThicknessRW = unitOfThickness
+        if(((biggerLengthOfX) && (!firstPoint)) || ((ascending) && (firstPoint)) || ((!ascending) && (!firstPoint)))
+            stillAxisRW++
+        else
+            stillAxisRW--
+        //pridame do pole bod na aktualni urovni addingAxis
+        if((stillAxisRW >= 0) && (stillAxisRW < SQUARE_SIZE))
+        {
+            if(biggerLengthOfX)
+            {
+                helpArrayX += stillAxisRW
+                helpArrayY += addingAxis
+            }
+            else
+            {
+                helpArrayX += addingAxis
+                helpArrayY += stillAxisRW
+            }
+        }
+        if(unitOfThickness != 0)
+        {
+            for(i in 1..unitOfThickness)
+            {
+                if(biggerLengthOfX)
+                {
+                    if((stillAxisRW >= 0) && (stillAxisRW < SQUARE_SIZE))
+                    {
+                        if ((addingAxis + i) < SQUARE_SIZE)
+                        {
+                            helpArrayX += stillAxisRW
+                            helpArrayY += (addingAxis + i).toShort()
+                        }
+                        if ((addingAxis - i) >= 0)
+                        {
+                            helpArrayX += stillAxisRW
+                            helpArrayY += (addingAxis - i).toShort()
+                        }
+                    }
+                }
+                else
+                {
+                    if((stillAxisRW >= 0) && (stillAxisRW < SQUARE_SIZE))
+                    {
+                        if ((addingAxis + i) < SQUARE_SIZE)
+                        {
+                            helpArrayX += (addingAxis + i).toShort()
+                            helpArrayY += stillAxisRW
+                        }
+                        if ((addingAxis - i) >= 0)
+                        {
+                            helpArrayX += (addingAxis - i).toShort()
+                            helpArrayY += stillAxisRW
+                        }
+                    }
+                }
+            }
+            addedPoints = addSpecialPoints(addingAxis, stillAxisRW, --unitOfThicknessRW, biggerLengthOfX, firstPoint, ascending, SQUARE_SIZE)
+        }
+        if(addedPoints.isNotEmpty())
+        {
+            helpArrayX += addedPoints[0]
+            helpArrayY += addedPoints[1]
+        }
+        //prvotni vyplneni dvourozmerneho pole
+        if(helpArrayX.isNotEmpty())
+        {
+            for (i in 0..1)
+            {
+                var helpArray = arrayOf<Short>()
+                for (j in 0..(helpArrayX.size - 1))
+                    helpArray += 0
+                addedPoints += helpArray
+            }
+            addedPoints[0] = helpArrayX
+            addedPoints[1] = helpArrayY
+        }
+        return addedPoints
+    }
 
     /**
      * funkce, ktera dokaze vest cyklus for smerem od mensiho cisla k vetsimu, tak take od vetsiho k mensimu

@@ -114,10 +114,10 @@ class DrawManager {
         //directionsAlgorithm.run()
         //val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
         //lineDetector.run()
-        //val connectingPoints = ConnectingPoints(movesX, movesY)
-        //var connectedPoints = connectingPoints.connectPoints()
-        //var thickness = connectingPoints.getThickness()
-        //printPointsOfMutableList(connectedPoints, thickness)
+        val connectingPoints = ConnectingPoints(movesX, movesY)
+        var connectedPoints = connectingPoints.connectPoints()
+        var thickness = connectingPoints.getThickness()
+        printPointsOfMutableList(connectedPoints, thickness)
     }
 
     /**
