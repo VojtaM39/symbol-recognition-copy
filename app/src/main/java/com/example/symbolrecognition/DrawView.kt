@@ -69,6 +69,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     //Pri zacatku tahu se zvysi pocet tahu, reset Timeru
     private fun actionDown(x: Float, y: Float) {
         mPath.moveTo(x, y)
+        pointsX += x
+        pointsY += y
         mCurX = x
         mCurY = y
         countUp()

@@ -78,13 +78,14 @@ class DrawManager {
     }
     //Metoda vola metodu cropArrays, dosazuje do ni v poradi podle toho, ktera osa ma vetsi rozptyl
     private fun processArrays() {
+        //pouze bod
+        Log.i("Pocet bodu", this.pointsX.size.toString())
         if((this.pointsX.max()!! - this.pointsX.min()!!) > (this.pointsY.max()!! - this.pointsY.min()!!)) {
             cropArrays(pointsX, pointsY)
         }
         else {
             cropArrays(pointsY, pointsX)
         }
-
     }
 
     public fun logArray(tag:String,pointsArray: Array<Float>) {

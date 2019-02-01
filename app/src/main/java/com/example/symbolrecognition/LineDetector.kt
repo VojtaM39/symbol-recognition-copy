@@ -118,6 +118,7 @@ class LineDetector {
      * 2. Shift
      * 3. Vzdalenost
      */
+    /**
     private fun testLines(line1 : Line, line2 : Line) : Boolean {
         var result = false
         var shift1 : Short
@@ -144,7 +145,7 @@ class LineDetector {
             }
         }
     }
-
+*/
 
 
 
