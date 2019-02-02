@@ -4,7 +4,6 @@ import android.util.Log
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.sqrt
-//TODO opravit spatne zjistovani prekryvani car
 //TODO opravit kontrolu vzdalenosti pri vytvareni line (nesmi byt relativne k velikosti ctverce ale delce tahu)
 
 class LineDetector {
@@ -155,34 +154,19 @@ class LineDetector {
         val y1 : Short
         val x2 : Short
         val y2 : Short
-        val furthestPoints : Byte = getFurthestPoints(lines[line1Index],lines[line2Index])
-        if(furthestPoints == 1.toByte()) {
-            x1 = lines[line1Index].x1
-            y1 = lines[line1Index].y1
-            x2 = lines[line2Index].x1
-            y2 = lines[line2Index].y1
+        var points = arrayOf<Array<Short>>()
+        var linesLocal = mutableListOf<Line>()
+        linesLocal.add(lines[line1Index])
+        linesLocal.add(lines[line2Index])
+        for(line in linesLocal) {
+            points+=arrayOf<Short>(line.x1,line.y1)
+            points+=arrayOf<Short>(line.x2,line.y2)
         }
-
-        else if(furthestPoints == 2.toByte()) {
-            x1 = lines[line1Index].x1
-            y1 = lines[line1Index].y1
-            x2 = lines[line2Index].x2
-            y2 = lines[line2Index].y2
-        }
-
-        else if(furthestPoints == 3.toByte()) {
-            x1 = lines[line1Index].x2
-            y1 = lines[line1Index].y2
-            x2 = lines[line2Index].x1
-            y2 = lines[line2Index].y1
-        }
-
-        else {
-            x1 = lines[line1Index].x2
-            y1 = lines[line1Index].y2
-            x2 = lines[line2Index].x2
-            y2 = lines[line2Index].y2
-        }
+        val furthestPoint = getFurthestPoints(points)
+        x1 = points[furthestPoint[0]][0]
+        y1 = points[furthestPoint[0]][1]
+        x2 = points[furthestPoint[1]][0]
+        y2 = points[furthestPoint[1]][1]
         Log.i("Merge", "Spojuji line, " + line1Index.toString() + " a line " + line2Index.toString())
         lines.add(Line(x1,y1,x2,y2))
 
@@ -239,15 +223,24 @@ class LineDetector {
      * jinak false
      */
     private fun overlapCheck(line1 : Line, line2 : Line) : Boolean {
+        if(checkThisOverlaps(line1,line2) < 0 || checkThisOverlaps(line2,line1) < 0)
+            return true
+        else
+            return false
+    }
+
+    /**
+     * Metoda vraci nejmensi hodnotu z pole
+     * Pokud jsou cary prekrizene, tak je tato hodnota zaporna
+     *
+     */
+    private fun checkThisOverlaps(line1 : Line, line2 : Line) : Short {
         var overlapChecks = arrayOf<Short>()
         overlapChecks+=((line1.x1 - line2.x1) * (line1.x1 - line2.x2)).toShort()
         overlapChecks+=((line1.x2 - line2.x1) * (line1.x2 - line2.x2)).toShort()
         overlapChecks+=((line1.y1 - line2.y1) * (line1.y1 - line2.y2)).toShort()
         overlapChecks+=((line1.y2 - line2.y1) * (line1.y2 - line2.y2)).toShort()
-        if(overlapChecks.min()!! < 0)
-            return true
-        else
-            return false
+        return overlapChecks.min()!!
     }
 
     /**
@@ -265,22 +258,26 @@ class LineDetector {
     }
 
     /**
-     * Metoda najde nejvzdalenejsi body dvou car
-     * Vraci Byte
-     * Line1/Line2
-     * 1 - 1/1
-     * 2 - 1/2
-     * 3 - 2/1
-     * 4 - 2/2
+     * Do metody se posilaji ctyri body, ktere tvori dane cary
+     * Metoda vraci indexy dvou nejvzdalenejsich bodu
      */
 
-    private fun getFurthestPoints(line1 : Line, line2 : Line) : Byte{
-        var distances = arrayOf<Short>()
-        distances += getDistance(line1.x1,line1.y1,line2.x1,line2.y1)
-        distances += getDistance(line1.x2,line1.y2,line2.x1,line2.y1)
-        distances += getDistance(line1.x1,line1.y1,line2.x2,line2.y2)
-        distances += getDistance(line1.x2,line1.y2,line2.x2,line2.y2)
-        return (distances.indexOf(distances.max()!!)  + 1).toByte()
+    private fun getFurthestPoints(points : Array<Array<Short>>) : MutableList<Int>{
+        var pointsIndexes = mutableListOf<Int>()
+        var longestLenght : Short = 0
+        var lenght : Short = 0
+        for(i in points.indices) {
+            for(j in i+1..points.size-1) {
+                lenght = getDistance(points[i][0],points[i][1],points[j][0],points[j][1])
+                if(lenght > longestLenght) {
+                    longestLenght = lenght
+                    pointsIndexes.clear()
+                    pointsIndexes.add(i)
+                    pointsIndexes.add(j)
+                }
+            }
+        }
+        return pointsIndexes
     }
 
     /**
