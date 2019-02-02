@@ -185,9 +185,19 @@ class LineDetector {
         var result = false
         var shift1 : Short
         var shift2 : Short
+        var overOneAngle = line1.angle.absoluteValue + MAX_ANGLE_DIFF_MERGE
+        //Pokud je u horizontalnich car vykyv mirne pres osu x, tak potrebujeme osetrit, zda se jeste line ma sloucit
+        var overOneAngleBool = false
+        if(overOneAngle > 1) {
+            overOneAngle = 1-(overOneAngle-1)
+            if(line2.angle > overOneAngle) {
+                Log.i("Horizontal Line Fix", "Did")
+                overOneAngleBool = true
+            }
+        }
+
         //Lines maji podobny angle
-        //TODO u horizontalnich car dodelat, aby se bral i angle s opacnym znamenkem napr. u cary 0.95 i angle -0.95
-        if ((line1.angle - line2.angle).absoluteValue < MAX_ANGLE_DIFF_MERGE) {
+        if ((line1.angle - line2.angle).absoluteValue < MAX_ANGLE_DIFF_MERGE || overOneAngleBool) {
              // Pokud je line1 spise vertikalni, pak testujeme shiftCoefficient na ose X, jinak na ose Y
             if(line1.angle.absoluteValue < 0.5f) {
                 shift1 = line1.shiftCoefficientX
