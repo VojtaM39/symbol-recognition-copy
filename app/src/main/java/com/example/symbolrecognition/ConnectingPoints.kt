@@ -56,14 +56,11 @@ class ConnectingPoints
                 helpArrayX += movesX[i]
                 helpArrayY += movesY[i]
                 addedThicknessPoints = addBasicPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, SQUARE_SIZE)
-                helpArrayXThickness += addedThicknessPoints[0]
-                helpArrayYThickness += addedThicknessPoints[1]
+                addToHelpArrayThickness(addedThicknessPoints)
                 addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, true, true, SQUARE_SIZE)
-                helpArrayXThickness += addedThicknessPoints[0]
-                helpArrayYThickness += addedThicknessPoints[1]
+                addToHelpArrayThickness(addedThicknessPoints)
                 addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, false, true, SQUARE_SIZE)
-                helpArrayXThickness += addedThicknessPoints[0]
-                helpArrayYThickness += addedThicknessPoints[1]
+                addToHelpArrayThickness(addedThicknessPoints)
             }
             else
             {
@@ -81,6 +78,16 @@ class ConnectingPoints
         connectedPoints.add(0, helpArrayX) //pridame body pro X
         connectedPoints.add(1, helpArrayY) //pridame body pro Y
         return connectedPoints
+    }
+
+    /**
+     * funkce prida body tloustky do tridni promenne helpArrayXThickness a helpArrayYThickness
+     * jako parametr se posila pole poli s body
+     */
+    private fun addToHelpArrayThickness(addedThicknessPoints: Array<Array<Short>>)
+    {
+        helpArrayXThickness += addedThicknessPoints[0]
+        helpArrayYThickness += addedThicknessPoints[1]
     }
 
     /**
@@ -138,25 +145,10 @@ class ConnectingPoints
 
         //prvotni vyplneni pole, abychom jej pote mohli prepsat
         if((!biggerLengthOfX) && (ascending)) //podminky, kdy funkce klesa
-        {
-            for(i in 0..1)
-            {
-                var helpArray = arrayOf<Short>()
-                for (j in 0..(leftPointLongerAxis - rightPointLongerAxis))
-                    helpArray += 0
-                connectedTwoPoints += helpArray
-            }
-        }
+            connectedTwoPoints = firstFillOfArrayArray(leftPointLongerAxis - rightPointLongerAxis + 1)
         else
-        {
-            for(i in 0..1)
-            {
-                var helpArray = arrayOf<Short>()
-                for (j in 0..(rightPointLongerAxis - leftPointLongerAxis))
-                    helpArray += 0
-                connectedTwoPoints += helpArray
-            }
-        }
+            connectedTwoPoints = firstFillOfArrayArray(rightPointLongerAxis - leftPointLongerAxis + 1)
+
 
         var index = 0
         var startingPointLongerAxis = leftPointLongerAxis.toInt()
@@ -218,9 +210,24 @@ class ConnectingPoints
         }
         //ziskame tloustku
         addedThickness = addThicknessPoints(connectedTwoPoints, biggerLengthOfX, ascending, SQUARE_SIZE, unitOfThickness)
-        helpArrayXThickness += addedThickness[0]
-        helpArrayYThickness += addedThickness[1]
+        addToHelpArrayThickness(addedThickness)
         return connectedTwoPoints
+    }
+
+    /**
+     * prvotni vyplneni pole poli nulami
+     */
+    private fun firstFillOfArrayArray(numberOfElements: Int) : Array<Array<Short>>
+    {
+        var resultArray = arrayOf<Array<Short>>()
+        for(i in 0..1)
+        {
+            var helpArray = arrayOf<Short>()
+            for (j in 0..(numberOfElements - 1)) //numberOfElements je cislo urcujici pocet elementu, nas cyklus ovsem zacina hodnotou 0, tudiz musime odecist 1
+                helpArray += 0
+            resultArray += helpArray
+        }
+        return resultArray
     }
 
     /**
@@ -290,13 +297,8 @@ class ConnectingPoints
             helpArrayY += addedPoints[1]
         }
 
-        for(i in 0..1)
-        {
-            var helpArray = arrayOf<Short>()
-            for (j in 0..(helpArrayX.size - 1))
-                helpArray += 0
-            addedAllPoints += helpArray
-        }
+        //prvotni vyplneni dvourozmerneho pole
+        addedAllPoints = firstFillOfArrayArray(helpArrayX.size)
         addedAllPoints[0] = helpArrayX
         addedAllPoints[1] = helpArrayY
         return addedAllPoints
@@ -327,13 +329,7 @@ class ConnectingPoints
         }
 
         //prvotni vyplneni addedBasicPoints
-        for(i in 0..1)
-        {
-            var helpArray = arrayOf<Short>()
-            for (j in 0..(helpArrayAdding.size - 1))
-                helpArray += 0
-            addedBasicPoints += helpArray
-        }
+        addedBasicPoints = firstFillOfArrayArray(helpArrayAdding.size)
         //prirazeni do dvourozmerneho pole
         if(biggerLengthOfX)
         {
@@ -423,13 +419,7 @@ class ConnectingPoints
         //prvotni vyplneni dvourozmerneho pole
         if(helpArrayX.isNotEmpty())
         {
-            for (i in 0..1)
-            {
-                var helpArray = arrayOf<Short>()
-                for (j in 0..(helpArrayX.size - 1))
-                    helpArray += 0
-                addedPoints += helpArray
-            }
+            addedPoints = firstFillOfArrayArray(helpArrayX.size)
             addedPoints[0] = helpArrayX
             addedPoints[1] = helpArrayY
         }
