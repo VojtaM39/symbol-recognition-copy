@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.MotionEvent
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import java.util.*
@@ -42,10 +43,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        drawView = findViewById<DrawView>(R.id.draw_view)
+        setContentView(R.layout.main_menu)
+        val wannaDraw: Button = findViewById<Button>(R.id.button_drawing)
+        wannaDraw.setOnClickListener()
+        {
+            setContentView(R.layout.activity_main)
+            drawView = findViewById<DrawView>(R.id.draw_view)
+        }
     }
 
 }
