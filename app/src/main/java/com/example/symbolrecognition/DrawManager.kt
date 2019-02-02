@@ -78,7 +78,6 @@ class DrawManager {
     }
     //Metoda vola metodu cropArrays, dosazuje do ni v poradi podle toho, ktera osa ma vetsi rozptyl
     private fun processArrays() {
-        //pouze bod
         Log.i("Pocet bodu", this.pointsX.size.toString())
         if((this.pointsX.max()!! - this.pointsX.min()!!) > (this.pointsY.max()!! - this.pointsY.min()!!)) {
             cropArrays(pointsX, pointsY)
@@ -113,12 +112,12 @@ class DrawManager {
         logMoves()
         //var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
         //directionsAlgorithm.run()
-        //val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        //lineDetector.run()
-        val connectingPoints = ConnectingPoints(movesX, movesY)
-        var connectedPoints = connectingPoints.connectPoints()
-        var thickness = connectingPoints.getThickness()
-        printPointsOfMutableList(connectedPoints, thickness)
+        val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        lineDetector.run()
+        //val connectingPoints = ConnectingPoints(movesX, movesY)
+        //var connectedPoints = connectingPoints.connectPoints()
+        //var thickness = connectingPoints.getThickness()
+        //printPointsOfMutableList(connectedPoints, thickness)
     }
 
     /**
