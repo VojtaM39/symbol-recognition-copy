@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         val wannaDraw: Button = findViewById<Button>(R.id.button_drawing)
         wannaDraw.setOnClickListener()
         {
-            setContentView(R.layout.activity_main)
+            setContentView(R.layout.drawing)
             drawView = findViewById<DrawView>(R.id.draw_view)
         }
     }
