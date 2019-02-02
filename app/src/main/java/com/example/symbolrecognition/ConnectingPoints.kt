@@ -56,11 +56,14 @@ class ConnectingPoints
                 helpArrayX += movesX[i]
                 helpArrayY += movesY[i]
                 addedThicknessPoints = addBasicPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, SQUARE_SIZE)
-                addToHelpArrayThickness(addedThicknessPoints)
+                if(addedThicknessPoints.isNotEmpty())
+                    addToHelpArrayThickness(addedThicknessPoints)
                 addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, true, true, SQUARE_SIZE)
-                addToHelpArrayThickness(addedThicknessPoints)
+                if(addedThicknessPoints.isNotEmpty())
+                    addToHelpArrayThickness(addedThicknessPoints)
                 addedThicknessPoints = addSpecialPoints(movesY[i][0], movesX[i][0], unitOfThickness, true, false, true, SQUARE_SIZE)
-                addToHelpArrayThickness(addedThicknessPoints)
+                if(addedThicknessPoints.isNotEmpty())
+                    addToHelpArrayThickness(addedThicknessPoints)
             }
             else
             {
@@ -354,7 +357,7 @@ class ConnectingPoints
         var helpArrayY = arrayOf<Short>()
         var stillAxisRW = stillAxis
         var unitOfThicknessRW = unitOfThickness
-        if(((biggerLengthOfX) && (!firstPoint)) || ((ascending) && (firstPoint)) || ((!ascending) && (!firstPoint)))
+        if(((biggerLengthOfX) && (!firstPoint)) || ((!biggerLengthOfX) && (ascending) && (firstPoint)) || ((!biggerLengthOfX) && (!ascending) && (!firstPoint)))
             stillAxisRW++
         else
             stillAxisRW--
