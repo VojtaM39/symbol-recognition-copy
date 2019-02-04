@@ -1,10 +1,12 @@
 package com.example.symbolrecognition
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -48,12 +50,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_menu)
         val wannaDraw: Button = findViewById<Button>(R.id.button_drawing)
-        wannaDraw.setOnClickListener()
+        /*wannaDraw.setOnClickListener()
         {
             setContentView(R.layout.drawing)
             drawView = findViewById<DrawView>(R.id.draw_view)
-        }
+        }*/
     }
+    /*private fun launchAddActivity(view: View)
+    {
+        var intent: Intent = Intent(this, AddActivity)
+        startActivity(intent)
+    }*/
 
 }
 
