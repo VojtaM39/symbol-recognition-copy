@@ -49,18 +49,20 @@ class MainActivity : AppCompatActivity() {
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_menu)
-        val wannaDraw: Button = findViewById<Button>(R.id.button_drawing)
-        /*wannaDraw.setOnClickListener()
-        {
-            setContentView(R.layout.drawing)
-            drawView = findViewById<DrawView>(R.id.draw_view)
-        }*/
     }
-    /*private fun launchAddActivity(view: View)
-    {
-        var intent: Intent = Intent(this, AddActivity)
-        startActivity(intent)
-    }*/
 
+    fun launchAddActivity(view: View)
+    {
+        var intent: Intent = Intent(this, AddActivity::class.java)
+        intent.putExtra("addingToDatabase", true)
+        startActivity(intent)
+    }
+
+    fun launchDrawingActivity(view: View)
+    {
+        var intent: Intent = Intent(this, DrawingActivity::class.java)
+        intent.putExtra("addingToDatabase", false)
+        startActivity(intent)
+    }
 }
 

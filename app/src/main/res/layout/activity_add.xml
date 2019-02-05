@@ -7,11 +7,8 @@
         android:layout_height="match_parent"
         tools:context=".AddActivity">
 
-    <TextView
-            android:text="Nazdar uzivateli!"
-            android:layout_width="265dp"
-            android:layout_height="231dp"
-            android:id="@+id/textView" app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="348dp" app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginLeft="112dp" android:layout_marginStart="112dp" android:textSize="30sp"/>
+    <com.example.symbolrecognition.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>
