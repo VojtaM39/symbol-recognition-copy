@@ -74,12 +74,12 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         mCurX = x
         mCurY = y
         countUp()
-        MainActivity.resetTimer()
+        DrawingActivity.resetTimer()
     }
     //Pri kazdem pohybu se zapisou souradnice do poli
     private fun actionMove(x: Float, y: Float) {
         //reset Timeru pri kazdem pohybu
-        MainActivity.resetTimer()
+        DrawingActivity.resetTimer()
         pointsX += x
         pointsY += y
         Log.i("Drawing", "Hodnota pointsX je ${pointsX[pointsX.size-1]} Hodnota pointsY je ${pointsY[pointsY.size-1]}")
@@ -90,7 +90,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private fun actionUp() {
         //reset Timeru
-        MainActivity.resetTimer()
+        DrawingActivity.resetTimer()
         mPath.lineTo(mCurX, mCurY)
         drawing = false
         //pridani indexu do endsOfMove

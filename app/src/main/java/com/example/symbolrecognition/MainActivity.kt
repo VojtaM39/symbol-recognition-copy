@@ -15,35 +15,6 @@ import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
 
-    companion object {
-        private var pointsX = arrayOf<Float>()
-        private var pointsY = arrayOf<Float>()
-        private var touchCount = 0
-        lateinit var drawView : DrawView
-        private var endsOfMove = arrayOf<Int>()
-
-        public val myHandler = Handler()
-        //Runnable se spusti po urcite dobe, co uzivatel prestane malovat
-        val myRunnable = Runnable {
-            getParametersFromView()
-            var drawManager = DrawManager(pointsX, pointsY, touchCount, endsOfMove)
-            drawManager.run()
-
-        }
-        fun resetTimer() {
-            myHandler.removeCallbacks(myRunnable);
-            myHandler.postDelayed(myRunnable, 3000);
-        }
-        fun getParametersFromView() {
-
-            pointsX = drawView.getPointsX()
-            pointsY = drawView.getPointsY()
-            touchCount = drawView.getTouches()
-            endsOfMove = drawView.getEndsOfMove()
-            Log.i("Done", "Nacteno")
-            Log.i("Done", "Pocet tahu: ${touchCount}")
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -53,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     fun launchAddActivity(view: View)
     {
-        var intent: Intent = Intent(this, AddActivity::class.java)
+        var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", true)
         startActivity(intent)
     }

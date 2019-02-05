@@ -1,5 +1,7 @@
 package com.example.symbolrecognition
 
+import android.content.Intent
+import android.content.Intent.getIntent
 import android.util.Log
 
 class DrawManager {
@@ -12,6 +14,7 @@ class DrawManager {
     private val SQUARE_SIZE : Int = Constants.SQUARE_SIZE
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
+
 
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
         this.pointsX = pointsX
@@ -109,15 +112,16 @@ class DrawManager {
 
     public fun  run() {
 
+
         logMoves()
-        var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
-        directionsAlgorithm.run()
+       // var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+       // directionsAlgorithm.run()
         val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
         lineDetector.run()
-        val connectingPoints = ConnectingPoints(movesX, movesY)
-        var connectedPoints = connectingPoints.connectPoints()
-        var thickness = connectingPoints.getThickness()
-        printPointsOfMutableList(connectedPoints, thickness)
+       // val connectingPoints = ConnectingPoints(movesX, movesY)
+       // var connectedPoints = connectingPoints.connectPoints()
+       // var thickness = connectingPoints.getThickness()
+       // printPointsOfMutableList(connectedPoints, thickness)
     }
 
     /**
