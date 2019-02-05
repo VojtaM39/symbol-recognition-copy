@@ -18,7 +18,7 @@ class LineDetector {
     //konstanta je urcena relativne k velikosti ctverce
     private val MAX_SHIFT_DIFF = Constants.SQUARE_SIZE*20/100
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
-    private val MINIMAL_SIDE_PERCANTAGE = 40
+    private val MINIMAL_SIDE_PERCANTAGE = 20
     private val MAX_RATIO_DIFF = 0.2f
     constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.pointsX = pointsX
