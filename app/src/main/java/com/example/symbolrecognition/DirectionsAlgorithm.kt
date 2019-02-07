@@ -16,77 +16,24 @@ class DirectionsAlgorithm {
     private var endingPointsY = mutableListOf<Array<Int>>()
     private val sideToLenghtRatioX : Float
     private val sideToLenghtRatioY : Float
+    private val startingPointsFinder : StartingPointsFinder
     constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
         this.movesX = movesX
         this.movesY = movesY
-        this.startingPointsX = findStartingPoints(movesX)
-        this.startingPointsY = findStartingPoints(movesY)
-        this.endingPointsX = findEndingPoints(movesX)
-        this.endingPointsY = findEndingPoints(movesY)
+        startingPointsFinder = StartingPointsFinder()
+        this.startingPointsX = startingPointsFinder.findStartingPoints(movesX)
+        this.startingPointsY = startingPointsFinder.findStartingPoints(movesY)
+        this.endingPointsX = startingPointsFinder.findEndingPoints(movesX)
+        this.endingPointsY = startingPointsFinder.findEndingPoints(movesY)
         sideToLenghtRatioX = getSideToLenghtRatio(startingPointsX,endingPointsX,movesX,movesY)
         sideToLenghtRatioY = getSideToLenghtRatio(startingPointsY, endingPointsY, movesY, movesX)
     }
 
-    private fun findStartingPoints(points : MutableList<Array<Short>>) : MutableList<Array<Int>> {
-        //cyklus prochazi tahy
-        var isStarting : Boolean
-        var startingPoints = mutableListOf<Array<Int>>()
-        for(arr in points) {
-            //startingPoints daneho tahu (indexy)
-            var startingPointsArr = arrayOf<Int>()
-            //prochazi jednlotlive body
-            for(i in arr.indices) {
-                isStarting = true
-                //zjistim jestli body na obe strany od daneho bodu jsou vic vlevo(nahore), pokud jsou oba vic vpravo, je dany bod starting point
-                if(i-1 >= 0) {
-                    if(arr[i-1] < arr[i])
-                        isStarting = false
-                }
-                if(i+1 <= arr.size-1) {
-                    if(arr[i+1] < arr[i])
-                        isStarting = false
-                }
-                if(isStarting) {
-                    startingPointsArr += i
-                }
 
-            }
-            startingPoints.add(startingPointsArr)
-        }
-        return startingPoints
-    }
 
-    private fun findEndingPoints(points : MutableList<Array<Short>>) : MutableList<Array<Int>> {
-        //cyklus prochazi tahy
-        var isEnding : Boolean
-        var endingPoints = mutableListOf<Array<Int>>()
-        for(arr in points) {
-            //endingPoints daneho tahu (indexy)
-            var endingPointsArr = arrayOf<Int>()
-            //prochazi jednlotlive body
-            for(i in arr.indices) {
-                isEnding = true
-                //zjistim jestli body na obe strany od daneho bodu jsou vic vlevo(nahore), pokud jsou oba vic vpravo, je dany bod starting point
-                if(i-1 >= 0) {
-                    if(arr[i-1] > arr[i])
-                        isEnding = false
-                }
-                if(i+1 <= arr.size-1) {
-                    if(arr[i+1] > arr[i])
-                        isEnding = false
-                }
-                if(isEnding) {
-                    endingPointsArr += i
-                }
-
-            }
-            endingPoints.add(endingPointsArr)
-        }
-        return endingPoints
-    }
 
     private fun logStartingPoints() {
         for(arr in startingPointsX) {

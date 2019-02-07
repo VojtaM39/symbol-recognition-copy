@@ -101,7 +101,7 @@ class LineDetector {
         }
     }
 
-    //Metoda bude prochazet lines a ty lines ktere maji podobny smer a jsou blizko sebe bude slucovat
+    //Metoda bude prochazet lines a t   y lines ktere maji podobny smer a jsou blizko sebe bude slucovat
     private fun mergeLines() {
         //Lines ktere budou na konci smazany
         var toDelete = arrayOf<Int>()

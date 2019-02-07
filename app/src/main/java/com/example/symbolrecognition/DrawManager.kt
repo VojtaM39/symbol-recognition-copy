@@ -14,6 +14,7 @@ class DrawManager {
     private val SQUARE_SIZE : Int = Constants.SQUARE_SIZE
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
+    private val areaDivider : AreaDivider
 
 
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
@@ -26,7 +27,7 @@ class DrawManager {
         this.pointsYResult = floatToShort(this.pointsY)
         this.movesX = generateMoves(pointsXResult, endsOfMove)
         this.movesY = generateMoves(pointsYResult, endsOfMove)
-
+        this.areaDivider = AreaDivider()
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -45,7 +46,9 @@ class DrawManager {
         return listOfMoves
     }
 
-
+    public fun run() {
+        runAlgorithms(movesX, movesY)
+    }
 
 
     //metoda bere pole se souradnicemi X a Y, jako bigger se posle to pole, ktere ma vetsi rozptyl. Vysledkem je pole bodu ve ctverci 100x100, zarovnane na stred
@@ -110,7 +113,7 @@ class DrawManager {
         }
     }
 
-    public fun  run() {
+    public fun  runAlgorithms(movesX :MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
 
 
         logMoves()
