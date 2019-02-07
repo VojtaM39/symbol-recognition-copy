@@ -27,7 +27,7 @@ class DrawManager {
         this.pointsYResult = floatToShort(this.pointsY)
         this.movesX = generateMoves(pointsXResult, endsOfMove)
         this.movesY = generateMoves(pointsYResult, endsOfMove)
-        this.areaDivider = AreaDivider()
+        this.areaDivider = AreaDivider(movesX, movesY)
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
