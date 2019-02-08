@@ -5,9 +5,6 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class DirectionsAlgorithm {
-    private var pointsX : Array<Short>
-    private var pointsY : Array<Short>
-    private var touchCount : Int
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
     private var startingPointsX = mutableListOf<Array<Int>>()
@@ -17,10 +14,7 @@ class DirectionsAlgorithm {
     private val sideToLenghtRatioX : Float
     private val sideToLenghtRatioY : Float
     private val startingPointsFinder : StartingPointsFinder
-    constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
-        this.pointsX = pointsX
-        this.pointsY = pointsY
-        this.touchCount = touchCount
+    constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.movesX = movesX
         this.movesY = movesY
         startingPointsFinder = StartingPointsFinder()

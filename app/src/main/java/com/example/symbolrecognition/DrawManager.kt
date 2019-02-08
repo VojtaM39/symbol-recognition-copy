@@ -15,7 +15,9 @@ class DrawManager {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
     private val areaDivider : AreaDivider
-
+    private var movesXExtra = mutableListOf<Array<Short>>()
+    private var movesYExtra = mutableListOf<Array<Short>>()
+    private var existsExtraSymbol : Boolean
 
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
         this.pointsX = pointsX
@@ -28,6 +30,12 @@ class DrawManager {
         this.movesX = generateMoves(pointsXResult, endsOfMove)
         this.movesY = generateMoves(pointsYResult, endsOfMove)
         this.areaDivider = AreaDivider(movesX, movesY)
+        this.existsExtraSymbol = areaDivider.doesExistsExtraSymbol()
+        if(existsExtraSymbol) {
+            this.movesXExtra = removeLastMove(movesX)
+            this.movesYExtra = removeLastMove(movesY)
+            resizeMoves()
+        }
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -47,7 +55,9 @@ class DrawManager {
     }
 
     public fun run() {
-        runAlgorithms(movesX, movesY)
+        logMoves()
+        //runAlgorithms(movesX, movesY)
+        //TODO vyhodnoceni i pro extra symbol
     }
 
 
@@ -93,6 +103,83 @@ class DrawManager {
         }
     }
 
+    /**
+     * Metoda odtrhne posledni tah a vrati ho
+     */
+
+    private fun removeLastMove(moves : MutableList<Array<Short>>) : MutableList<Array<Short>> {
+        var result = mutableListOf<Array<Short>>()
+        result.add(moves[moves.size-1])
+        moves.removeAt(moves.size-1)
+        return result
+    }
+    /**
+     * Metoda zvetsi/zmensi dane tahy na ctverec podle promenne SQUARE_SIZE
+     */
+    private fun resizeMovesHelper(movesBigger :MutableList<Array<Short>>, movesSmaller :MutableList<Array<Short>>) {
+        //TODO dodelat predelani velikosti
+        var biggerMax : Short = movesMax(movesBigger)
+        var biggerMin : Short = movesMin(movesBigger)
+        var smallerMin : Short = movesMin(movesSmaller)
+        var smallerMax : Short = movesMax(movesSmaller)
+        //Pomer ve kterem se bude obrazec menit
+        val ratio = ((biggerMax - biggerMin).toFloat()/SQUARE_SIZE.toFloat()).toFloat()
+        //Cyklus prochazi vsechny body, meni jejich pozici podle ratia a prirazi je ke zdi
+        for(i in movesBigger.indices) {
+            for(j in movesBigger[i].indices) {
+                movesBigger[i][j] = (movesBigger[i][j]-biggerMin).toShort()
+                movesSmaller[i][j] = (movesSmaller[i][j]-smallerMin).toShort()
+                movesBigger[i][j] = (movesBigger[i][j]/ratio).toShort()
+                movesSmaller[i][j] = (movesSmaller[i][j]/ratio).toShort()
+            }
+        }
+        val shiftToCenter = ((SQUARE_SIZE - movesMax(movesSmaller))/2).toShort()
+        for(i in movesBigger.indices) {
+            for(j in movesBigger[i].indices) {
+                movesSmaller[i][j] = (movesSmaller[i][j]+shiftToCenter).toShort()
+            }
+        }
+
+    }
+
+    private fun movesMin(moves:MutableList<Array<Short>>) : Short {
+        var min : Short = 0
+        for(i in moves.indices) {
+            if(i==0) {
+                min = moves[i].min()!!
+            }
+            else if(min > moves[i].min()!!) {
+                min = moves[i].min()!!
+            }
+        }
+        return min
+    }
+
+    private fun movesMax(moves:MutableList<Array<Short>>) : Short {
+        var max : Short = 0
+        for(i in moves.indices) {
+            if(i==0) {
+                max = moves[i].max()!!
+            }
+            else if(max < moves[i].max()!!) {
+                max = moves[i].max()!!
+            }
+        }
+        return max
+    }
+    private fun resizeMoves() {
+        if((movesMax(movesX)-movesMin(movesX)) > (movesMax(movesY)-movesMin(movesY)))
+            resizeMovesHelper(movesX, movesY)
+        else
+            resizeMovesHelper(movesY,movesX)
+        if(movesXExtra.any()) {
+            if((movesMax(movesXExtra)-movesMin(movesXExtra)) > (movesMax(movesYExtra)-movesMin(movesYExtra)))
+                resizeMovesHelper(movesXExtra, movesYExtra)
+            else
+                resizeMovesHelper(movesYExtra,movesXExtra)
+        }
+    }
+
     public fun logArray(tag:String,pointsArray: Array<Float>) {
         var result = ""
         for(i in 0..pointsArray.size-1) {
@@ -104,10 +191,20 @@ class DrawManager {
 
     public fun logMoves() {
         var result : String
-        for(i in 0..movesX.size-1) {
+        for(i in 0..movesY.size-1) {
             result = ""
-            for(j in 0..movesX[i].size-1) {
-                result += movesX[i][j].toString() + ", "
+            for(j in 0..movesY[i].size-1) {
+                result += movesY[i][j].toString() + ", "
+            }
+            Log.i("Tah:", result)
+        }
+        if(existsExtraSymbol) {
+            Log.i("Extra","Extra symbol existuje")
+        }
+        for(i in 0..movesYExtra.size-1) {
+            result = ""
+            for(j in 0..movesYExtra[i].size-1) {
+                result += movesYExtra[i][j].toString() + ", "
             }
             Log.i("Tah:", result)
         }
@@ -117,9 +214,9 @@ class DrawManager {
 
 
         logMoves()
-       // var directionsAlgorithm = DirectionsAlgorithm(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+       // var directionsAlgorithm = DirectionsAlgorithm(movesX,movesY)
        // directionsAlgorithm.run()
-        val lineDetector = LineDetector(pointsXResult,pointsYResult,touchCount,movesX,movesY)
+        val lineDetector = LineDetector(movesX,movesY)
         lineDetector.run()
        // val connectingPoints = ConnectingPoints(movesX, movesY)
        // var connectedPoints = connectingPoints.connectPoints()

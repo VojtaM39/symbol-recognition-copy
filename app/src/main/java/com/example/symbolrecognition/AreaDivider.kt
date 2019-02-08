@@ -3,46 +3,12 @@ package com.example.symbolrecognition
 class AreaDivider {
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
+    //minimalni vzdalenost posledniho tahu od gesta, aby se povazovalv za extra symbol
+    private val MINIMAL_DISTANCE_OF_GESTURES : Short = (Constants.SQUARE_SIZE*20/100).toShort()
     constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.movesX = movesX
         this.movesY = movesY
     }
-
-    /**
-     * Metoda vraci nejvyssi hodnotu tahu
-     */
-    private fun getMoveMax(move:Array<Short>) : Short {
-        var max : Short = 0
-        for(i in move.indices) {
-            if(i==0) {
-                max = move[i]
-            }
-            else if(move[i] > max) {
-                max = move[i]
-            }
-
-        }
-        return max
-    }
-
-
-    /**
-     * Metoda vraci nejnizsi hodnotu tahu
-     */
-    private fun getMoveMin(move:Array<Short>) : Short {
-        var min : Short = 0
-        for(i in move.indices) {
-            if(i==0) {
-                min = move[i]
-            }
-            else if(move[i] < min) {
-                min = move[i]
-            }
-
-        }
-        return min
-    }
-
 
     /**
      * Metoda vraci hodnotu nejvyssiho prvku ze vsech tahu, krome posledniho
@@ -51,12 +17,12 @@ class AreaDivider {
     private fun getMaxOfMain() : Short{
         var max :Short = 0
         for(i in movesY.indices) {
-            if(i!=movesY.size-2) {
+            if(i!=movesY.size-1) {
                 if(i==0) {
-                    max = getMoveMax(movesY[i])
+                    max = movesY[i].max()!!
                 }
-                else if(max < getMoveMax(movesY[i])) {
-                    max = getMoveMax(movesY[i])
+                else if(max < movesY[i].max()!!) {
+                    max = movesY[i].max()!!
                 }
             }
 
@@ -68,6 +34,18 @@ class AreaDivider {
      * Najde min (nejvyssi) hodnotu posledniho tahu
      */
     private fun getMinOfLastMove() : Short{
-        return getMoveMin(movesY[movesY.size-1])
+        return movesY[movesY.size-1].min()!!
     }
+
+    /**
+     * Metoda vraci true, pokud posledni tah uzivatele je extra symbol
+     */
+    public fun doesExistsExtraSymbol() : Boolean{
+        if(getMinOfLastMove()-getMaxOfMain()>MINIMAL_DISTANCE_OF_GESTURES)
+            return true
+        else
+            return false
+    }
+
+
 }

@@ -7,8 +7,6 @@ import kotlin.math.sqrt
 //TODO opravit kontrolu vzdalenosti pri vytvareni line (nesmi byt relativne k velikosti ctverce ale delce tahu)
 
 class LineDetector {
-    private var pointsX : Array<Short>
-    private var pointsY : Array<Short>
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
     private var lines = mutableListOf<Line>()
@@ -20,9 +18,7 @@ class LineDetector {
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
     private val MINIMAL_SIDE_PERCANTAGE = 20
     private val MAX_RATIO_DIFF = 0.2f
-    constructor(pointsX:Array<Short>, pointsY : Array<Short>, touchCount : Int, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
-        this.pointsX = pointsX
-        this.pointsY = pointsY
+    constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.movesX = movesX
         this.movesY = movesY
         lines = getLines()
