@@ -7,8 +7,40 @@
         android:layout_height="match_parent"
         tools:context=".AddActivity">
 
-    <com.example.symbolrecognition.DrawView
-            android:id="@+id/draw_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
+    <Button
+            android:text="Save"
+            android:layout_width="190dp"
+            android:layout_height="85dp"
+            android:id="@+id/saveButton" app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="110dp"
+            android:layout_marginStart="110dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="111dp" android:layout_marginRight="111dp"
+            android:layout_marginBottom="156dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="490dp" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" android:onClick="addRecord"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:text="Name"
+            android:ems="10"
+            android:id="@+id/nameText"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="100dp" android:layout_marginTop="187dp"
+            app:layout_constraintTop_toTopOf="parent"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:text="Phone Number"
+            android:ems="10"
+            android:id="@+id/phoneNumberText"
+            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="100dp"
+            android:layout_marginStart="100dp" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="100dp" android:layout_marginTop="101dp"
+            app:layout_constraintTop_toBottomOf="@+id/nameText"/>
 </android.support.constraint.ConstraintLayout>

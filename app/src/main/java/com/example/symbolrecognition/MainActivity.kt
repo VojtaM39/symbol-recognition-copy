@@ -19,12 +19,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_menu)
+        setContentView(R.layout.activity_main)
     }
 
     fun launchAddActivity(view: View)
     {
-        var intent: Intent = Intent(this, DrawingActivity::class.java)
+        var intent: Intent = Intent(this, AddActivity::class.java)
         intent.putExtra("addingToDatabase", true)
         startActivity(intent)
     }
@@ -33,6 +33,12 @@ class MainActivity : AppCompatActivity() {
     {
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
+        startActivity(intent)
+    }
+
+    fun launchEditActivity(view: View)
+    {
+        var intent: Intent = Intent(this, EditActivity::class.java)
         startActivity(intent)
     }
 }
