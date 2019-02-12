@@ -36,6 +36,7 @@ class DrawManager {
             this.movesYExtra = removeLastMove(movesY)
             resizeMoves()
         }
+
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -60,6 +61,21 @@ class DrawManager {
         //TODO vyhodnoceni i pro extra symbol
     }
 
+    /**
+     * Metoda se spusti, kdyz uzivatel zada gesto a chce vytvorit nove gesto
+     *
+     */
+    public fun createGesture() {
+        //TODO dodelat inserty, zavolat je
+    }
+
+    private fun insertGestureToDatabase() {
+
+    }
+
+    private fun insertPointsToDatabase() {
+
+    }
 
     //metoda bere pole se souradnicemi X a Y, jako bigger se posle to pole, ktere ma vetsi rozptyl. Vysledkem je pole bodu ve ctverci 100x100, zarovnane na stred
     private fun cropArrays(bigger : Array<Float>, smaller : Array<Float>) {

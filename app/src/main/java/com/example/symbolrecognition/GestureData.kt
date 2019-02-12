@@ -9,3 +9,14 @@ data class Contacts(@PrimaryKey(autoGenerate = true) val id: Long? = null, var n
 {
     constructor(): this(null, "", "")
 }
+@Entity(tableName = "points")
+data class Points(@PrimaryKey(autoGenerate = true) val id: Long? = null, var gesture_id : Long?, var move_number : Long?, var point_x : Short?,var point_y : Short? )
+{
+    constructor(): this(null,null, null, null,null)
+}
+
+@Entity(tableName = "gestures")
+data class Gestures(@PrimaryKey(autoGenerate = true) val id: Long? = null, var contact_id : Long?)
+{
+    constructor(): this(null,null)
+}
