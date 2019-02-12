@@ -7,8 +7,8 @@ import android.widget.EditText
 
 class AddActivity : AppCompatActivity() {
 
-    private var db: GestureDataBase? = null
-    private var gestureDataDao: GestureDataDao? = null
+    private var db: AppDatabase? = null
+    private var contactsDao: ContactsDao? = null
     private lateinit var nameTextStr: String
     private lateinit var phoneNumberStr: String
 
@@ -23,10 +23,10 @@ class AddActivity : AppCompatActivity() {
 
     fun addRecord(view: View)
     {
-        db = GestureDataBase.getInstance(context = this)
-        gestureDataDao = db?.gestureDataDao()
+        db = AppDatabase.getInstance(context = this)
+        contactsDao = db?.contactsDao()
 
-        var record = GestureData(name = nameTextStr, phoneNumber = phoneNumberStr)
-        gestureDataDao?.insertPerson(record)
+        var record = Contacts(name = nameTextStr, phoneNumber = phoneNumberStr)
+        contactsDao?.insertPerson(record)
     }
 }

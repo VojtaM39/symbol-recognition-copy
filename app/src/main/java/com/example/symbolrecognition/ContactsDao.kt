@@ -6,11 +6,11 @@ import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 
 @Dao
-interface GestureDataDao
+interface ContactsDao
 {
-    @Query("SELECT * from gestureData")
-    fun getAllPeople(): List<GestureData>
+    @Query("SELECT * from contacts")
+    fun getAllPeople(): List<Contacts>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPerson(gestureData: GestureData)
+    fun insertPerson(contacts: Contacts): Long
 }

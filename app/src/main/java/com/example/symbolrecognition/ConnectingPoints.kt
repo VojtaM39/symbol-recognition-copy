@@ -20,7 +20,7 @@ class ConnectingPoints
         this.movesX = movesX
         this.movesY = movesY
         this.SQUARE_SIZE = Constants.SQUARE_SIZE
-        this.unitOfThickness = SQUARE_SIZE / 10 - 3 //unitOfThickness = 2 //jedna se o jednotky tloustky +n dalsi body do kazde strany
+        this.unitOfThickness = (truncate(SQUARE_SIZE.toDouble() / 10) - 3).toInt() //unitOfThickness = 2 //jedna se o jednotky tloustky +n dalsi body do kazde strany
         this.connectedPoints = connectAllPoints(movesX, movesY, SQUARE_SIZE, unitOfThickness)
         this.helpArrayXThickness = helpArrayXThickness
         this.helpArrayYThickness = helpArrayYThickness
