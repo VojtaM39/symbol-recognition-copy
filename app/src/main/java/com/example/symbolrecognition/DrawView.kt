@@ -15,10 +15,10 @@ import android.widget.Toast
 import java.util.*
 import kotlin.concurrent.schedule
 import android.content.ContextWrapper
+import android.support.v7.app.AppCompatActivity
 
 
-
-class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivity) : View(context, attrs) {
 
     private var mPaint = Paint()
     private var mPath = Path()

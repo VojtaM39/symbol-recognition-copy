@@ -11,5 +11,8 @@ interface PointsDao {
     fun getPointsOfGesture(gestureId : Long): List<Point>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGesturePoints(pointsData : Point)
+    fun insertGesturePoints(points : MutableList<Point>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGesturePoint(pointsData : Point)
 }
