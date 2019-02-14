@@ -79,10 +79,10 @@ class DrawManager {
     }
 
 
-    private fun insertContactToDatabase() : Long {
+    /*private fun insertContactToDatabase() : Long {
         var contact = Contact()
         val contactId : Long = gesturesDao!!.insertGesture()
-    }
+    }*/
 
     private fun insertPointsToDatabase() {
 

@@ -12,6 +12,11 @@ class AddActivity : AppCompatActivity() {
     private lateinit var nameTextStr: String
     private lateinit var phoneNumberStr: String
 
+    /*init {
+        this.db = AppDatabase.getInstance(context = this)
+        this.contactsDao = db?.contactsDao()
+    }*/
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)

@@ -19,14 +19,18 @@ abstract class AppDatabase : RoomDatabase()
             if (instance == null) {
                 synchronized(AppDatabase::class)
                 {
-                    instance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase::class.java,"appDatabase.db").build()
+                    instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "myDB").allowMainThreadQueries().build()
                 }
             }
             return instance
         }
+        /*INSTANCE = Room.databaseBuilder(context, AppDatabase.class, "xxx")
+                    // To simplify the codelab, allow queries on the main thread.
+                    // Don't do this on a real app! See PersistenceBasicSample for an example.
+                    .allowMainThreadQueries()
+                    .build();*/
 
-        fun destroyInstance()
-        {
+        fun destroyInstance() {
             instance = null
         }
     }

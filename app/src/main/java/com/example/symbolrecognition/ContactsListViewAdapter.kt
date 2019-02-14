@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 
-class ContactsListViewAdapter(private val activity: Activity, contactsList: ArrayList<Contacts>) : BaseAdapter()
+class ContactsListViewAdapter(private val activity: Activity, contactsList: List<Contact>) : BaseAdapter()
 {
-    private var contactsList: ArrayList<Contacts>
+    private var contactsList: ArrayList<Contact>
 
     init {
         this.contactsList = contactsList as ArrayList
