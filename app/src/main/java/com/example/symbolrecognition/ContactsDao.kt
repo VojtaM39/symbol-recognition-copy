@@ -9,8 +9,8 @@ import android.arch.persistence.room.Query
 interface ContactsDao
 {
     @Query("SELECT * from contacts")
-    fun getAllPeople(): List<Contacts>
+    fun getAllPeople(): List<Contact>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertPerson(contacts: Contacts): Long
+    fun insertPerson(contacts: Contact): Long
 }

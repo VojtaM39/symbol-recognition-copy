@@ -8,8 +8,8 @@ import android.arch.persistence.room.Query
 @Dao
 interface PointsDao {
     @Query("SELECT * FROM points WHERE gesture_id = :gestureId")
-    fun getPointsOfGesture(gestureId : Long): List<Points>
+    fun getPointsOfGesture(gestureId : Long): List<Point>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGesturePoints(pointsData : Points)
+    fun insertGesturePoints(pointsData : Point)
 }
