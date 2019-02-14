@@ -8,8 +8,8 @@ import android.arch.persistence.room.Query
 @Dao
 interface GesturesDao {
     @Query("SELECT * FROM points")
-    fun getAllGestures(): List<Gestures>
+    fun getAllGestures(): List<Gesture>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertGesture(gesture : Gestures) : Long
+    fun insertGesture(gesture : Gesture) : Long
 }

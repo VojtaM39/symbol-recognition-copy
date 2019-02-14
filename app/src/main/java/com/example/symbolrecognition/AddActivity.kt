@@ -26,7 +26,7 @@ class AddActivity : AppCompatActivity() {
         db = AppDatabase.getInstance(context = this)
         contactsDao = db?.contactsDao()
 
-        var record = Contacts(name = nameTextStr, phoneNumber = phoneNumberStr)
+        var record = Contact(name = nameTextStr, phoneNumber = phoneNumberStr)
         contactsDao?.insertPerson(record)
     }
 }

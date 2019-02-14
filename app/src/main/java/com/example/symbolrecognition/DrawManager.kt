@@ -3,8 +3,10 @@ package com.example.symbolrecognition
 import android.content.Intent
 import android.content.Intent.getIntent
 import android.util.Log
+import 	android.content.Context
 
 class DrawManager {
+    private val context : Context
     private var pointsX : Array<Float>
     private var pointsY : Array<Float>
     private var pointsXResult : Array<Short>
@@ -18,8 +20,14 @@ class DrawManager {
     private var movesXExtra = mutableListOf<Array<Short>>()
     private var movesYExtra = mutableListOf<Array<Short>>()
     private var existsExtraSymbol : Boolean
-
-    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
+    private val db : AppDatabase?
+    private val gesturesDao : GesturesDao?
+    private val pointsDao : PointsDao?
+    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context : Context) {
+        this.context = context
+        this.db = AppDatabase.getInstance(context)
+        this.gesturesDao = db?.gesturesDao()
+        this.pointsDao = db?.pointsDao()
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
@@ -36,6 +44,7 @@ class DrawManager {
             this.movesYExtra = removeLastMove(movesY)
             resizeMoves()
         }
+
 
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
@@ -69,8 +78,10 @@ class DrawManager {
         //TODO dodelat inserty, zavolat je
     }
 
-    private fun insertGestureToDatabase() {
 
+    private fun insertContactToDatabase() : Long {
+        var contact = Contact()
+        val contactId : Long = gesturesDao!!.insertGesture()
     }
 
     private fun insertPointsToDatabase() {
