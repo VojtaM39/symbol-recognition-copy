@@ -4,12 +4,14 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
+import android.gesture.Gesture
 
-@Database(entities = arrayOf(Contacts::class), version = 1)
+@Database(entities = arrayOf(Contact::class, Point::class, Gesture::class), version = 1)
 abstract class AppDatabase : RoomDatabase()
 {
     abstract fun contactsDao() : ContactsDao
-
+    abstract  fun gesturesDao() : GesturesDao
+    abstract fun pointsDao() : PointsDao
     companion object {
         private var instance: AppDatabase? = null
 
