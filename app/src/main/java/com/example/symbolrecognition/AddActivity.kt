@@ -33,5 +33,7 @@ class AddActivity : AppCompatActivity() {
 
         var record = Contact(name = nameTextStr, phoneNumber = phoneNumberStr)
         contactsDao?.insertPerson(record)
+
+
     }
 }

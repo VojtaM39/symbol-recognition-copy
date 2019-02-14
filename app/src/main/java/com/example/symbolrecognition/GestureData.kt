@@ -10,7 +10,7 @@ data class Contact(@PrimaryKey(autoGenerate = true) val id: Long? = null, var na
     constructor(): this(null, "", "")
 }
 @Entity(tableName = "points")
-data class Point(@PrimaryKey(autoGenerate = true) val id: Long? = null, var gesture_id : Long?, var move_number : Long?, var point_x : Short?,var point_y : Short? )
+data class Point(@PrimaryKey(autoGenerate = true) val id: Long? = null, var gesture_id : Long?, var move_number : Int?, var point_x : Short?,var point_y : Short? )
 {
     constructor(): this(null,null, null, null,null)
 }

@@ -23,11 +23,13 @@ class DrawManager {
     private val db : AppDatabase?
     private val gesturesDao : GesturesDao?
     private val pointsDao : PointsDao?
+    private val contactsDao : ContactsDao?
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context : Context) {
         this.context = context
         this.db = AppDatabase.getInstance(context)
         this.gesturesDao = db?.gesturesDao()
         this.pointsDao = db?.pointsDao()
+        this.contactsDao = db?.contactsDao()
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
@@ -74,19 +76,35 @@ class DrawManager {
      * Metoda se spusti, kdyz uzivatel zada gesto a chce vytvorit nove gesto
      *
      */
-    public fun createGesture() {
+    public fun createGesture(name : String, phoneNumber : String) {
         //TODO dodelat inserty, zavolat je
+        var contactId = insertContactToDatabase(name, phoneNumber)
+        var gestureId = insertGestureToDatabase(contactId)
+        insertPointsToDatabase(gestureId)
     }
 
 
-    /*private fun insertContactToDatabase() : Long {
-        var contact = Contact()
-        val contactId : Long = gesturesDao!!.insertGesture()
-    }*/
-
-    private fun insertPointsToDatabase() {
-
+    private fun insertContactToDatabase(name : String, phoneNumber : String) : Long {
+        var contact = Contact(name = name,phoneNumber =  phoneNumber)
+        val contactId : Long = contactsDao!!.insertPerson(contact)
+        return contactId
     }
+    private fun insertGestureToDatabase(contactId : Long) : Long {
+        var gesture = Gesture(contact_id = contactId)
+        val gestureId : Long = gesturesDao!!.insertGesture(gesture)
+        return gestureId
+    }
+
+    private fun insertPointsToDatabase(gestureId : Long) {
+        var points  = mutableListOf<Point>()
+        for(i in movesX.indices) {
+            for(j in movesX[i].indices) {
+                points.add(Point(gesture_id = gestureId, move_number = i, point_x = movesX[i][j], point_y = movesY[i][j]))
+            }
+        }
+        pointsDao!!.insertGesturePoints(points)
+    }
+
 
     //metoda bere pole se souradnicemi X a Y, jako bigger se posle to pole, ktere ma vetsi rozptyl. Vysledkem je pole bodu ve ctverci 100x100, zarovnane na stred
     private fun cropArrays(bigger : Array<Float>, smaller : Array<Float>) {
