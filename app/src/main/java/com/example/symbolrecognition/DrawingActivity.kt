@@ -42,8 +42,8 @@ class DrawingActivity : AppCompatActivity() {
             if(addingToDatabase) {
                 Log.i("Adding", "Pridava se do databaze")
             }
-            var drawManager = DrawManager(pointsX, pointsY, touchCount, endsOfMove, this)
-            drawManager.run()
+            //var drawManager = DrawManager(pointsX, pointsY, touchCount, endsOfMove)
+            //drawManager.run()
 
         }
         fun resetTimer() {
