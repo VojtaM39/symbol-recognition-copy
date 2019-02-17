@@ -9,55 +9,34 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
+import android.widget.Toast
+import com.example.symbolrecognition.DrawView.OnDrawEndListener
+
 
 
 
 class DrawingActivity : AppCompatActivity() {
+    private var pointsX = arrayOf<Float>()
+    private var pointsY = arrayOf<Float>()
+    private var touchCount = 0
+    private var endsOfMove = arrayOf<Int>()
+    lateinit var drawManager : DrawManager
+    val context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawing)
         val drawView = findViewById<DrawView>(R.id.draw_view)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout)
-        DrawingActivity.addingToDatabase = intent.getBooleanExtra("addingToDatabase", false)
-        constraintLayout.setOnTouchListener(OnTouchListener { v, event ->
-            //show dialog here
-            false
-        })
-        }
-
-
-    companion object {
-        private var pointsX = arrayOf<Float>()
-        private var pointsY = arrayOf<Float>()
-        private var touchCount = 0
-        //lateinit var drawView : DrawView
-        private var endsOfMove = arrayOf<Int>()
-        public val myHandler = Handler()
-        var addingToDatabase : Boolean = false
-
-
-        //Runnable se spusti po urcite dobe, co uzivatel prestane malovat
-        val myRunnable = Runnable {
-            getParametersFromView()
-            if(addingToDatabase) {
-                Log.i("Adding", "Pridava se do databaze")
+        drawView.setOnDrawEndListener(object : OnDrawEndListener {
+            override fun onDrawEnd() {
+                Log.v("", "EVENT FIRED")
+                pointsX = drawView.getPointsX()
+                pointsY = drawView.getPointsY()
+                touchCount = drawView.getTouches()
+                endsOfMove = drawView.getEndsOfMove()
+                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove,context)
             }
-            //var drawManager = DrawManager(pointsX, pointsY, touchCount, endsOfMove)
-            //drawManager.run()
-
-        }
-        fun resetTimer() {
-            myHandler.removeCallbacks(myRunnable);
-            myHandler.postDelayed(myRunnable, 3000);
-        }
-        fun getParametersFromView() {
-
-            pointsX = drawView.getPointsX()
-            pointsY = drawView.getPointsY()
-            touchCount = drawView.getTouches()
-            endsOfMove = drawView.getEndsOfMove()
-            Log.i("Done", "Nacteno")
-            Log.i("Done", "Pocet tahu: ${touchCount}")
-        }
+        })
     }
+
 }

@@ -15,10 +15,10 @@ import android.widget.Toast
 import java.util.*
 import kotlin.concurrent.schedule
 import android.content.ContextWrapper
-import android.support.v7.app.AppCompatActivity
+import android.os.Handler
 
 
-class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivity) : View(context, attrs) {
+class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private var mPaint = Paint()
     private var mPath = Path()
@@ -34,6 +34,21 @@ class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivi
     private var pointsY = arrayOf<Float>()
     //v poli budou indexy bodů, kde končí tah
     private var endsOfMove = arrayOf<Int>()
+    private val c = getContext()
+    private var started = false
+    public val myHandler = Handler()
+    fun resetTimer() {
+        this.removeCallbacks(myRunnable)
+        this.postDelayed(myRunnable, 3000)
+    }
+    val myRunnable = Runnable {
+        onDrawEndListener!!.onDrawEnd()
+    }
+
+    public fun run() {
+
+    }
+
 
     //gettery pro zisskani bodu a poctu tahu
     public fun  getPointsX(): Array<Float> {
@@ -68,18 +83,20 @@ class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivi
     }
     //Pri zacatku tahu se zvysi pocet tahu, reset Timeru
     private fun actionDown(x: Float, y: Float) {
+        if(!started)
+            started = true
+        resetTimer()
         mPath.moveTo(x, y)
         pointsX += x
         pointsY += y
         mCurX = x
         mCurY = y
         countUp()
-        DrawingActivity.resetTimer()
     }
     //Pri kazdem pohybu se zapisou souradnice do poli
     private fun actionMove(x: Float, y: Float) {
         //reset Timeru pri kazdem pohybu
-        DrawingActivity.resetTimer()
+        resetTimer()
         pointsX += x
         pointsY += y
         Log.i("Drawing", "Hodnota pointsX je ${pointsX[pointsX.size-1]} Hodnota pointsY je ${pointsY[pointsY.size-1]}")
@@ -90,7 +107,7 @@ class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivi
 
     private fun actionUp() {
         //reset Timeru
-        DrawingActivity.resetTimer()
+        resetTimer()
         mPath.lineTo(mCurX, mCurY)
         drawing = false
         //pridani indexu do endsOfMove
@@ -117,12 +134,28 @@ class DrawView(context: Context, attrs: AttributeSet, activity : AppCompatActivi
                 mStartX = x
                 mStartY = y
                 actionDown(x, y)
+
             }
             MotionEvent.ACTION_MOVE -> actionMove(x, y)
             MotionEvent.ACTION_UP -> actionUp()
         }
         invalidate()
         return true
+    }
+
+    /**
+     * https://stackoverflow.com/questions/3398363/how-to-define-callbacks-in-android
+     */
+    private var onDrawEndListener: OnDrawEndListener? = null
+
+    interface OnDrawEndListener {
+        fun onDrawEnd()
+    }
+
+    // ALLOWS YOU TO SET LISTENER && INVOKE THE OVERIDING METHOD
+    // FROM WITHIN ACTIVITY
+    fun setOnDrawEndListener(listener: OnDrawEndListener) {
+        onDrawEndListener = listener
     }
 
 }
