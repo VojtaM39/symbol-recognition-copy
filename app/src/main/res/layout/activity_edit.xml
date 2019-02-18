@@ -8,6 +8,8 @@
         tools:context=".EditActivity">
     <ListView
             android:layout_width="match_parent"
-            android:layout_height="match_parent" tools:layout_editor_absoluteY="8dp"
-            tools:layout_editor_absoluteX="8dp" android:id="@+id/listView"/>
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteY="8dp"
+            tools:layout_editor_absoluteX="8dp"
+            android:id="@+id/lvContacts"/>
 </android.support.constraint.ConstraintLayout>
