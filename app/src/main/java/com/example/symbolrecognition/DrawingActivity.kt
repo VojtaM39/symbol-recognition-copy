@@ -34,7 +34,7 @@ class DrawingActivity : AppCompatActivity() {
                 pointsY = drawView.getPointsY()
                 touchCount = drawView.getTouches()
                 endsOfMove = drawView.getEndsOfMove()
-                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove,context)
+                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove)
             }
         })
     }

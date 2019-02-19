@@ -6,7 +6,6 @@ import android.util.Log
 import 	android.content.Context
 
 class DrawManager {
-    private val context : Context
     private var pointsX : Array<Float>
     private var pointsY : Array<Float>
     private var pointsXResult : Array<Short>
@@ -20,16 +19,7 @@ class DrawManager {
     private var movesXExtra = mutableListOf<Array<Short>>()
     private var movesYExtra = mutableListOf<Array<Short>>()
     private var existsExtraSymbol : Boolean
-    private val db : AppDatabase?
-    private val gesturesDao : GesturesDao?
-    private val pointsDao : PointsDao?
-    private val contactsDao : ContactsDao?
-    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context : Context) {
-        this.context = context
-        this.db = AppDatabase.getInstance(context)
-        this.gesturesDao = db?.gesturesDao()
-        this.pointsDao = db?.pointsDao()
-        this.contactsDao = db?.contactsDao()
+    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
@@ -76,14 +66,14 @@ class DrawManager {
      * Metoda se spusti, kdyz uzivatel zada gesto a chce vytvorit nove gesto
      *
      */
-    public fun createGesture(name : String, phoneNumber : String) {
+    /*public fun createGesture(name : String, phoneNumber : String) {
         //TODO dodelat inserty, zavolat je
         var contactId = insertContactToDatabase(name, phoneNumber)
         var gestureId = insertGestureToDatabase(contactId)
         insertPointsToDatabase(gestureId)
-    }
+    }*/
 
-
+    /*
     private fun insertContactToDatabase(name : String, phoneNumber : String) : Long {
         var contact = Contact(name = name,phoneNumber =  phoneNumber)
         val contactId : Long = contactsDao!!.insertPerson(contact)
@@ -103,7 +93,7 @@ class DrawManager {
             }
         }
         pointsDao!!.insertGesturePoints(points)
-    }
+    }*/
 
 
     //metoda bere pole se souradnicemi X a Y, jako bigger se posle to pole, ktere ma vetsi rozptyl. Vysledkem je pole bodu ve ctverci 100x100, zarovnane na stred

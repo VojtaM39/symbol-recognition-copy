@@ -34,8 +34,8 @@ class ContactsListViewAdapter(private val activity: Activity, contactsList: List
         var vi: View = convertView as View
         val inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         vi = inflater.inflate(R.layout.activity_listview_items, null)
-        val name = vi.findViewById<TextView>(R.id.contact_name)
-        val phoneNumber = vi.findViewById<TextView>(R.id.contact_phone_number)
+        val name = vi.findViewById<TextView>(R.id.tvName)
+        val phoneNumber = vi.findViewById<TextView>(R.id.tvPhoneNumber)
         name.text = contactsList[i].name
         phoneNumber.text = contactsList[i].phoneNumber
         return vi

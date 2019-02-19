@@ -12,7 +12,7 @@ class ContactDbManager
     private val dbName = "JSAContacts"
     private val dbTable = "Contacts"
     private val colId = "Id"
-    private val colName = "Title"
+    private val colName = "Name"
     private val colPhoneNumber = "PhoneNumber"
     private val dbVersion = 1
 
