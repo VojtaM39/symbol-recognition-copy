@@ -16,8 +16,8 @@ class AddActivity : AppCompatActivity()
         setContentView(R.layout.activity_add)
 
         try {
-            var bundle: Bundle = intent.extras
-            id = bundle.getInt("MainActId", 0)
+            var bundle: Bundle? = intent.extras
+            id = bundle!!.getInt("MainActId", 0)
             if (id != 0) {
                 edtName.setText(bundle.getString("MainActName"))
                 edtPhoneNumber.setText(bundle.getString("MainActPhoneNumber"))

@@ -20,6 +20,12 @@ class MainActivity : AppCompatActivity() {
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        /*val btnEdit = findViewById<Button>(R.id.btnEdit)
+        btnEdit.setOnClickListener()
+        {
+            var intent: Intent = Intent(this, EditActivity::class.java)
+            startActivity(intent)
+        }*/
     }
 
     fun launchAddActivity(view: View)

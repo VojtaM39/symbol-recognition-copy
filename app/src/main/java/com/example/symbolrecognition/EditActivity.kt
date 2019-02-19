@@ -5,8 +5,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -67,8 +65,8 @@ class EditActivity : AppCompatActivity()
 
             do {
                 val id = cursor.getInt(cursor.getColumnIndex("Id"))
-                val name = cursor.getString(cursor.getColumnIndex("Title"))
-                val phoneNumber = cursor.getString(cursor.getColumnIndex("Content"))
+                val name = cursor.getString(cursor.getColumnIndex("Name"))
+                val phoneNumber = cursor.getString(cursor.getColumnIndex("PhoneNumber"))
 
                 listContacts.add(Contact(id, name, phoneNumber))
 
