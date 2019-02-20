@@ -34,7 +34,8 @@ class DrawingActivity : AppCompatActivity() {
                 pointsY = drawView.getPointsY()
                 touchCount = drawView.getTouches()
                 endsOfMove = drawView.getEndsOfMove()
-                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove)
+                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, context)
+                drawManager.createGesture("Test", "55555555555")
             }
         })
     }

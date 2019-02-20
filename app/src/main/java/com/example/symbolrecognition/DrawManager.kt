@@ -1,9 +1,12 @@
 package com.example.symbolrecognition
 
+import android.content.ContentValues
 import android.content.Intent
 import android.content.Intent.getIntent
 import android.util.Log
 import 	android.content.Context
+import android.gesture.Gesture
+import android.graphics.Point
 
 class DrawManager {
     private var pointsX : Array<Float>
@@ -19,7 +22,12 @@ class DrawManager {
     private var movesXExtra = mutableListOf<Array<Short>>()
     private var movesYExtra = mutableListOf<Array<Short>>()
     private var existsExtraSymbol : Boolean
-    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>) {
+    private val contactDbManager : ContactDbManager
+    private val gestureDbManager : GestureDbManager
+    private val pointDbManager : PointDbManager
+    private val context : Context
+    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context) {
+        this.context = context
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
@@ -36,8 +44,9 @@ class DrawManager {
             this.movesYExtra = removeLastMove(movesY)
             resizeMoves()
         }
-
-
+        this.contactDbManager = ContactDbManager(this.context)
+        this.gestureDbManager = GestureDbManager(this.context)
+        this.pointDbManager = PointDbManager(this.context)
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -66,34 +75,45 @@ class DrawManager {
      * Metoda se spusti, kdyz uzivatel zada gesto a chce vytvorit nove gesto
      *
      */
-    /*public fun createGesture(name : String, phoneNumber : String) {
+    public fun createGesture(name : String, phoneNumber : String) {
         //TODO dodelat inserty, zavolat je
         var contactId = insertContactToDatabase(name, phoneNumber)
         var gestureId = insertGestureToDatabase(contactId)
         insertPointsToDatabase(gestureId)
-    }*/
+    }
 
-    /*
+
     private fun insertContactToDatabase(name : String, phoneNumber : String) : Long {
-        var contact = Contact(name = name,phoneNumber =  phoneNumber)
-        val contactId : Long = contactsDao!!.insertPerson(contact)
+        var values = ContentValues()
+        values.put("Name", name)
+        values.put("PhoneNumber", phoneNumber)
+        val contactId : Long = contactDbManager.insert(values)
+        Log.i("Inserting","Contact inserted")
         return contactId
     }
     private fun insertGestureToDatabase(contactId : Long) : Long {
-        var gesture = Gesture(contact_id = contactId)
-        val gestureId : Long = gesturesDao!!.insertGesture(gesture)
+        var values = ContentValues()
+        values.put("contact_id", contactId)
+        val gestureId : Long = gestureDbManager.insert(values)
+        Log.i("Inserting","Gesture inserted")
         return gestureId
     }
 
     private fun insertPointsToDatabase(gestureId : Long) {
+        var values : ContentValues
         var points  = mutableListOf<Point>()
         for(i in movesX.indices) {
             for(j in movesX[i].indices) {
-                points.add(Point(gesture_id = gestureId, move_number = i, point_x = movesX[i][j], point_y = movesY[i][j]))
+                values = ContentValues()
+                values.put("gesture_id", gestureId)
+                values.put("move_number", i)
+                values.put("point_x", movesX[i][j])
+                values.put("point_y", movesY[i][j])
+                pointDbManager.insert(values)
             }
         }
-        pointsDao!!.insertGesturePoints(points)
-    }*/
+        Log.i("Inserting","Points inserted")
+    }
 
 
     //metoda bere pole se souradnicemi X a Y, jako bigger se posle to pole, ktere ma vetsi rozptyl. Vysledkem je pole bodu ve ctverci 100x100, zarovnane na stred
