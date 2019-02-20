@@ -13,6 +13,13 @@ import kotlinx.android.synthetic.main.activity_edit.*
 class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
+    private var editOnClick: Boolean
+
+    init
+    {
+        this.editOnClick = getExtra()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,14 +37,14 @@ class EditActivity : AppCompatActivity()
             Toast.makeText(this, "Click on " + listContacts[position].name, Toast.LENGTH_SHORT).show()
         }
     }
-/*
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+    /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.layout.menu_main, menu)
 
         return super.onCreateOptionsMenu(menu)
     }*/
-/*
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+
+    /*override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {
             when (item.itemId) {
                 R.id.addContact -> {
@@ -53,6 +60,14 @@ class EditActivity : AppCompatActivity()
     override fun onResume() {
         super.onResume()
         loadQueryAll()
+    }
+
+    private fun getExtra(): Boolean
+    {
+        val editOnClick: Boolean
+        val extras = intent.extras
+        editOnClick = extras.getBoolean("editOnClick")
+        return editOnClick
     }
 
     fun loadQueryAll() {
@@ -137,8 +152,8 @@ class EditActivity : AppCompatActivity()
     private fun updateContact(contact: Contact) {
         var intent = Intent(this, AddActivity::class.java)
         intent.putExtra("MainActId", contact.id)
-        intent.putExtra("MainActTitle", contact.name)
-        intent.putExtra("MainActContent", contact.phoneNumber)
+        intent.putExtra("MainActName", contact.name)
+        intent.putExtra("MainActPhoneNumber", contact.phoneNumber)
         startActivity(intent)
     }
 

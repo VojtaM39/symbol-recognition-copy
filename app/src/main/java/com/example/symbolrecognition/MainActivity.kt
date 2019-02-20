@@ -16,16 +16,9 @@ import kotlin.concurrent.schedule
 class MainActivity : AppCompatActivity() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?)
-    {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        /*val btnEdit = findViewById<Button>(R.id.btnEdit)
-        btnEdit.setOnClickListener()
-        {
-            var intent: Intent = Intent(this, EditActivity::class.java)
-            startActivity(intent)
-        }*/
     }
 
     fun launchAddActivity(view: View)
@@ -45,6 +38,14 @@ class MainActivity : AppCompatActivity() {
     fun launchEditActivity(view: View)
     {
         var intent: Intent = Intent(this, EditActivity::class.java)
+        intent.putExtra("editOnClick", true)
+        startActivity(intent)
+    }
+
+    fun launchDeleteActivity(view: View)
+    {
+        var intent: Intent = Intent(this, EditActivity::class.java)
+        intent.putExtra("editOnClick", false)
         startActivity(intent)
     }
 }
