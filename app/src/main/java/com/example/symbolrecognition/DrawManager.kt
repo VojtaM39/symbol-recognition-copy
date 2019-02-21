@@ -24,6 +24,7 @@ class DrawManager {
     private var existsExtraSymbol : Boolean
     private val dbManager : DbManager
     private val context : Context
+    private val directionsAlgorithm : DirectionsAlgorithm
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context) {
         this.context = context
         this.pointsX = pointsX
@@ -43,6 +44,7 @@ class DrawManager {
             resizeMoves()
         }
         this.dbManager = DbManager(this.context)
+        directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -72,10 +74,11 @@ class DrawManager {
      *
      */
     public fun createGesture(name : String, phoneNumber : String) {
-        //TODO dodelat inserty, zavolat je
         var contactId = insertContactToDatabase(name, phoneNumber)
         var gestureId = insertGestureToDatabase(contactId)
+        //TODO Pridavani lines
         insertPointsToDatabase(gestureId)
+        insertRatiosToDatabase(gestureId)
     }
 
 
@@ -108,6 +111,17 @@ class DrawManager {
             }
         }
         Log.i("Inserting","Points inserted")
+    }
+
+    private fun insertRatiosToDatabase(gestureId : Long) {
+        val xRatio = directionsAlgorithm.getXRatio()
+        val yRatio = directionsAlgorithm.getYRatio()
+        var values = ContentValues()
+        values.put("gesture_id", gestureId)
+        values.put("x_ratio", xRatio)
+        values.put("y_ratio", yRatio)
+        dbManager.insertToRatios(values)
+        Log.i("Inserting","Ratios inserted")
     }
 
 

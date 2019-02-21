@@ -18,7 +18,7 @@ class DbManager
     private val dbTableGestures = "Gestures"
     private val colGesturesId = "Id"
     private val colGesturesContactId = "contact_id"
-    private val dbVersion = 3
+    private val dbVersion = 4
 
     private val dbTablePoints = "Points"
     private val colPointsId = "Id"
@@ -27,9 +27,15 @@ class DbManager
     private val colPointsPointX = "point_x"
     private val colPointsPointY = "point_y"
 
+    private val dbTableRatios = "Ratios"
+    private val colRatiosId = "Id"
+    private val colRatiosXRatio = "x_ratio"
+    private val colRatiosYRatio = "y_ratio"
+
     private val CREATE_TABLE_CONTACTS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableContacts + " (" + colContactsId + " INTEGER PRIMARY KEY," + colContactsName + " TEXT, " + colContactsPhoneNumber + " TEXT);"
     private val CREATE_TABLE_GESTURES_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableGestures + " (" + colGesturesId + " INTEGER PRIMARY KEY," + colGesturesContactId + " INT);"
     private val CREATE_TABLE_POINTS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTablePoints + " (" + colPointsId + " INTEGER PRIMARY KEY," + colPointsGestureId + " INT, " + colPointsMoveNumber + " INT, " + colPointsPointX + " INT, " + colPointsPointY + " INT);"
+    private val CREATE_TABLE_RATIOS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableRatios + " (" + colPointsId + " INTEGER PRIMARY KEY," + colPointsGestureId + " INT, " + colRatiosXRatio + " FLOAT, " + colRatiosYRatio + " FLOAT);"
 
     private var db: SQLiteDatabase? = null
 
@@ -53,6 +59,11 @@ class DbManager
     fun insertToPoints(values: ContentValues) {
 
         db!!.insert(dbTablePoints, "", values)
+    }
+
+    fun insertToRatios(values: ContentValues) {
+
+        db!!.insert(dbTableRatios, "", values)
     }
 
     fun queryAllFromContacts(): Cursor {
@@ -84,6 +95,7 @@ class DbManager
             db!!.execSQL(CREATE_TABLE_CONTACTS_SQL)
             db!!.execSQL(CREATE_TABLE_GESTURES_SQL)
             db!!.execSQL(CREATE_TABLE_POINTS_SQL)
+            db!!.execSQL(CREATE_TABLE_RATIOS_SQL)
             Toast.makeText(this.context, " database is created", Toast.LENGTH_LONG).show()
         }
 
@@ -91,6 +103,7 @@ class DbManager
             db!!.execSQL("Drop table IF EXISTS " + dbTableContacts)
             db!!.execSQL("Drop table IF EXISTS " + dbTableGestures)
             db!!.execSQL("Drop table IF EXISTS " + dbTablePoints)
+            db!!.execSQL("Drop table IF EXISTS " + dbTableRatios)
         }
     }
 }

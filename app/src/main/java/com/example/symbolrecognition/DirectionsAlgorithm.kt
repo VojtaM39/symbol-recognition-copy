@@ -85,6 +85,14 @@ class DirectionsAlgorithm {
     public fun run() {
         logRatios()
     }
+    public fun getXRatio() : Float {
+        return sideToLenghtRatioX
+    }
+
+    public fun getYRatio() : Float {
+        return sideToLenghtRatioY
+    }
+
 
 
 
