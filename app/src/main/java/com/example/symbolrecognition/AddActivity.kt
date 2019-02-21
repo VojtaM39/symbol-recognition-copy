@@ -26,14 +26,14 @@ class AddActivity : AppCompatActivity()
         }
 
         btnSave.setOnClickListener {
-            var dbManager = ContactDbManager(this)
+            var dbManager = DbManager(this)
 
             var values = ContentValues()
             values.put("Name", edtName.text.toString())
             values.put("PhoneNumber", edtPhoneNumber.text.toString())
 
             if (id == 0) {
-                val mID = dbManager.insert(values)
+                val mID = dbManager.insertToContacts(values)
 
                 if (mID > 0) {
                     Toast.makeText(this, "Add note successfully!", Toast.LENGTH_LONG).show()
@@ -43,7 +43,7 @@ class AddActivity : AppCompatActivity()
                 }
             } else {
                 var selectionArs = arrayOf(id.toString())
-                val mID = dbManager.update(values, "Id=?", selectionArs)
+                val mID = dbManager.updateContacts(values, "Id=?", selectionArs)
 
                 if (mID > 0) {
                     Toast.makeText(this, "Add note successfully!", Toast.LENGTH_LONG).show()

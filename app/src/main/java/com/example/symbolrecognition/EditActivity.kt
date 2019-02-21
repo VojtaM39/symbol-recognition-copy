@@ -73,7 +73,7 @@ class EditActivity : AppCompatActivity()
     fun loadQueryAll() {
 
         var dbManager = ContactDbManager(this)
-        val cursor = dbManager.queryAll()
+        val cursor = dbManager.queryAllFromContacts()
 
         listContacts.clear()
         if (cursor.moveToFirst()) {
