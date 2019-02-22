@@ -86,14 +86,14 @@ class DrawManager {
         var values = ContentValues()
         values.put("Name", name)
         values.put("PhoneNumber", phoneNumber)
-        val contactId : Long = dbManager.insertToContacts(values)
+        val contactId : Long = dbManager.insert(values, Constants.CONTACTS_TABLE)
         Log.i("Inserting","Contact inserted")
         return contactId
     }
     private fun insertGestureToDatabase(contactId : Long) : Long {
         var values = ContentValues()
         values.put("contact_id", contactId)
-        val gestureId : Long = dbManager.insertToGestures(values)
+        val gestureId : Long = dbManager.insert(values, Constants.GESTURES_TABLE)
         Log.i("Inserting","Gesture inserted")
         return gestureId
     }
@@ -107,7 +107,7 @@ class DrawManager {
                 values.put("move_number", i)
                 values.put("point_x", movesX[i][j])
                 values.put("point_y", movesY[i][j])
-                dbManager.insertToPoints(values)
+                dbManager.insert(values, Constants.POINTS_TABLE)
             }
         }
         Log.i("Inserting","Points inserted")
@@ -120,7 +120,7 @@ class DrawManager {
         values.put("gesture_id", gestureId)
         values.put("x_ratio", xRatio)
         values.put("y_ratio", yRatio)
-        dbManager.insertToRatios(values)
+        dbManager.insert(values, Constants.RATIOS_TABLE)
         Log.i("Inserting","Ratios inserted")
     }
 
