@@ -10,36 +10,38 @@ import android.widget.Toast
 class DbManager
 {
     private val dbName = "JSAContacts"
+    private val dbVersion = 6
+
     private val dbTableContacts = Constants.CONTACTS_TABLE
-    private val colContactsId = "Id"
-    private val colContactsName = "Name"
-    private val colContactsPhoneNumber = "PhoneNumber"
+    private val colContactsId = Constants.CONTACTS_ID
+    private val colContactsName = Constants.CONTACTS_NAME
+    private val colContactsPhoneNumber = Constants.CONTACTS_PHONE_NUMBER
 
     private val dbTableGestures = Constants.GESTURES_TABLE
-    private val colGesturesId = "Id"
-    private val colGesturesContactId = "contact_id"
-    private val dbVersion = 4
+    private val colGesturesId = Constants.GESTURES_ID
+    private val colGesturesContactId = Constants.GESTURES_CONTACT_ID
+
 
     private val dbTablePoints = Constants.POINTS_TABLE
-    private val colPointsId = "Id"
-    private val colPointsGestureId = "gesture_id"
-    private val colPointsMoveNumber = "move_number"
-    private val colPointsPointX = "point_x"
-    private val colPointsPointY = "point_y"
+    private val colPointsId = Constants.POINTS_ID
+    private val colPointsGestureId = Constants.POINTS_GESTURE_ID
+    private val colPointsMoveNumber = Constants.POINTS_MOVE_NUMBER
+    private val colPointsPointX = Constants.POINTS_X
+    private val colPointsPointY = Constants.POINTS_Y
 
     private val dbTableRatios = Constants.RATIOS_TABLE
-    private val colRatiosId = "Id"
-    private val colRatiosGestureId = "gesture_id"
-    private val colRatiosXRatio = "x_ratio"
-    private val colRatiosYRatio = "y_ratio"
+    private val colRatiosId = Constants.RATIOS_ID
+    private val colRatiosGestureId = Constants.RATIOS_GESTURE_ID
+    private val colRatiosXRatio = Constants.RATIOS_X
+    private val colRatiosYRatio = Constants.RATIOS_Y
 
     private val dbTableLines = Constants.LINES_TABLE
-    private val colLinesId = "Id"
-    private val colLinesGestureId = "gesture_id"
-    private val colLinesX1 = "x1"
-    private val colLinesY1 = "y1"
-    private val colLinesX2 = "x2"
-    private val colLinesY2 = "y2"
+    private val colLinesId = Constants.LINES_ID
+    private val colLinesGestureId = Constants.LINES_GESTURE_ID
+    private val colLinesX1 = Constants.LINES_X1
+    private val colLinesY1 = Constants.LINES_Y1
+    private val colLinesX2 = Constants.LINES_X2
+    private val colLinesY2 = Constants.LINES_Y2
 
     private val CREATE_TABLE_CONTACTS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableContacts + " (" + colContactsId + " INTEGER PRIMARY KEY," + colContactsName + " TEXT, " + colContactsPhoneNumber + " TEXT);"
     private val CREATE_TABLE_GESTURES_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableGestures + " (" + colGesturesId + " INTEGER PRIMARY KEY," + colGesturesContactId + " INT);"
@@ -60,11 +62,16 @@ class DbManager
         return ID
     }
 
+    fun queryAll(table : String): Cursor {
+
+        return db!!.rawQuery("select * from " + table, null)
+    }
 
     fun queryAllFromContacts(): Cursor {
 
         return db!!.rawQuery("select * from " + dbTableContacts, null)
     }
+
 
     fun deleteContacts(selection: String, selectionArgs: Array<String>): Int {
 

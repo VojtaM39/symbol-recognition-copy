@@ -25,6 +25,8 @@ class DrawManager {
     private val dbManager : DbManager
     private val context : Context
     private val directionsAlgorithm : DirectionsAlgorithm
+    private val lineDetector : LineDetector
+    private val databaseTester : DatabaseTester
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context) {
         this.context = context
         this.pointsX = pointsX
@@ -45,6 +47,8 @@ class DrawManager {
         }
         this.dbManager = DbManager(this.context)
         directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
+        this.databaseTester = DatabaseTester(context)
+        this.lineDetector = LineDetector(movesX, movesY)
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -76,9 +80,10 @@ class DrawManager {
     public fun createGesture(name : String, phoneNumber : String) {
         var contactId = insertContactToDatabase(name, phoneNumber)
         var gestureId = insertGestureToDatabase(contactId)
-        //TODO Pridavani lines
         insertPointsToDatabase(gestureId)
         insertRatiosToDatabase(gestureId)
+        insertLinesToDatabase(gestureId)
+        databaseTester.logLines()
     }
 
 
@@ -122,6 +127,20 @@ class DrawManager {
         values.put("y_ratio", yRatio)
         dbManager.insert(values, Constants.RATIOS_TABLE)
         Log.i("Inserting","Ratios inserted")
+    }
+
+    private fun insertLinesToDatabase(gestureId: Long) {
+        var lines = lineDetector.getLines()
+        var values : ContentValues
+        for(line in lines) {
+            values = ContentValues()
+            values.put(Constants.LINES_GESTURE_ID, gestureId)
+            values.put(Constants.LINES_X1, line.x1)
+            values.put(Constants.LINES_Y1, line.y1)
+            values.put(Constants.LINES_X2, line.x2)
+            values.put(Constants.LINES_Y2, line.y2)
+            dbManager.insert(values, Constants.LINES_TABLE)
+        }
     }
 
 
