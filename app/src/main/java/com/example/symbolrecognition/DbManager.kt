@@ -66,6 +66,8 @@ class DbManager
         return db!!.rawQuery("select * from " + dbTableContacts, null)
     }
 
+    fun queryAll():Cursor
+
     fun deleteContacts(selection: String, selectionArgs: Array<String>): Int {
 
         val count = db!!.delete(dbTableContacts, selection, selectionArgs)
