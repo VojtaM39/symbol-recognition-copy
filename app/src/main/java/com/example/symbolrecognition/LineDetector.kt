@@ -21,10 +21,11 @@ class LineDetector {
     constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.movesX = movesX
         this.movesY = movesY
-        lines = getLines()
+        lines = createLines()
+        mergeLines()
     }
 
-    private fun getLines() : MutableList<Line>{
+    private fun createLines() : MutableList<Line>{
         //Algoritmus prochazi vsechny body
         //Zapise si vzdycky startingRatio dvou bodu a dokud je ratio dalsich bodu dost podobne, tak prodluzuje line
         //dokud nenajde velkou zmenu v ratio
@@ -88,6 +89,10 @@ class LineDetector {
                 alreadyCreated = false
             }
         }
+        return lines
+    }
+
+    public fun getLines() : MutableList<Line> {
         return lines
     }
 
@@ -296,8 +301,6 @@ class LineDetector {
 
 
     public fun run() {
-        logLines()
-        mergeLines()
         logLines()
     }
 

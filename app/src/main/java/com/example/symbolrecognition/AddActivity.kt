@@ -33,7 +33,7 @@ class AddActivity : AppCompatActivity()
             values.put("PhoneNumber", edtPhoneNumber.text.toString())
 
             if (id == 0) {
-                val mID = dbManager.insertToContacts(values)
+                val mID = dbManager.insert(values, Constants.CONTACTS_TABLE)
 
                 if (mID > 0) {
                     Toast.makeText(this, "Add note successfully!", Toast.LENGTH_LONG).show()
