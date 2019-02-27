@@ -35,7 +35,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     //v poli budou indexy bodů, kde končí tah
     private var endsOfMove = arrayOf<Int>()
     private val c = getContext()
-    private var started = false
     public val myHandler = Handler()
     fun resetTimer() {
         this.removeCallbacks(myRunnable)
@@ -43,10 +42,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
     val myRunnable = Runnable {
         onDrawEndListener!!.onDrawEnd()
-    }
-
-    public fun run() {
-
     }
 
 
@@ -83,15 +78,12 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     }
     //Pri zacatku tahu se zvysi pocet tahu, reset Timeru
     private fun actionDown(x: Float, y: Float) {
-        if(!started)
-            started = true
         resetTimer()
         mPath.moveTo(x, y)
         pointsX += x
         pointsY += y
         mCurX = x
         mCurY = y
-        countUp()
     }
     //Pri kazdem pohybu se zapisou souradnice do poli
     private fun actionMove(x: Float, y: Float) {
@@ -108,6 +100,8 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private fun actionUp() {
         //reset Timeru
         resetTimer()
+        pointsX += x
+        pointsY += y
         mPath.lineTo(mCurX, mCurY)
         drawing = false
         //pridani indexu do endsOfMove

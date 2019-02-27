@@ -16,13 +16,15 @@ class LineDetector {
     //konstanta je urcena relativne k velikosti ctverce
     private val MAX_SHIFT_DIFF = Constants.SQUARE_SIZE*20/100
     //pokud je ctverec 500x500, tak pri MINIMAL_SIDE_PERCANTAGE 20 musi byt cara dlouha aspon 100, aby byla povazovana za caru
-    private val MINIMAL_SIDE_PERCANTAGE = 20
-    private val MAX_RATIO_DIFF = 0.2f
+    private val MINIMAL_SIDE_PERCANTAGE = 10
+    private val MAX_RATIO_DIFF = 0.1f
+    private val MINIMAL_SIDE_PERCANTAGE_FINAL = 40
     constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.movesX = movesX
         this.movesY = movesY
         lines = createLines()
         mergeLines()
+        deleteShortLines()
     }
 
     private fun createLines() : MutableList<Line>{
@@ -299,6 +301,20 @@ class LineDetector {
         return distance
     }
 
+    /**
+     * Metoda smaze lines, ktere nejsou dostatecne dlouhe
+     */
+    private fun deleteShortLines() {
+        //lines, ktere zustanou
+        var keepLines = mutableListOf<Line>()
+        //cyklus prochazi lines
+        for(line in lines) {
+            if(line.lenght > Constants.SQUARE_SIZE*MINIMAL_SIDE_PERCANTAGE_FINAL/100) {
+                keepLines.add(line)
+            }
+        }
+        this.lines = keepLines
+    }
 
     public fun run() {
         logLines()

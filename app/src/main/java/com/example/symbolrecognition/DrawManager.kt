@@ -27,6 +27,7 @@ class DrawManager {
     private val directionsAlgorithm : DirectionsAlgorithm
     private val lineDetector : LineDetector
     private val databaseTester : DatabaseTester
+    private val evaulator : Evaulator
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context) {
         this.context = context
         this.pointsX = pointsX
@@ -49,6 +50,7 @@ class DrawManager {
         directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
         this.databaseTester = DatabaseTester(context)
         this.lineDetector = LineDetector(movesX, movesY)
+        this.evaulator = Evaulator(context, movesX, movesY)
     }
     //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
@@ -68,9 +70,7 @@ class DrawManager {
     }
 
     public fun run() {
-        logMoves()
-        //runAlgorithms(movesX, movesY)
-        //TODO vyhodnoceni i pro extra symbol
+        evaulator.run()
     }
 
     /**
@@ -83,7 +83,6 @@ class DrawManager {
         insertPointsToDatabase(gestureId)
         insertRatiosToDatabase(gestureId)
         insertLinesToDatabase(gestureId)
-        databaseTester.logLines()
     }
 
 

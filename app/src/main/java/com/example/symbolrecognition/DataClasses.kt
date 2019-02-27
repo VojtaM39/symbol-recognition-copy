@@ -1,15 +1,19 @@
 package com.example.symbolrecognition
 
 import kotlin.math.absoluteValue
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 data class Line(val x1 : Short, val y1 : Short, val x2 : Short,val y2 : Short) {
     val angle : Float
     val shiftCoefficientX : Short
     val shiftCoefficientY : Short
+    val lenght : Short
     init {
         angle = getAngle(x1,y1,x2,y2)
         shiftCoefficientX = getShiftCoefficient(x1,y1,x2,y2)
         shiftCoefficientY = getShiftCoefficient(y1,x1,y2,x2)
+        lenght = getLenght(x1,y1,x2,y2)
     }
     /**
     Metoda vraci nutny posun, ktery je nutny aby cara prochazela bodem 0,0, pokud by se protahla na primku
@@ -56,5 +60,12 @@ data class Line(val x1 : Short, val y1 : Short, val x2 : Short,val y2 : Short) {
 
     }
 
-
+    private  fun getLenght(x1 : Short,y1: Short,x2: Short,y2: Short) : Short {
+        val result = sqrt(((x1-x2).toDouble().pow(2)+(y1-y2).toDouble().pow(2)).toFloat()).toShort()
+        return result
+    }
 }
+
+data class RatioResult(var id:Long, var ratioX : Float, var ratioY : Float)
+data class LineResult(var id:Long, var lines: MutableList<Line>)
+data class AlgorithmResult(var id:Long, var result : Float)
