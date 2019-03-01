@@ -1,9 +1,11 @@
 package com.example.symbolrecognition
 
+import android.Manifest
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.telecom.Call
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -14,13 +16,22 @@ import java.util.*
 import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var  caller : Caller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    }
+        caller = Caller(2, this)
+        caller.setupPermissions()
+        val drawBtn = findViewById<TextView>(R.id.btnDrawing)
+        drawBtn.setOnClickListener {
 
+            caller.run()
+        }
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        caller.handlePermission(requestCode,permissions,grantResults)
+    }
     fun launchAddActivity(view: View)
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
@@ -30,9 +41,12 @@ class MainActivity : AppCompatActivity() {
 
     fun launchDrawingActivity(view: View)
     {
+        /**
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
+        */
+
     }
 
     fun launchEditActivity(view: View)
