@@ -11,20 +11,22 @@ import android.support.v4.app.ActivityCompat.requestPermissions
 import android.support.v4.content.ContextCompat
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.support.v4.content.ContextCompat.startActivity
 import android.widget.Toast
 
 class Caller {
     private val contactId : Int
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
+    private var number : String = ""
+    private var name : String = ""
     constructor(contactId : Int, context: Context) {
         this.contactId = contactId
         this.context = context
+        getContactDetails(this.contactId)
     }
-    public fun getPhoneNumber(contactId : Int) {
-
-    }
-
     /**
      * Zdroj: https://stackoverflow.com/questions/31447365/getting-contactdetails-from-contact-id-not-working-in-android
      */
@@ -35,17 +37,13 @@ class Caller {
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             arrayOf(
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER,
-                ContactsContract.CommonDataKinds.Phone.PHOTO_URI
+                ContactsContract.CommonDataKinds.Phone.NUMBER
             ),
             Data.CONTACT_ID + "=?",
             arrayOf(contactId.toString()), null
         )
 
         try {
-            val idxAvatarUri = phoneCursor.getColumnIndexOrThrow(
-                ContactsContract.CommonDataKinds.Phone.PHOTO_URI
-            )
             val idxName = phoneCursor.getColumnIndexOrThrow(
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
             )
@@ -54,37 +52,14 @@ class Caller {
             )
 
             while (phoneCursor.moveToNext()) {
-                val phoneNumber = phoneCursor.getString(idxPhone)
-                val name = phoneCursor.getString(idxName)
-                val avatarUri = phoneCursor.getString(idxAvatarUri)
+                this.number = phoneCursor.getString(idxPhone)
+                this.name = phoneCursor.getString(idxName)
 
-                Log.d("Details", "Phone number: $phoneNumber")
-                Log.d("Details", "Name: $name")
-                Log.d("Details", "Avatar URI: $avatarUri")
             }
         } finally {
             phoneCursor.close()
         }
-
-        val emailCursor = context.getContentResolver().query(
-            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-            arrayOf(ContactsContract.CommonDataKinds.Email.ADDRESS),
-            Data.CONTACT_ID + "=?",
-            arrayOf(contactId.toString()), null
-        )
-
-        try {
-            val idxAddress = emailCursor.getColumnIndexOrThrow(
-                ContactsContract.CommonDataKinds.Email.ADDRESS
-            )
-            while (emailCursor.moveToNext()) {
-                val address = emailCursor.getString(idxAddress)
-                Log.d("Details", "Email: $address")
-            }
-        } finally {
-            emailCursor.close()
-        }
-    }
+}
 
     /**
      * Zdroj: https://pranaybhalerao.wordpress.com/2018/02/11/run-time-permission-in-androidkotlin/
@@ -117,8 +92,19 @@ class Caller {
             }
         }
     }
-    public fun run() {
+    private fun logContact() {
+        Log.i("Name:", this.name)
+        Log.i("Phone number:", this.number)
 
-        getContactDetails(this.contactId)
+    }
+
+    private fun call() {
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:$number")
+        context.startActivity(intent)
+    }
+    public fun run() {
+        logContact()
+        call()
     }
 }

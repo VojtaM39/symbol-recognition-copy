@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        caller = Caller(2, this)
+        caller = Caller(7, this)
         caller.setupPermissions()
         val drawBtn = findViewById<TextView>(R.id.btnDrawing)
         drawBtn.setOnClickListener {
