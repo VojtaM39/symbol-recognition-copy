@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        /**
         caller = Caller(7, this)
         caller.setupPermissions()
         val drawBtn = findViewById<TextView>(R.id.btnDrawing)
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
             caller.run()
         }
+        */
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
@@ -41,11 +43,11 @@ class MainActivity : AppCompatActivity() {
 
     fun launchDrawingActivity(view: View)
     {
-        /**
+
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
-        */
+
 
     }
 

@@ -28,14 +28,11 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mStartX = 0f
     private var mStartY = 0f
     private var count = 0
-    private var ended = false
     private var drawing = false
     private var pointsX = arrayOf<Float>()
     private var pointsY = arrayOf<Float>()
     //v poli budou indexy bodů, kde končí tah
     private var endsOfMove = arrayOf<Int>()
-    private val c = getContext()
-    public val myHandler = Handler()
     fun resetTimer() {
         this.removeCallbacks(myRunnable)
         this.postDelayed(myRunnable, 3000)
@@ -100,8 +97,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private fun actionUp() {
         //reset Timeru
         resetTimer()
-        pointsX += x
-        pointsY += y
         mPath.lineTo(mCurX, mCurY)
         drawing = false
         //pridani indexu do endsOfMove

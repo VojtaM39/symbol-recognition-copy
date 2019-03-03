@@ -1,40 +1,57 @@
 package com.example.symbolrecognition
 
+import android.app.Activity
+import android.content.Context
+import android.util.Log
+import android.view.Display
+import android.graphics.Point
+import android.util.DisplayMetrics
+
 class AreaDivider {
-    private var movesX = mutableListOf<Array<Short>>()
-    private var movesY = mutableListOf<Array<Short>>()
+    private val pointsY : Array<Float>
+    private val endsOfMove : Array<Int>
+    private val drawViewHeight : Int
     //minimalni vzdalenost posledniho tahu od gesta, aby se povazovalv za extra symbol
-    private val MINIMAL_DISTANCE_OF_GESTURES : Short = (Constants.SQUARE_SIZE*20/100).toShort()
-    constructor(movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
-        this.movesX = movesX
-        this.movesY = movesY
+    private val MINIMAL_DISTANCE_OF_GESTURES : Float
+    constructor(pointsY : Array<Float>, endsOfMove : Array<Int>, drawViewHeight : Int) {
+        this.pointsY = pointsY
+        this.endsOfMove = endsOfMove
+        this.drawViewHeight = drawViewHeight
+        MINIMAL_DISTANCE_OF_GESTURES = (drawViewHeight * 0.2).toFloat()
     }
 
     /**
      * Metoda vraci hodnotu nejvyssiho prvku ze vsech tahu, krome posledniho
      */
 
-    private fun getMaxOfMain() : Short{
-        var max :Short = 0
-        for(i in movesY.indices) {
-            if(i!=movesY.size-1) {
-                if(i==0) {
-                    max = movesY[i].max()!!
-                }
-                else if(max < movesY[i].max()!!) {
-                    max = movesY[i].max()!!
+    private fun getMaxOfMain() : Float{
+        var max :Float = 0f
+        for(i in 0..endsOfMove[endsOfMove.lastIndex-1]) {
+            if(i==0) {
+                max = pointsY[i]
+            }
+            else {
+                if(pointsY[i]>max){
+                    max = pointsY[i]
                 }
             }
-
         }
         return max
     }
 
     /**
-     * Najde min (nejvyssi) hodnotu posledniho tahu
+     * Najde min (nejvyse postaveny bod) hodnotu posledniho tahu
      */
-    private fun getMinOfLastMove() : Short{
-        return movesY[movesY.size-1].min()!!
+    private fun getMinOfLastMove() : Float{
+
+        val from = endsOfMove[endsOfMove.lastIndex-1]+1
+        var min = pointsY[from]
+        for(i in from..pointsY.size-1) {
+                if(pointsY[i]<min) {
+                    min = pointsY[i]
+                }
+        }
+        return min
     }
 
     /**
@@ -46,6 +63,11 @@ class AreaDivider {
         else
             return false
     }
+
+    /**
+     *http://www.androidtutorialshub.com/how-to-get-width-and-height-android-screen-in-pixels/
+     */
+
 
 
 }

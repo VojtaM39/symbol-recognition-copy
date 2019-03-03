@@ -1,14 +1,20 @@
 package com.example.symbolrecognition
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.Intent.getIntent
 import android.util.Log
 import 	android.content.Context
+import android.content.Context.WINDOW_SERVICE
 import android.gesture.Gesture
 import android.graphics.Point
+import android.view.Display
+import android.view.WindowManager
+
 
 class DrawManager {
+    private val drawViewHeight : Int
     private var pointsX : Array<Float>
     private var pointsY : Array<Float>
     private var pointsXResult : Array<Short>
@@ -28,45 +34,65 @@ class DrawManager {
     private val lineDetector : LineDetector
     private val databaseTester : DatabaseTester
     private val evaulator : Evaulator
-    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context) {
+    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context, drawViewHeight : Int) {
+        this.drawViewHeight = drawViewHeight
         this.context = context
         this.pointsX = pointsX
         this.pointsY = pointsY
         this.touchCount = touchCount
         this.endsOfMove = endsOfMove
+        this.areaDivider = AreaDivider(pointsY, endsOfMove, drawViewHeight)
+        if(this.endsOfMove.size == 1) {
+            this.existsExtraSymbol = false
+        }
+        else {
+            this.existsExtraSymbol = areaDivider.doesExistsExtraSymbol()
+        }
         processArrays()
         this.pointsXResult = floatToShort(this.pointsX)
         this.pointsYResult = floatToShort(this.pointsY)
-        this.movesX = generateMoves(pointsXResult, endsOfMove)
-        this.movesY = generateMoves(pointsYResult, endsOfMove)
-        this.areaDivider = AreaDivider(movesX, movesY)
-        this.existsExtraSymbol = areaDivider.doesExistsExtraSymbol()
-        if(existsExtraSymbol) {
-            this.movesXExtra = removeLastMove(movesX)
-            this.movesYExtra = removeLastMove(movesY)
-            resizeMoves()
-        }
+
+        generateMoves(movesX, movesXExtra, pointsXResult, endsOfMove, existsExtraSymbol)
+        generateMoves(movesY, movesYExtra, pointsYResult, endsOfMove, existsExtraSymbol)
         this.dbManager = DbManager(this.context)
-        directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
+        this.directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
         this.databaseTester = DatabaseTester(context)
         this.lineDetector = LineDetector(movesX, movesY)
         this.evaulator = Evaulator(context, movesX, movesY)
     }
-    //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
-    private fun generateMoves(points : Array<Short>, endsOfMove: Array<Int>) :MutableList<Array<Short>> {
-        //pomocne pole, do ktereho se budou davat body daneho tahu
+
+  //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
+    private fun generateMoves(moves : MutableList<Array<Short>>,movesExtra : MutableList<Array<Short>>, points : Array<Short>, endsOfMove: Array<Int>, existsExtraSymbol : Boolean) {
+      //posledni index do ktereho ma cyklus jet
+      var lastIndex : Int
+      if(existsExtraSymbol) {
+          lastIndex = endsOfMove[endsOfMove.lastIndex-1]
+      }
+      else {
+          lastIndex = endsOfMove.last()
+      }
+      //pomocne pole, do ktereho se budou davat body daneho tahu
         var array = arrayOf<Short>()
         //list vsech poli
         var listOfMoves = mutableListOf<Array<Short>>()
-        for(i in points.indices) {
+
+        for(i in 0..lastIndex) {
             array += points[i]
             if(endsOfMove.contains(i)) {
-                listOfMoves.add(array)
+                moves.add(array)
                 array = arrayOf<Short>()
 
             }
         }
-        return listOfMoves
+        if(existsExtraSymbol) {
+            for(i in lastIndex+1..endsOfMove.last()) {
+                array += points[i]
+                if(endsOfMove.contains(i)) {
+                    movesExtra.add(array)
+                }
+            }
+        }
+
     }
 
     public fun run() {
@@ -272,6 +298,7 @@ class DrawManager {
     }
 
     public fun logMoves() {
+        Log.i("Draw View height", drawViewHeight.toString())
         var result : String
         for(i in 0..movesY.size-1) {
             result = ""
