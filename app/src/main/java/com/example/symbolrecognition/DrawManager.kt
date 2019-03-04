@@ -96,7 +96,8 @@ class DrawManager {
     }
 
     public fun run() {
-        evaulator.run()
+        this.runAlgorithms(movesX,movesY)
+        //evaulator.run()
     }
 
     /**
@@ -211,16 +212,7 @@ class DrawManager {
         }
     }
 
-    /**
-     * Metoda odtrhne posledni tah a vrati ho
-     */
 
-    private fun removeLastMove(moves : MutableList<Array<Short>>) : MutableList<Array<Short>> {
-        var result = mutableListOf<Array<Short>>()
-        result.add(moves[moves.size-1])
-        moves.removeAt(moves.size-1)
-        return result
-    }
     /**
      * Metoda zvetsi/zmensi dane tahy na ctverec podle promenne SQUARE_SIZE
      */
