@@ -19,7 +19,7 @@ import android.os.Handler
 
 
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-
+    private val useTimer : Boolean
     private var mPaint = Paint()
     private var mPath = Path()
 
@@ -34,8 +34,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     //v poli budou indexy bodů, kde končí tah
     private var endsOfMove = arrayOf<Int>()
     fun resetTimer() {
-        this.removeCallbacks(myRunnable)
-        this.postDelayed(myRunnable, 3000)
+        if(useTimer) {
+            this.removeCallbacks(myRunnable)
+            this.postDelayed(myRunnable, 3000)
+        }
     }
     val myRunnable = Runnable {
         onDrawEndListener!!.onDrawEnd()
@@ -66,6 +68,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             strokeWidth = 15f
             isAntiAlias = true
         }
+        val attributes = context.obtainStyledAttributes(attrs, R.styleable.DrawView)
+        this.useTimer = attributes.getBoolean(R.styleable.DrawView_timer, true)
+        attributes.recycle()
+
     }
 
     override fun onDraw(canvas: Canvas) {
