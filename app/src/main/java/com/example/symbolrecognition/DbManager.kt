@@ -10,7 +10,7 @@ import android.widget.Toast
 class DbManager
 {
     private val dbName = "JSAContacts"
-    private val dbVersion = 6
+    private val dbVersion = 7
 
     private val dbTableGestures = Constants.GESTURES_TABLE
     private val colGesturesId = Constants.GESTURES_ID
