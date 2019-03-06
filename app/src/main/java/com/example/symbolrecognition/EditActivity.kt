@@ -73,17 +73,17 @@ class EditActivity : AppCompatActivity()
     fun loadQueryAll() {
 
         var dbManager = DbManager(this)
-        val cursor = dbManager.queryAllFromContacts()
+        val cursor = dbManager.queryAll(Constants.GESTURES_TABLE)
 
         listContacts.clear()
         if (cursor.moveToFirst()) {
 
             do {
-                val id = cursor.getInt(cursor.getColumnIndex("Id"))
-                val name = cursor.getString(cursor.getColumnIndex("Name"))
-                val phoneNumber = cursor.getString(cursor.getColumnIndex("PhoneNumber"))
+                val gesturesId = cursor.getInt(cursor.getColumnIndex("Id"))
+                val gesturesContactId = cursor.getInt(cursor.getColumnIndex("contact_id"))
 
-                listContacts.add(Contact(id, name, phoneNumber))
+                //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
+                listContacts.add(Contact(gesturesId, gesturesContactId))
 
             } while (cursor.moveToNext())
         }
