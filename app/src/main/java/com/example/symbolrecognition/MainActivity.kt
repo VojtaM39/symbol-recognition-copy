@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
     }
+
     fun launchAddActivity(view: View)
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
@@ -47,8 +48,6 @@ class MainActivity : AppCompatActivity() {
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
-
-
     }
 
     fun launchEditActivity(view: View)

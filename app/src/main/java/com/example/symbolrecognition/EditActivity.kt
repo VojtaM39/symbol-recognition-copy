@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_edit.*
+
+
 
 class EditActivity : AppCompatActivity()
 {
@@ -34,7 +37,7 @@ class EditActivity : AppCompatActivity()
         loadQueryAll()
 
         lvContacts.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            Toast.makeText(this, "Click on " + listContacts[position].name, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Click on " + listContacts[position].contactName, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -73,17 +76,19 @@ class EditActivity : AppCompatActivity()
     fun loadQueryAll() {
 
         var dbManager = DbManager(this)
-        val cursor = dbManager.queryAllFromContacts()
+        val cursor = dbManager.queryAll(Constants.GESTURES_TABLE)
 
         listContacts.clear()
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                val gesturesId = cursor.getInt(cursor.getColumnIndex("Id"))
+                val gesturesContactId = cursor.getInt(cursor.getColumnIndex("contact_id"))
+                val contactName: String = getContactDetails(gesturesContactId)
 
-            do {
-                val id = cursor.getInt(cursor.getColumnIndex("Id"))
-                val name = cursor.getString(cursor.getColumnIndex("Name"))
-                val phoneNumber = cursor.getString(cursor.getColumnIndex("PhoneNumber"))
-
-                listContacts.add(Contact(id, name, phoneNumber))
+                //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
+                listContacts.add(Contact(gesturesId, contactName))
 
             } while (cursor.moveToNext())
         }
@@ -91,6 +96,39 @@ class EditActivity : AppCompatActivity()
         var contactsAdapter = ContactsAdapter(this, listContacts)
         lvContacts.adapter = contactsAdapter
     }
+
+    fun getContactDetails(contactId: Int): String {
+        Log.d("Details", "---")
+        Log.d("Details", "Contact : $contactId")
+        val phoneCursor = contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            arrayOf(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            ),
+            ContactsContract.Data.CONTACT_ID + "=?",
+            arrayOf(contactId.toString()), null
+        )
+
+        var currentContact: String = ""
+
+        try {
+            val idxName = phoneCursor.getColumnIndexOrThrow(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            )
+
+            while (phoneCursor.moveToNext()) {
+                val name = phoneCursor.getString(idxName)
+
+                Log.d("Details", "Name: $name")
+                currentContact = name
+            }
+        } finally {
+            phoneCursor!!.close()
+        }
+
+        return currentContact
+    }
+
 
     inner class ContactsAdapter : BaseAdapter {
 
@@ -119,8 +157,7 @@ class EditActivity : AppCompatActivity()
 
             var mContact = contactsList[position]
 
-            vh.tvName.text = mContact.name
-            vh.tvPhoneNumber.text = mContact.phoneNumber
+            vh.tvName.text = mContact.contactName
 
             /*vh.ivEdit.setOnClickListener {
                 updateContact(mContact)
@@ -151,21 +188,18 @@ class EditActivity : AppCompatActivity()
 
     private fun updateContact(contact: Contact) {
         var intent = Intent(this, AddActivity::class.java)
-        intent.putExtra("MainActId", contact.id)
-        intent.putExtra("MainActName", contact.name)
-        intent.putExtra("MainActPhoneNumber", contact.phoneNumber)
+        intent.putExtra("MainActId", contact.gesturesId)
+        intent.putExtra("MainActName", contact.contactName)
         startActivity(intent)
     }
 
     private class ViewHolder(view: View?) {
         val tvName: TextView
-        val tvPhoneNumber: TextView
         /*val ivEdit: ImageView
         val ivDelete: ImageView*/
 
         init {
             this.tvName = view?.findViewById(R.id.tvName) as TextView
-            this.tvPhoneNumber = view?.findViewById(R.id.tvPhoneNumber) as TextView
             /*this.ivEdit = view?.findViewById(R.id.ivEdit) as ImageView
             this.ivDelete = view?.findViewById(R.id.ivDelete) as ImageView*/
         }

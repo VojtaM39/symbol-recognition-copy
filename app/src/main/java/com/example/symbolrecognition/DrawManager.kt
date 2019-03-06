@@ -104,8 +104,7 @@ class DrawManager {
      * Metoda se spusti, kdyz uzivatel zada gesto a chce vytvorit nove gesto
      *
      */
-    public fun createGesture(name : String, phoneNumber : String) {
-        var contactId = insertContactToDatabase(name, phoneNumber)
+    public fun createGesture(contactId: Long, phoneNumber : String) {
         var gestureId = insertGestureToDatabase(contactId)
         insertPointsToDatabase(gestureId)
         insertRatiosToDatabase(gestureId)
