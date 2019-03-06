@@ -17,6 +17,7 @@ import kotlin.concurrent.schedule
 
 class MainActivity : AppCompatActivity() {
     private lateinit var  caller : Caller
+    private lateinit var  databaseTester : DatabaseTester
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,8 @@ class MainActivity : AppCompatActivity() {
             caller.run()
         }
         */
+        databaseTester = DatabaseTester(this)
+        databaseTester.logGestures()
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)

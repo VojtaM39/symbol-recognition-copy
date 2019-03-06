@@ -37,4 +37,7 @@ class DatabaseTester {
     public fun logLines() {
         logAllRows(Constants.LINES_TABLE, Constants.LINES_COLUMNS)
     }
+    public fun logRatios() {
+        logAllRows(Constants.RATIOS_TABLE, Constants.RATIOS_COLUMNS)
+    }
 }

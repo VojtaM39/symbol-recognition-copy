@@ -14,8 +14,10 @@ import android.util.Log
 class AddActivity : AppCompatActivity()
 {
     val PICK_CONTACT = 2015
+    var contactId : Long = 0
     private var name = "Choose contact"
     private var height : Int = 0
+    private var selected = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
@@ -28,6 +30,15 @@ class AddActivity : AppCompatActivity()
         {
             val i = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
             startActivityForResult(i, PICK_CONTACT)
+            this.selected = true
+        }
+
+        createBtn.setOnClickListener {
+            //Uzivatel uz vybral kontakt
+            //TODO overit malovani
+            if(selected) {
+                createGesture(contactId)
+            }
         }
 
     }
@@ -54,6 +65,7 @@ class AddActivity : AppCompatActivity()
                         val name: String? = getString(columnName)
                         Log.i("Contact picker", "Picked contact ID: " + id)
                         nameTxtView.setText(name)
+                        contactId = id!!
                     }
                 }
             }
@@ -63,13 +75,13 @@ class AddActivity : AppCompatActivity()
             Log.e("MainActivity", "Failed to pick contact")
         }
     }
-    private fun createGesture() {
+    private fun createGesture(contactId : Long) {
         var pointsX = drawView.getPointsX()
         var pointsY = drawView.getPointsY()
         var touchCount = drawView.getTouches()
         var endsOfMove = drawView.getEndsOfMove()
         var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
-        drawManager.createGesture("Test", "55555555555")
+        drawManager.createGesture(contactId)
     }
 
 

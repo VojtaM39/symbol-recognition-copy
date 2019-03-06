@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-
+/**
 class ContactsListViewAdapter(private val activity: Activity, contactsList: List<Contact>) : BaseAdapter()
 {
     private var contactsList: ArrayList<Contact>
@@ -28,7 +28,7 @@ class ContactsListViewAdapter(private val activity: Activity, contactsList: List
     override fun getItemId(i: Int): Long {
         return i.toLong()
     }
-
+/**
     @SuppressLint("InflateParams", "ViewHolder")
     override fun getView(i: Int, convertView: View?, viewGroup: ViewGroup): View {
         var vi: View = convertView as View
@@ -40,4 +40,6 @@ class ContactsListViewAdapter(private val activity: Activity, contactsList: List
         phoneNumber.text = contactsList[i].phoneNumber
         return vi
     }
+    */
 }
+        */

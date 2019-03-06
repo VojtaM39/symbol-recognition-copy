@@ -13,7 +13,7 @@
             android:layout_width="373dp"
             android:layout_height="wrap_content">
         <Button
-                android:text="Button"
+                android:text="Select contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/contactPickerBtn" android:layout_weight="1"/>
         <TextView
@@ -37,12 +37,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <Button
-                android:text="Button"
+                android:text="Delete gesture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/button4" android:layout_weight="1"/>
         <Button
-                android:text="Button"
+                android:text="Create"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:id="@+id/button5" android:layout_weight="1"/>
+                android:layout_height="wrap_content" android:id="@+id/createBtn" android:layout_weight="1"/>
     </LinearLayout>
 </LinearLayout>
