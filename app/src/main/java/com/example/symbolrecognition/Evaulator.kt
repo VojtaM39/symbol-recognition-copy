@@ -8,10 +8,12 @@ import kotlin.math.absoluteValue
 class Evaulator {
     private val context : Context
     private val dbManager : DbManager
-    private val movesX : MutableList<Array<Short>>
-    private val movesY : MutableList<Array<Short>>
+    private val movesX : MutableList<Array<Short>> //hodnoty prave nakresleneho gesta
+    private val movesY : MutableList<Array<Short>> //hodnoty prave nakresleneho gesta
     private val directionsAlgorithm : DirectionsAlgorithm
     private val lineDetector : LineDetector
+    private var gestureMovesX = mutableListOf<Array<Short>>()
+    private var gestureMovesY = mutableListOf<Array<Short>>()
 
     private val MAX_RATIO_DIFF = 0.2f
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
@@ -23,12 +25,30 @@ class Evaulator {
         this.lineDetector = LineDetector(this.movesX, this.movesY)
     }
     public fun run() {
+        //var LDValue = arrayOf<Float>()
+        var DAValue = arrayOf<Float>()
+        var ThicknessValue = arrayOf<Float>()
+        var matchingGesturesIds = mutableListOf<Long>()
+
+        //filtr pomoci directionsAlgorithmu
         var matchingGestures = getMatchingRatios()
-        var linesResult = getLinesResult(matchingGestures)
-        for(lineResult in linesResult) {
-            Log.i("Result", "Id: " + lineResult.id + " Result: " + lineResult.result)
+        for(matchingGesture in matchingGestures)
+        {
+            DAValue += matchingGesture.result
+            matchingGesturesIds.add(matchingGesture.id)
         }
 
+        /*//lineDetector
+        var linesResult = getLinesResult(matchingGesturesIds)
+        for(lineResult in linesResult) {
+            Log.i("Result", "Id: " + lineResult.id + " Result: " + lineResult.result)
+            LDValue += lineResult.result
+        }*/
+
+        //thicknessAlgorithm
+        var thicknessAlgorithmResults = getThicknessValues(movesX, movesY)
+        for(thicknessAlgorithmResult in thicknessAlgorithmResults)
+            ThicknessValue += thicknessAlgorithmResult.result
     }
 
     /**
@@ -56,19 +76,33 @@ class Evaulator {
     /**
      * Vraci pole s indexy gest, ketre podle alogritmu DirectionsAlgorithm odpovidaji namalovanemu gestu
      */
-    private fun getMatchingRatios() : MutableList<Long>{
+    private fun getMatchingRatios() : MutableList<AlgorithmResult>{
         val ratios = getAllRatios()
-        var result = mutableListOf<Long>()
+        var result = mutableListOf<AlgorithmResult>()
         //Hodnoty prave namalovaneho gesta
         val ratioX = directionsAlgorithm.getXRatio()
         val ratioY = directionsAlgorithm.getYRatio()
         //cyklus prochazi vsechny gesta v databazi a hleda podobne
         for(i in ratios.indices) {
             if((ratios[i].ratioX - ratioX).absoluteValue < MAX_RATIO_DIFF && (ratios[i].ratioY - ratioY).absoluteValue < MAX_RATIO_DIFF) {
-                result.add(ratios[i].id)
+                var valueX = getDAValue(ratios[i].ratioX, ratioX)
+                var valueY = getDAValue(ratios[i].ratioY, ratioY)
+                var value: Float = (valueX + valueY) / 2
+                result.add(AlgorithmResult(ratios[i].id, value))
             }
         }
         return result
+    }
+
+    /**
+     * Vrati pomer vysledku directionsAlgorithmu
+     */
+    private fun getDAValue(ratio1: Float, ratio2: Float): Float
+    {
+        if(ratio1 >= ratio2)
+            return ratio2 / ratio1
+        else
+            return ratio1 / ratio2
     }
 
     /**
@@ -130,8 +164,56 @@ class Evaulator {
         }
         return results
     }
-    private fun finalResult(): Int
+
+    private fun getThicknessValues(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
-        return 1
+        //ziskat tloustku z prave nakresleneho gesta
+        val connectingPoints = ConnectingPoints(movesX, movesY)
+        var drewGesturePoints = connectingPoints.connectPoints()
+        var drewGestureThickness = connectingPoints.getThickness()
+
+        for(matchingGestureId in matchingGesturesIds)
+        {
+            getGestureFromDatabase(matchingGestureId)
+            val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
+            var databaseGesturePoints = connectingPoints.connectPoints()
+            var databaseGestureThickness = connectingPoints.getThickness()
+        }
+    }
+
+    /**
+     * funkce vrati gesto
+     */
+    private fun getGestureFromDatabase(gestureId: Long)
+    {
+        var dbManager = DbManager(context)
+        val cursor = dbManager.queryAll(Constants.POINTS_TABLE)
+        var arrMovesX = arrayOf<Short>()
+        var arrMovesY = arrayOf<Short>()
+        var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                val moveNumber = cursor.getInt(cursor.getColumnIndex(Constants.POINTS_MOVE_NUMBER))
+                val pointX = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_X))
+                val pointY = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_Y))
+
+                if(moveNumber != index)
+                {
+                    gestureMovesX.add(moveNumber, arrMovesX)
+                    gestureMovesY.add(moveNumber, arrMovesY)
+                    arrMovesX = arrayOf<Short>()
+                    arrMovesY = arrayOf<Short>()
+                    index = moveNumber
+                }
+                if(moveNumber == index)
+                {
+                    arrMovesX += pointX
+                    arrMovesY += pointY
+                }
+            } while (cursor.moveToNext())
+        }
     }
 }

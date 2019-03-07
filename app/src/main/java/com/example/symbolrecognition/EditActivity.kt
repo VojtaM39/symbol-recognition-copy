@@ -94,8 +94,8 @@ class EditActivity : AppCompatActivity()
         {
             do
             {
-                val gesturesId = cursor.getInt(cursor.getColumnIndex("Id"))
-                val gesturesContactId = cursor.getInt(cursor.getColumnIndex("contact_id"))
+                val gesturesId = cursor.getInt(cursor.getColumnIndex(Constants.GESTURES_ID))
+                val gesturesContactId = cursor.getInt(cursor.getColumnIndex(Constants.GESTURES_CONTACT_ID))
                 caller.getContactName(gesturesContactId)
 
                 //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
