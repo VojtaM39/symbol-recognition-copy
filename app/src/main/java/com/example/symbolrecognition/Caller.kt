@@ -69,7 +69,7 @@ class Caller {
      */
     public fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(context,
-            Manifest.permission.RECORD_AUDIO)
+            Manifest.permission.READ_CONTACTS)
         if (permission != PackageManager.PERMISSION_GRANTED) {
             makeRequest()
         }
