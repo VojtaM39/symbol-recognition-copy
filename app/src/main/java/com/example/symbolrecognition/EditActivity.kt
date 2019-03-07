@@ -16,17 +16,23 @@ import kotlinx.android.synthetic.main.activity_edit.*
 class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
-    private var editOnClick: Boolean
+    private var name: String
+    private lateinit var  caller : Caller
+    /*private var editOnClick: Boolean*/
 
     init
     {
-        this.editOnClick = getExtra()
+        this.name = ""
+        //this.editOnClick = getExtra()
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+
+        caller = Caller(this)
+        caller.setupPermissions()
 
 //        listContacts.add(Contact(1, "JavaSampleApproach", "Java technology, Spring Framework - approach to Java by Sample."))
 //        listContacts.add(Contact(2, "Kotlin Android Tutorial", "Create tutorial for people to learn Kotlin Android. Kotlin is now an official language on Android. It's expressive, concise, and powerful. Best of all, it's interoperable with our existing Android languages and runtime."))
@@ -39,6 +45,10 @@ class EditActivity : AppCompatActivity()
         lvContacts.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
             Toast.makeText(this, "Click on " + listContacts[position].contactName, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        caller.handlePermission(requestCode,permissions,grantResults)
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -85,10 +95,10 @@ class EditActivity : AppCompatActivity()
             {
                 val gesturesId = cursor.getInt(cursor.getColumnIndex("Id"))
                 val gesturesContactId = cursor.getInt(cursor.getColumnIndex("contact_id"))
-                val contactName: String = getContactDetails(gesturesContactId)
+                caller.getContactName(gesturesContactId)
 
                 //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
-                listContacts.add(Contact(gesturesId, contactName))
+                listContacts.add(Contact(gesturesId, name))
 
             } while (cursor.moveToNext())
         }
@@ -97,7 +107,7 @@ class EditActivity : AppCompatActivity()
         lvContacts.adapter = contactsAdapter
     }
 
-    fun getContactDetails(contactId: Int): String {
+    /*fun getContactDetails(contactId: Int): String {
         Log.d("Details", "---")
         Log.d("Details", "Contact : $contactId")
         val phoneCursor = contentResolver.query(
@@ -127,7 +137,33 @@ class EditActivity : AppCompatActivity()
         }
 
         return currentContact
-    }
+    }*/
+    /*fun getContactDetails(contactId: Int) {
+        Log.d("Details", "---")
+        Log.d("Details", "Contact : $contactId")
+        val phoneCursor = this.getContentResolver().query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            arrayOf(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            ),
+            ContactsContract.Data.CONTACT_ID + "=?",
+            arrayOf(contactId.toString()), null
+        )
+
+        try {
+            val idxName = phoneCursor.getColumnIndexOrThrow(
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
+            )
+
+            while (phoneCursor.moveToNext()) {
+                this.name = phoneCursor.getString(idxName)
+
+            }
+        } finally {
+            phoneCursor.close()
+        }
+    }*/
+
 
 
     inner class ContactsAdapter : BaseAdapter {

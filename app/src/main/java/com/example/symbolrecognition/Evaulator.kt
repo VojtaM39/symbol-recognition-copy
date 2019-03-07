@@ -28,6 +28,7 @@ class Evaulator {
         for(lineResult in linesResult) {
             Log.i("Result", "Id: " + lineResult.id + " Result: " + lineResult.result)
         }
+
     }
 
     /**
@@ -128,5 +129,9 @@ class Evaulator {
             results.add(AlgorithmResult(matchingLines[i].id, resultHelper))
         }
         return results
+    }
+    private fun finalResult(): Int
+    {
+        return 1
     }
 }
