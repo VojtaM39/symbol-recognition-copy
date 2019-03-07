@@ -107,4 +107,7 @@ class Caller {
         logContact()
         call()
     }
+    public fun getName() : String {
+        return this.name
+    }
 }

@@ -22,7 +22,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val useTimer : Boolean
     private var mPaint = Paint()
     private var mPath = Path()
-
+    private var drew = false
     private var mCurX = 0f
     private var mCurY = 0f
     private var mStartX = 0f
@@ -43,6 +43,10 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         onDrawEndListener!!.onDrawEnd()
     }
 
+    //Pokud uzivatel maloval => true
+    public fun getDrew() : Boolean {
+        return drew
+    }
 
     //gettery pro zisskani bodu a poctu tahu
     public fun  getPointsX(): Array<Float> {
@@ -57,6 +61,15 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     public fun getEndsOfMove() : Array<Int> {
         return endsOfMove
+    }
+
+    //metoda vyresetuje drawview
+    public fun resetGesture() {
+        this.mPath = Path()
+        invalidate()
+        this.drew = false
+        this.pointsX = arrayOf()
+        this.pointsY = arrayOf()
     }
     init {
 
@@ -87,6 +100,9 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         pointsY += y
         mCurX = x
         mCurY = y
+        if(!drew) {
+            drew = true
+        }
     }
     //Pri kazdem pohybu se zapisou souradnice do poli
     private fun actionMove(x: Float, y: Float) {

@@ -16,11 +16,13 @@ class AddActivity : AppCompatActivity()
     val PICK_CONTACT = 2015
     var contactId : Long = 0
     private var name = "Choose contact"
+
     private var height : Int = 0
     private var selected = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
+        nameTxtView.setText(name)
         val observer = drawView.getViewTreeObserver()
         observer.addOnGlobalLayoutListener {
             height = drawView.height
@@ -33,11 +35,22 @@ class AddActivity : AppCompatActivity()
             this.selected = true
         }
 
+        deleteBtn.setOnClickListener {
+            drawView.resetGesture()
+        }
+
         createBtn.setOnClickListener {
             //Uzivatel uz vybral kontakt
             //TODO overit malovani
-            if(selected) {
+            if(!selected || !drawView.getDrew()) {
+                Log.i("Add", "Error add")
+                Toast.makeText(this, "You have to fill contact and draw gesture.",Toast.LENGTH_SHORT).show()
+            }
+            else {
                 createGesture(contactId)
+                Toast.makeText(this, "Gesture was created successfully.",Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
             }
         }
 
@@ -83,7 +96,4 @@ class AddActivity : AppCompatActivity()
         var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
         drawManager.createGesture(contactId)
     }
-
-
-
 }
