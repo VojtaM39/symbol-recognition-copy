@@ -17,20 +17,21 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.widget.Toast
 
 class Caller {
-    private val contactId : Int
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
     private var number : String = ""
     private var name : String = ""
-    constructor(contactId : Int, context: Context) {
-        this.contactId = contactId
+    constructor(context: Context) {
         this.context = context
-        getContactDetails(this.contactId)
     }
     /**
      * Zdroj: https://stackoverflow.com/questions/31447365/getting-contactdetails-from-contact-id-not-working-in-android
      */
-    fun getContactDetails(contactId: Int) {
+    /**
+     * param returnValue: "number", "name"
+     */
+    fun getContactDetails(contactId: Int, returnValue : String) : String{
+        var result = ""
         Log.d("Details", "---")
         Log.d("Details", "Contact : $contactId")
         val phoneCursor = context.getContentResolver().query(
@@ -52,13 +53,15 @@ class Caller {
             )
 
             while (phoneCursor.moveToNext()) {
-                this.number = phoneCursor.getString(idxPhone)
-                this.name = phoneCursor.getString(idxName)
-
+                if(returnValue == "name")
+                    result = phoneCursor.getString(idxName)
+                else
+                    result =  phoneCursor.getString(idxPhone)
             }
         } finally {
             phoneCursor.close()
         }
+        return result
 }
 
     /**
@@ -91,6 +94,14 @@ class Caller {
                 }
             }
         }
+    }
+
+    private fun getOneContact(contactId: Int) : String {
+        return getContactDetails(contactId, "number")
+    }
+
+    public fun getContactName(contactId : Int) : String {
+        return getContactDetails(contactId, "name")
     }
     private fun logContact() {
         Log.i("Name:", this.name)
