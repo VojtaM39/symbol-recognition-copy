@@ -17,11 +17,13 @@ class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
     private var name: String
-    private lateinit var  caller : Caller
+    private var caller : Caller
     /*private var editOnClick: Boolean*/
 
     init
     {
+        caller = Caller(this)
+        caller.setupPermissions()
         this.name = ""
         //this.editOnClick = getExtra()
     }
@@ -31,8 +33,7 @@ class EditActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-        caller = Caller(this)
-        caller.setupPermissions()
+
 
 //        listContacts.add(Contact(1, "JavaSampleApproach", "Java technology, Spring Framework - approach to Java by Sample."))
 //        listContacts.add(Contact(2, "Kotlin Android Tutorial", "Create tutorial for people to learn Kotlin Android. Kotlin is now an official language on Android. It's expressive, concise, and powerful. Best of all, it's interoperable with our existing Android languages and runtime."))
