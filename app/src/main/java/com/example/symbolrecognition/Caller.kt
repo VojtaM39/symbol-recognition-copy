@@ -121,4 +121,54 @@ class Caller {
     public fun getName() : String {
         return this.name
     }
+
+    /**
+     * https://stackoverflow.com/questions/9644704/how-to-get-specific-contact-number-by-using-contact-id
+     */
+    fun getNameByContactId(contactId: String) : String{
+
+
+
+        val cContactIdString = ContactsContract.Contacts._ID
+        val cCONTACT_CONTENT_URI = ContactsContract.Contacts.CONTENT_URI
+        val cDisplayNameColumn = ContactsContract.Contacts.DISPLAY_NAME
+
+        val selection = "$cContactIdString = ? "
+        val selectionArgs = arrayOf(contactId)
+
+        val cursor = context.getContentResolver().query(cCONTACT_CONTENT_URI, null, selection, selectionArgs, null)
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst()
+            while (cursor != null && cursor.isAfterLast() === false) {
+                if (cursor.getColumnIndex(cContactIdString) >= 0) {
+                    if (contactId == cursor.getString(cursor.getColumnIndex(cContactIdString))) {
+                        val name = cursor.getString(cursor.getColumnIndex(cDisplayNameColumn))
+                        break
+                    }
+                }
+                cursor.moveToNext()
+            }
+        }
+        if (cursor != null)
+            cursor.close()
+
+        return name
+    }
+
+    public fun getContactIdByGestureId(gestureId : Long) : Int {
+        val dbManager = DbManager(context)
+        var result = 0
+        val cursor = dbManager.queryOneWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_CONTACT_ID + " = " + gestureId)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            while (cursor.moveToNext()) {
+                for(index in Constants.GESTURES_COLUMNS) {
+                    result = cursor.getString(cursor.getColumnIndex(index)).toInt()
+                    Log.i("Contact_Id", result.toString())
+                }
+            }
+        }
+        cursor.close()
+        return result
+    }
 }

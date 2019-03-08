@@ -46,9 +46,11 @@ class Evaulator {
         }*/
 
         //thicknessAlgorithm
+        /*
         var thicknessAlgorithmResults = getThicknessValues(movesX, movesY)
         for(thicknessAlgorithmResult in thicknessAlgorithmResults)
             ThicknessValue += thicknessAlgorithmResult.result
+        */
     }
 
     /**
@@ -165,7 +167,7 @@ class Evaulator {
         return results
     }
 
-    private fun getThicknessValues(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
+    private fun getThicknessValues(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, matchingGesturesIds: MutableList<Long>)/*: MutableList<AlgorithmResult> */
     {
         //ziskat tloustku z prave nakresleneho gesta
         val connectingPoints = ConnectingPoints(movesX, movesY)
