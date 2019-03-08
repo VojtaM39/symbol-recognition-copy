@@ -221,7 +221,8 @@ class Evaulator {
     private fun getGestureFromDatabase(gestureId: Long)
     {
         var dbManager = DbManager(context)
-        val cursor = dbManager.queryAll(Constants.POINTS_TABLE) //upravit
+        var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
+        val cursor = dbManager.queryOneWithWhere(Constants.POINTS_TABLE, where) //upravit
         var arrMovesX = arrayOf<Short>()
         var arrMovesY = arrayOf<Short>()
         var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
