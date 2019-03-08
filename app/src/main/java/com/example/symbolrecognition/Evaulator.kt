@@ -1,9 +1,10 @@
 package com.example.symbolrecognition
 
 import android.content.Context
-import android.icu.util.UniversalTimeScale.toLong
-import android.util.Log
+import java.lang.Math.pow
+import java.lang.Math.sqrt
 import kotlin.math.absoluteValue
+import kotlin.math.pow
 
 class Evaulator {
     private val context : Context
@@ -46,7 +47,7 @@ class Evaulator {
         }*/
 
         //thicknessAlgorithm
-        var thicknessAlgorithmResults = getThicknessValues(movesX, movesY)
+        var thicknessAlgorithmResults = getThicknessValues(matchingGesturesIds)
         for(thicknessAlgorithmResult in thicknessAlgorithmResults)
             ThicknessValue += thicknessAlgorithmResult.result
     }
@@ -165,19 +166,29 @@ class Evaulator {
         return results
     }
 
-    private fun getThicknessValues(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
+    private fun getThicknessValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
+        var result = mutableListOf<AlgorithmResult>()
+        var canGetDrewGestureThickness = true
+        var drewGestureLength = getGestureLength(movesX, movesY)
+        /*
         //ziskat tloustku z prave nakresleneho gesta
         val connectingPoints = ConnectingPoints(movesX, movesY)
         var drewGesturePoints = connectingPoints.connectPoints()
         var drewGestureThickness = connectingPoints.getThickness()
+        */
 
         for(matchingGestureId in matchingGesturesIds)
         {
             getGestureFromDatabase(matchingGestureId)
+            var databaseGestureLength = getGestureLength(gestureMovesX, gestureMovesY)
+
+            /*
             val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
             var databaseGesturePoints = connectingPoints.connectPoints()
             var databaseGestureThickness = connectingPoints.getThickness()
+            */
+
         }
     }
 
@@ -215,5 +226,15 @@ class Evaulator {
                 }
             } while (cursor.moveToNext())
         }
+    }
+    private fun getGestureLength(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Float
+    {
+        var result: Float = 0f
+
+        //pythagorova veta
+        for(i in 0..(movesX.size - 1))
+            for(j in 0..(movesX[i].size - 1 - 1)) //prvni -1 pricitame kvuli tomu, ze se pohybujeme vezi indexy a druhe -1 kvuli tomu, ze posledni bod uz neni s cim spojit
+                result += (sqrt((movesX[i][j] - movesX[i][j + 1]).absoluteValue.toDouble()) + sqrt((movesY[i][j] - movesY[i][j + 1]).absoluteValue.toDouble())).pow(2).toFloat()
+        return result
     }
 }
