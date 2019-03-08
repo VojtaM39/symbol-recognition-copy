@@ -16,7 +16,13 @@ class Evaulator {
     private var gestureMovesX = mutableListOf<Array<Short>>()
     private var gestureMovesY = mutableListOf<Array<Short>>()
 
+    //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
+    //final decision
+    private val directionsAlgorithmWeight = 0.35f
+    private val thicknessAlgorithmWeight: Float = 1 - directionsAlgorithmWeight //0.65f
+    private val minimalSimilarity = 0.8f
+
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.context = context
         this.dbManager = DbManager(context)
@@ -52,7 +58,7 @@ class Evaulator {
             thicknessAlgorithmValue += thicknessAlgorithmResult.result
 
         //vyber konecneho vysledku
-        
+        var finalResult = finalDecesion(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
     }
 
     /**
@@ -287,6 +293,31 @@ class Evaulator {
 
     private fun finalDecesion(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
     {
-        return null
+        var mostSimilarIndex: Long = 0
+        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex.toInt()] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex.toInt()] * thicknessAlgorithmWeight)
+        if(ids.size > 1)
+        {
+            for (currentIndex in 1..(ids.size - 1))
+            {
+                var currentValue: Float = (directionsAlgorithmValue[currentIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[currentIndex] * thicknessAlgorithmWeight)
+                if(currentValue > mostSimilarValue)
+                {
+                    mostSimilarValue = currentValue
+                    mostSimilarIndex = currentIndex.toLong()
+                }
+                else if(currentValue == mostSimilarValue)
+                {
+                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex.toInt()])
+                    {
+                        mostSimilarValue = currentValue
+                        mostSimilarIndex = currentIndex.toLong()
+                    }
+                }
+            }
+        }
+        //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
+        if(mostSimilarValue < minimalSimilarity)
+            return null
+        return mostSimilarIndex
     }
 }
