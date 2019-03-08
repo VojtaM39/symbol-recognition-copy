@@ -27,15 +27,15 @@ class Evaulator {
     }
     public fun run() {
         //var LDValue = arrayOf<Float>()
-        var DAValue = arrayOf<Float>()
-        var ThicknessValue = arrayOf<Float>()
+        var directionsAlgorithmValue = arrayOf<Float>()
+        var thicknessAlgorithmValue = arrayOf<Float>()
         var matchingGesturesIds = mutableListOf<Long>()
 
         //filtr pomoci directionsAlgorithmu
         var matchingGestures = getMatchingRatios()
         for(matchingGesture in matchingGestures)
         {
-            DAValue += matchingGesture.result
+            directionsAlgorithmValue += matchingGesture.result
             matchingGesturesIds.add(matchingGesture.id)
         }
 
@@ -47,9 +47,12 @@ class Evaulator {
         }*/
 
         //thicknessAlgorithm
-        var thicknessAlgorithmResults = getThicknessValues(matchingGesturesIds)
+        var thicknessAlgorithmResults = getthicknessAlgorithmValues(matchingGesturesIds)
         for(thicknessAlgorithmResult in thicknessAlgorithmResults)
-            ThicknessValue += thicknessAlgorithmResult.result
+            thicknessAlgorithmValue += thicknessAlgorithmResult.result
+
+        //vyber konecneho vysledku
+        
     }
 
     /**
@@ -86,8 +89,8 @@ class Evaulator {
         //cyklus prochazi vsechny gesta v databazi a hleda podobne
         for(i in ratios.indices) {
             if((ratios[i].ratioX - ratioX).absoluteValue < MAX_RATIO_DIFF && (ratios[i].ratioY - ratioY).absoluteValue < MAX_RATIO_DIFF) {
-                var valueX = getDAValue(ratios[i].ratioX, ratioX)
-                var valueY = getDAValue(ratios[i].ratioY, ratioY)
+                var valueX = getdirectionsAlgorithmValue(ratios[i].ratioX, ratioX)
+                var valueY = getdirectionsAlgorithmValue(ratios[i].ratioY, ratioY)
                 var value: Float = (valueX + valueY) / 2
                 result.add(AlgorithmResult(ratios[i].id, value))
             }
@@ -98,7 +101,7 @@ class Evaulator {
     /**
      * Vrati pomer vysledku directionsAlgorithmu
      */
-    private fun getDAValue(ratio1: Float, ratio2: Float): Float
+    private fun getdirectionsAlgorithmValue(ratio1: Float, ratio2: Float): Float
     {
         if(ratio1 >= ratio2)
             return ratio2 / ratio1
@@ -166,30 +169,37 @@ class Evaulator {
         return results
     }
 
-    private fun getThicknessValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
+    private fun getthicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
-        var result = mutableListOf<AlgorithmResult>()
-        var canGetDrewGestureThickness = true
+        var finalResult = mutableListOf<AlgorithmResult>()
         var drewGestureLength = getGestureLength(movesX, movesY)
-        /*
+
         //ziskat tloustku z prave nakresleneho gesta
         val connectingPoints = ConnectingPoints(movesX, movesY)
         var drewGesturePoints = connectingPoints.connectPoints()
         var drewGestureThickness = connectingPoints.getThickness()
-        */
 
         for(matchingGestureId in matchingGesturesIds)
         {
+            var result: AlgorithmResult
             getGestureFromDatabase(matchingGestureId)
             var databaseGestureLength = getGestureLength(gestureMovesX, gestureMovesY)
 
-            /*
-            val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
-            var databaseGesturePoints = connectingPoints.connectPoints()
-            var databaseGestureThickness = connectingPoints.getThickness()
-            */
+            if(drewGestureLength >= databaseGestureLength) //vetsi je prave nakreslene gesto
+            {
+                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
+                var databaseGesturePoints = connectingPoints.connectPoints()
+                var databaseGestureThickness = connectingPoints.getThickness()
 
+                result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness))
+            }
+            else //vetsi je gesto z databaze
+                result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(gestureMovesX, gestureMovesY, drewGesturePoints, drewGestureThickness))
+
+            //ulozeni do finalResult
+            finalResult.add(result)
         }
+        return finalResult
     }
 
     /**
@@ -198,7 +208,7 @@ class Evaulator {
     private fun getGestureFromDatabase(gestureId: Long)
     {
         var dbManager = DbManager(context)
-        val cursor = dbManager.queryAll(Constants.POINTS_TABLE)
+        val cursor = dbManager.queryAll(Constants.POINTS_TABLE) //upravit
         var arrMovesX = arrayOf<Short>()
         var arrMovesY = arrayOf<Short>()
         var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
@@ -227,6 +237,10 @@ class Evaulator {
             } while (cursor.moveToNext())
         }
     }
+
+    /**
+     * metoda ziska konecnou vzdalenost mezi body
+     */
     private fun getGestureLength(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>): Float
     {
         var result: Float = 0f
@@ -236,5 +250,43 @@ class Evaulator {
             for(j in 0..(movesX[i].size - 1 - 1)) //prvni -1 pricitame kvuli tomu, ze se pohybujeme vezi indexy a druhe -1 kvuli tomu, ze posledni bod uz neni s cim spojit
                 result += (sqrt((movesX[i][j] - movesX[i][j + 1]).absoluteValue.toDouble()) + sqrt((movesY[i][j] - movesY[i][j + 1]).absoluteValue.toDouble())).pow(2).toFloat()
         return result
+    }
+
+    private fun getRatioOfContainedPoints(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, connectedPoints: MutableList<Array<Short>>, thickness: MutableList<Array<Short>>): Float
+    {
+        var contains: Int = 0
+        var points: Int = 0
+
+        var arr = arrayOf<Array<Int>>()
+        for(y in (0..Constants.SQUARE_SIZE))
+        {
+            var helpArr = arrayOf<Int>()
+            for(x in (0..Constants.SQUARE_SIZE))
+                helpArr += 0
+            arr += helpArr
+        }
+        for(i in 0..(connectedPoints[0].size - 1))
+            arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1
+        for(i in 0..(thickness[0].size - 1))
+            arr[thickness[1][i].toInt()][thickness[0][i].toInt()] = 1
+
+        for(i in 0..(movesX.size - 1))
+        {
+            for (j in 0..(movesX[i].size - 1))
+            {
+                if (arr[movesY[i][j].toInt()][movesX[i][j].toInt()] == 1)
+                {
+                    contains++
+                }
+                points++
+            }
+        }
+
+        return (contains.toFloat() / points)
+    }
+
+    private fun finalDecesion(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
+    {
+        return null
     }
 }
