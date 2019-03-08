@@ -15,6 +15,8 @@ class Evaulator {
     private val lineDetector : LineDetector
     private var gestureMovesX = mutableListOf<Array<Short>>()
     private var gestureMovesY = mutableListOf<Array<Short>>()
+    private var drewGesturePoints = mutableListOf<Array<Short>>()
+    private var drewGestureThickness = mutableListOf<Array<Short>>()
 
     //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
@@ -58,7 +60,7 @@ class Evaulator {
             thicknessAlgorithmValue += thicknessAlgorithmResult.result
 
         //vyber konecneho vysledku
-        var finalResult = finalDecesion(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        var finalResult: Long? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
     }
 
     /**
@@ -179,11 +181,7 @@ class Evaulator {
     {
         var finalResult = mutableListOf<AlgorithmResult>()
         var drewGestureLength = getGestureLength(movesX, movesY)
-
-        //ziskat tloustku z prave nakresleneho gesta
-        val connectingPoints = ConnectingPoints(movesX, movesY)
-        var drewGesturePoints = connectingPoints.connectPoints()
-        var drewGestureThickness = connectingPoints.getThickness()
+        var alreadyExistsDrewGestureThickness = false
 
         for(matchingGestureId in matchingGesturesIds)
         {
@@ -200,8 +198,17 @@ class Evaulator {
                 result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness))
             }
             else //vetsi je gesto z databaze
+            {
+                if(!alreadyExistsDrewGestureThickness)
+                {
+                    //ziskat tloustku z prave nakresleneho gesta
+                    val connectingPoints = ConnectingPoints(movesX, movesY)
+                    drewGesturePoints = connectingPoints.connectPoints()
+                    drewGestureThickness = connectingPoints.getThickness()
+                    alreadyExistsDrewGestureThickness = true
+                }
                 result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(gestureMovesX, gestureMovesY, drewGesturePoints, drewGestureThickness))
-
+            }
             //ulozeni do finalResult
             finalResult.add(result)
         }
@@ -291,7 +298,7 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecesion(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
     {
         var mostSimilarIndex: Long = 0
         var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex.toInt()] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex.toInt()] * thicknessAlgorithmWeight)
