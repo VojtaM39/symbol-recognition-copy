@@ -8,17 +8,23 @@ import kotlinx.android.synthetic.main.activity_add.*
 import android.provider.ContactsContract
 import android.content.Intent
 import android.R.attr.data
+import android.app.Activity
 import android.util.Log
 
 
 class AddActivity : AppCompatActivity()
 {
     val PICK_CONTACT = 2015
+    private lateinit var  caller : Caller
     var contactId : Long = 0
     private var name = "Choose contact"
-
     private var height : Int = 0
     private var selected = false
+    private var edit = false
+    init {
+        caller  = Caller(this as Activity)
+        caller.setupPermissions()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
@@ -88,6 +94,9 @@ class AddActivity : AppCompatActivity()
             Log.e("MainActivity", "Failed to pick contact")
         }
     }
+
+
+
     private fun createGesture(contactId : Long) {
         var pointsX = drawView.getPointsX()
         var pointsY = drawView.getPointsY()
@@ -95,5 +104,15 @@ class AddActivity : AppCompatActivity()
         var endsOfMove = drawView.getEndsOfMove()
         var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
         drawManager.createGesture(contactId)
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        caller.handlePermission(requestCode,permissions,grantResults)
+        var gestureId : Long
+        if(intent.hasExtra("gestureId")) {
+            gestureId = intent.getLongExtra("gestureId", 0)
+            nameTxtView.setText(caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
+            Log.i("Contact name", caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
+            this.selected = true
+        }
     }
 }

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
         intent.putExtra("addingToDatabase", true)
+        intent.putExtra("gestureId", 1)
         startActivity(intent)
     }
 

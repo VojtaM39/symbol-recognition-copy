@@ -60,6 +60,11 @@ class DbManager
         return db!!.rawQuery("select * from " + table, null)
     }
 
+    fun queryOneWithWhere(table : String, where : String) : Cursor {
+        return db!!.rawQuery("select * from " + table + " where " + where, null)
+    }
+
+
 
 /**
     fun deleteContacts(selection: String, selectionArgs: Array<String>): Int {
