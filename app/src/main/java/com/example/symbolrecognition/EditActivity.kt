@@ -10,6 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_edit.*
+import android.widget.Toast
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+
+//TODO strings.xml
 
 class EditActivity : AppCompatActivity()
 {
@@ -226,7 +231,18 @@ class EditActivity : AppCompatActivity()
     }
     private fun deleteContact(contact: Contact)
     {
-
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Delete gesture")
+        builder.setMessage("Are you sure you want to delete gesture?")
+        builder.setCancelable(false)
+        builder.setPositiveButton("Delete",
+            DialogInterface.OnClickListener
+            {
+                dialog, which -> Toast.makeText(applicationContext,"Gesture deleted", Toast.LENGTH_SHORT).show()
+                //do something
+            })
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 
     private fun showContactNameToast(contact: String?)

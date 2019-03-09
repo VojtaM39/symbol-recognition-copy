@@ -35,6 +35,7 @@ class AddActivity : AppCompatActivity()
         }
 
         if(intent.hasExtra("gestureId")) {
+            title = "Edit gesture" //nastavi nadpis na Edit gesture
             var gestureId : Long
             gestureId = intent.getIntExtra("gestureId",0).toLong()
             nameTxtView.setText(caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
