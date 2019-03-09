@@ -11,24 +11,18 @@ import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_edit.*
 
-
-
 class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
-    //private lateinit var name: String
-    /*private var editOnClick: Boolean*/
-    private lateinit var  caller : Caller
-    init
-    {
-        //this.name = ""
-        //this.editOnClick = getExtra()
-    }
-
+    private lateinit var caller : Caller
+    private var editOnClick: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+        editOnClick = intent.getBooleanExtra("editOnClick", true)
+        if(!editOnClick)
+            title = "Delete"
 
         caller = Caller(this)
         caller.setupPermissions()
@@ -72,14 +66,6 @@ class EditActivity : AppCompatActivity()
     override fun onResume() {
         super.onResume()
         loadQueryAll()
-    }
-
-    private fun getExtra(): Boolean
-    {
-        val editOnClick: Boolean
-        val extras = intent.extras
-        editOnClick = extras.getBoolean("editOnClick")
-        return editOnClick
     }
 
     fun loadQueryAll() {
@@ -199,8 +185,13 @@ class EditActivity : AppCompatActivity()
             vh.tvName.text = mContact.contactName
 
             vh.tvName.setOnClickListener {
-                //updateContact(mContact)
-                showContactNameToast(mContact.contactName)
+
+                if(editOnClick)
+                    updateContact(mContact)
+                else
+                    deleteContact(mContact)
+
+                //showContactNameToast(mContact.contactName)
             }
             /*
             vh.ivDelete.setOnClickListener {
@@ -228,12 +219,14 @@ class EditActivity : AppCompatActivity()
 
     private fun updateContact(contact: Contact)
     {
-        /*
         var intent = Intent(this, AddActivity::class.java)
-        intent.putExtra("MainActId", contact.gesturesId)
-        intent.putExtra("MainActName", contact.contactName)
+        intent.putExtra("gestureId", contact.gesturesId)
+        intent.putExtra("contactName", contact.contactName)
         startActivity(intent)
-        */
+    }
+    private fun deleteContact(contact: Contact)
+    {
+
     }
 
     private fun showContactNameToast(contact: String?)
