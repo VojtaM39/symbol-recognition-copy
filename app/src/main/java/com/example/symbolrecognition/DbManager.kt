@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import android.widget.Toast
 
 class DbManager
@@ -61,7 +62,9 @@ class DbManager
     }
 
     fun queryOneWithWhere(table : String, where : String) : Cursor {
-        return db!!.rawQuery("select * from " + table + " where " + where, null)
+        var query = "select * from " + table + " where " + where
+        Log.i("Query",query)
+        return db!!.rawQuery(query, null)
     }
 
 

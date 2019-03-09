@@ -25,13 +25,21 @@ class AddActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
 
-        caller  = Caller(this as Activity)
+        caller  = Caller(this)
         caller.setupPermissions()
 
         nameTxtView.setText(name)
         val observer = drawView.getViewTreeObserver()
         observer.addOnGlobalLayoutListener {
             height = drawView.height
+        }
+
+        if(intent.hasExtra("gestureId")) {
+            var gestureId : Long
+            gestureId = intent.getIntExtra("gestureId",0).toLong()
+            nameTxtView.setText(caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
+            Log.i("Contact name", caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
+            this.selected = true
         }
 
         contactPickerBtn.setOnClickListener()
@@ -108,11 +116,6 @@ class AddActivity : AppCompatActivity()
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
         var gestureId : Long
-        if(intent.hasExtra("gestureId")) {
-            gestureId = intent.getLongExtra("gestureId", 0)
-            nameTxtView.setText(caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
-            Log.i("Contact name", caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
-            this.selected = true
-        }
+
     }
 }
