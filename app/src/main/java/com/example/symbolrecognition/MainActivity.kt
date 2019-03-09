@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        this.databaseTester = DatabaseTester(this)
         /**
         caller = Caller(7, this)
         caller.setupPermissions()
@@ -31,8 +32,7 @@ class MainActivity : AppCompatActivity() {
             caller.run()
         }
         */
-        databaseTester = DatabaseTester(this)
-        databaseTester.logGestures()
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -44,16 +44,21 @@ class MainActivity : AppCompatActivity() {
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
         intent.putExtra("addingToDatabase", true)
-        intent.putExtra("gestureId", 1)
+       // intent.putExtra("gestureId", 1)
         startActivity(intent)
     }
 
     fun launchDrawingActivity(view: View)
     {
-
+        /**
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
+        */
+        databaseTester.logPoints()
+        databaseTester.logRatios()
+        databaseTester.logLines()
+        databaseTester.logGestures()
     }
 
     fun launchEditActivity(view: View)

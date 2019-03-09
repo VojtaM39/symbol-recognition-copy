@@ -111,15 +111,6 @@ class DrawManager {
         insertLinesToDatabase(gestureId)
     }
 
-
-    private fun insertContactToDatabase(name : String, phoneNumber : String) : Long {
-        var values = ContentValues()
-        values.put("Name", name)
-        values.put("PhoneNumber", phoneNumber)
-        val contactId : Long = dbManager.insert(values, Constants.CONTACTS_TABLE)
-        Log.i("Inserting","Contact inserted")
-        return contactId
-    }
     private fun insertGestureToDatabase(contactId : Long) : Long {
         var values = ContentValues()
         values.put("contact_id", contactId)

@@ -115,7 +115,6 @@ class AddActivity : AppCompatActivity()
     }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
-        var gestureId : Long
 
     }
 }

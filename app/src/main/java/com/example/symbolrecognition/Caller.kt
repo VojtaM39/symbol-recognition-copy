@@ -31,38 +31,29 @@ class Caller {
      * param returnValue: "number", "name"
      */
     fun getContactDetails(contactId: Int, returnValue : String) : String{
-        var result = ""
-        Log.d("Details", "---")
-        Log.d("Details", "Contact : $contactId")
+
+
+        val myPhoneUri = Uri.withAppendedPath(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI, contactId.toString())
         val phoneCursor = context.contentResolver.query(
-            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            arrayOf(
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER
-            ),
-            Data.CONTACT_ID + "=?",
-            arrayOf(contactId.toString()), null
-        )
-
-        try {
-            val idxName = phoneCursor.getColumnIndexOrThrow(
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME
-            )
-            val idxPhone = phoneCursor.getColumnIndexOrThrow(
-                ContactsContract.CommonDataKinds.Phone.NUMBER
-            )
-
-            while (phoneCursor.moveToNext()) {
-                if(returnValue == "name")
-                    result = phoneCursor.getString(idxName)
-                else
-                    result =  phoneCursor.getString(idxPhone)
+            myPhoneUri, null, null, null, null)
+        phoneCursor.moveToFirst()
+        while (!phoneCursor.isAfterLast())
+        {
+            if(returnValue == "name") {
+                return phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
             }
-        } finally {
-            phoneCursor.close()
+            else {
+                return phoneCursor.getString(phoneCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            }
+            phoneCursor.moveToNext()
         }
-        return result
+        return ""
+
 }
+
+
+
 
     /**
      * Zdroj: https://pranaybhalerao.wordpress.com/2018/02/11/run-time-permission-in-androidkotlin/
