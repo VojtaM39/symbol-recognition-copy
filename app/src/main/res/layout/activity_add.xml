@@ -13,11 +13,11 @@
             android:layout_width="373dp"
             android:layout_height="wrap_content">
         <Button
-                android:text="Select contact"
+                android:text="@string/select_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/contactPickerBtn" android:layout_weight="1"/>
         <TextView
-                android:text="TextView"
+                android:text="@string/text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/nameTxtView" android:layout_weight="1"/>
     </LinearLayout>
@@ -37,11 +37,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <Button
-                android:text="Delete gesture"
+                android:text="@string/delete_gesture"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/deleteBtn" android:layout_weight="1"/>
         <Button
-                android:text="Create"
+                android:text="@string/create"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" android:id="@+id/createBtn" android:layout_weight="1"/>
     </LinearLayout>

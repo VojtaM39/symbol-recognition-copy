@@ -10,25 +10,24 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kotlinx.android.synthetic.main.activity_edit.*
+import android.widget.Toast
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
 
-
+//TODO strings.xml
 
 class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
-    //private lateinit var name: String
-    /*private var editOnClick: Boolean*/
-    private lateinit var  caller : Caller
-    init
-    {
-        //this.name = ""
-        //this.editOnClick = getExtra()
-    }
-
+    private lateinit var caller : Caller
+    private var editOnClick: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+        editOnClick = intent.getBooleanExtra("editOnClick", true)
+        if(!editOnClick)
+            title = "Delete"
 
         caller = Caller(this)
         caller.setupPermissions()
@@ -72,14 +71,6 @@ class EditActivity : AppCompatActivity()
     override fun onResume() {
         super.onResume()
         loadQueryAll()
-    }
-
-    private fun getExtra(): Boolean
-    {
-        val editOnClick: Boolean
-        val extras = intent.extras
-        editOnClick = extras.getBoolean("editOnClick")
-        return editOnClick
     }
 
     fun loadQueryAll() {
@@ -199,8 +190,13 @@ class EditActivity : AppCompatActivity()
             vh.tvName.text = mContact.contactName
 
             vh.tvName.setOnClickListener {
-                //updateContact(mContact)
-                showContactNameToast(mContact.contactName)
+
+                if(editOnClick)
+                    updateContact(mContact)
+                else
+                    deleteContact(mContact)
+
+                //showContactNameToast(mContact.contactName)
             }
             /*
             vh.ivDelete.setOnClickListener {
@@ -228,12 +224,25 @@ class EditActivity : AppCompatActivity()
 
     private fun updateContact(contact: Contact)
     {
-        /*
         var intent = Intent(this, AddActivity::class.java)
-        intent.putExtra("MainActId", contact.gesturesId)
-        intent.putExtra("MainActName", contact.contactName)
+        intent.putExtra("gestureId", contact.gesturesId)
+        intent.putExtra("contactName", contact.contactName)
         startActivity(intent)
-        */
+    }
+    private fun deleteContact(contact: Contact)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Delete gesture")
+        builder.setMessage("Are you sure you want to delete gesture?")
+        builder.setCancelable(false)
+        builder.setPositiveButton("Delete",
+            DialogInterface.OnClickListener
+            {
+                dialog, which -> Toast.makeText(applicationContext,"Gesture deleted", Toast.LENGTH_SHORT).show()
+                //do something
+            })
+        builder.setNegativeButton("Cancel", null)
+        builder.show()
     }
 
     private fun showContactNameToast(contact: String?)
