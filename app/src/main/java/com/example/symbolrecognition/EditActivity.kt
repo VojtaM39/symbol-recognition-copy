@@ -17,13 +17,10 @@ class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
     private var name: String
-    private var caller : Caller
     /*private var editOnClick: Boolean*/
-
+    private lateinit var  caller : Caller
     init
     {
-        caller = Caller(this)
-        caller.setupPermissions()
         this.name = ""
         //this.editOnClick = getExtra()
     }
@@ -33,7 +30,8 @@ class EditActivity : AppCompatActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
 
-
+        caller = Caller(this)
+        caller.setupPermissions()
 
 //        listContacts.add(Contact(1, "JavaSampleApproach", "Java technology, Spring Framework - approach to Java by Sample."))
 //        listContacts.add(Contact(2, "Kotlin Android Tutorial", "Create tutorial for people to learn Kotlin Android. Kotlin is now an official language on Android. It's expressive, concise, and powerful. Best of all, it's interoperable with our existing Android languages and runtime."))
@@ -196,10 +194,10 @@ class EditActivity : AppCompatActivity()
 
             vh.tvName.text = mContact.contactName
 
-            /*vh.ivEdit.setOnClickListener {
+            vh.tvName.setOnClickListener {
                 updateContact(mContact)
             }
-
+            /*
             vh.ivDelete.setOnClickListener {
                 var dbManager = ContactDbManager(this.context!!)
                 val selectionArgs = arrayOf(mContact.id.toString())
@@ -223,11 +221,15 @@ class EditActivity : AppCompatActivity()
         }
     }
 
-    private fun updateContact(contact: Contact) {
+    private fun updateContact(contact: Contact)
+    {
+        Toast.makeText(this, "praves klikl na $contact", Toast.LENGTH_SHORT).show()
+        /*
         var intent = Intent(this, AddActivity::class.java)
         intent.putExtra("MainActId", contact.gesturesId)
         intent.putExtra("MainActName", contact.contactName)
         startActivity(intent)
+        */
     }
 
     private class ViewHolder(view: View?) {

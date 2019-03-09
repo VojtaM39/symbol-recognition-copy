@@ -34,9 +34,11 @@ class MainActivity : AppCompatActivity() {
         databaseTester = DatabaseTester(this)
         databaseTester.logGestures()
     }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
     }
+
 
     fun launchAddActivity(view: View)
     {

@@ -21,13 +21,13 @@ class AddActivity : AppCompatActivity()
     private var height : Int = 0
     private var selected = false
     private var edit = false
-    init {
-        caller  = Caller(this as Activity)
-        caller.setupPermissions()
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
+
+        caller  = Caller(this as Activity)
+        caller.setupPermissions()
+
         nameTxtView.setText(name)
         val observer = drawView.getViewTreeObserver()
         observer.addOnGlobalLayoutListener {
