@@ -16,12 +16,12 @@ import kotlinx.android.synthetic.main.activity_edit.*
 class EditActivity : AppCompatActivity()
 {
     private var listContacts = ArrayList<Contact>()
-    private var name: String
+    //private lateinit var name: String
     /*private var editOnClick: Boolean*/
     private lateinit var  caller : Caller
     init
     {
-        this.name = ""
+        //this.name = ""
         //this.editOnClick = getExtra()
     }
 
@@ -94,7 +94,8 @@ class EditActivity : AppCompatActivity()
             {
                 val gesturesId = cursor.getInt(cursor.getColumnIndex(Constants.GESTURES_ID))
                 val gesturesContactId = cursor.getInt(cursor.getColumnIndex(Constants.GESTURES_CONTACT_ID))
-                caller.getContactName(gesturesContactId)
+                var name = caller.getContactName(gesturesContactId)
+                //var name = caller.getNameByContactId(gesturesContactId.toString())
 
                 //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
                 listContacts.add(Contact(gesturesId, name))
@@ -195,7 +196,8 @@ class EditActivity : AppCompatActivity()
             vh.tvName.text = mContact.contactName
 
             vh.tvName.setOnClickListener {
-                updateContact(mContact)
+                //updateContact(mContact)
+                showContactNameToast(mContact.contactName)
             }
             /*
             vh.ivDelete.setOnClickListener {
@@ -223,13 +225,17 @@ class EditActivity : AppCompatActivity()
 
     private fun updateContact(contact: Contact)
     {
-        Toast.makeText(this, "praves klikl na $contact", Toast.LENGTH_SHORT).show()
         /*
         var intent = Intent(this, AddActivity::class.java)
         intent.putExtra("MainActId", contact.gesturesId)
         intent.putExtra("MainActName", contact.contactName)
         startActivity(intent)
         */
+    }
+
+    private fun showContactNameToast(contact: String?)
+    {
+        Toast.makeText(this, "praves klikl na $contact", Toast.LENGTH_SHORT).show()
     }
 
     private class ViewHolder(view: View?) {

@@ -34,7 +34,7 @@ class Caller {
         var result = ""
         Log.d("Details", "---")
         Log.d("Details", "Contact : $contactId")
-        val phoneCursor = context.getContentResolver().query(
+        val phoneCursor = context.contentResolver.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
             arrayOf(
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
@@ -136,10 +136,10 @@ class Caller {
         val selection = "$cContactIdString = ? "
         val selectionArgs = arrayOf(contactId)
 
-        val cursor = context.getContentResolver().query(cCONTACT_CONTENT_URI, null, selection, selectionArgs, null)
-        if (cursor != null && cursor.getCount() > 0) {
+        val cursor = context.contentResolver.query(cCONTACT_CONTENT_URI, null, selection, selectionArgs, null)
+        if (cursor != null && cursor.count > 0) {
             cursor.moveToFirst()
-            while (cursor != null && cursor.isAfterLast() === false) {
+            while (cursor != null && cursor.isAfterLast === false) {
                 if (cursor.getColumnIndex(cContactIdString) >= 0) {
                     if (contactId == cursor.getString(cursor.getColumnIndex(cContactIdString))) {
                         val name = cursor.getString(cursor.getColumnIndex(cDisplayNameColumn))

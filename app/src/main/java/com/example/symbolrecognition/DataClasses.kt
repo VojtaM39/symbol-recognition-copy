@@ -69,4 +69,3 @@ data class Line(val x1 : Short, val y1 : Short, val x2 : Short,val y2 : Short) {
 data class RatioResult(var id:Long, var ratioX : Float, var ratioY : Float)
 data class LineResult(var id:Long, var lines: MutableList<Line>)
 data class AlgorithmResult(var id:Long, var result : Float)
-data class GestureValues(var id: Long, var DAValue: Float,/* var LDValue: Float, */var ThicknessValue: Float)
