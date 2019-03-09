@@ -21,6 +21,8 @@ class AddActivity : AppCompatActivity()
     private var height : Int = 0
     private var selected = false
     private var edit = false
+    private var editingGestureId : Long = 0
+    private var successSaveToast = "Contact was created successfully"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
@@ -35,10 +37,13 @@ class AddActivity : AppCompatActivity()
         }
 
         if(intent.hasExtra("gestureId")) {
+            this.successSaveToast = "Contact was updated successfully"
+            createBtn.text = "update"
+            contactPickerBtn.isEnabled = false
             var gestureId : Long
-            gestureId = intent.getIntExtra("gestureId",0).toLong()
-            nameTxtView.setText(caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
-            Log.i("Contact name", caller.getNameByContactId(caller.getContactIdByGestureId(gestureId).toString()))
+            this.editingGestureId = intent.getIntExtra("gestureId",0).toLong()
+            nameTxtView.setText(caller.getContactName(caller.getContactIdByGestureId(this.editingGestureId)))
+            Log.i("Contact name", caller.getNameByContactId(caller.getContactIdByGestureId(this.editingGestureId).toString()))
             this.selected = true
         }
 
@@ -61,10 +66,21 @@ class AddActivity : AppCompatActivity()
                 Toast.makeText(this, "You have to fill contact and draw gesture.",Toast.LENGTH_SHORT).show()
             }
             else {
-                createGesture(contactId)
-                Toast.makeText(this, "Gesture was created successfully.",Toast.LENGTH_SHORT).show()
+                var pointsX = drawView.getPointsX()
+                var pointsY = drawView.getPointsY()
+                var touchCount = drawView.getTouches()
+                var endsOfMove = drawView.getEndsOfMove()
+                var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
+                if(!intent.hasExtra("gestureId")) {
+                    drawManager.createGesture(contactId)
+                }
+                else {
+                    drawManager.updateGesture(intent.getLongExtra("gesture_id", 0))
+                }
+                Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
+
             }
         }
 
@@ -104,15 +120,6 @@ class AddActivity : AppCompatActivity()
     }
 
 
-
-    private fun createGesture(contactId : Long) {
-        var pointsX = drawView.getPointsX()
-        var pointsY = drawView.getPointsY()
-        var touchCount = drawView.getTouches()
-        var endsOfMove = drawView.getEndsOfMove()
-        var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
-        drawManager.createGesture(contactId)
-    }
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         caller.handlePermission(requestCode,permissions,grantResults)
 

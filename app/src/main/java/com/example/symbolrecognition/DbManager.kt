@@ -61,12 +61,16 @@ class DbManager
         return db!!.rawQuery("select * from " + table, null)
     }
 
-    fun queryOneWithWhere(table : String, where : String) : Cursor {
+    fun queryWithWhere(table : String, where : String) : Cursor {
         var query = "select * from " + table + " where " + where
-        Log.i("Query",query)
         return db!!.rawQuery(query, null)
     }
 
+    fun delete(selection: String, selectionArgs: Array<String>, table : String): Int {
+
+        val count = db!!.delete(table, selection, selectionArgs)
+        return count
+    }
 
 
 /**

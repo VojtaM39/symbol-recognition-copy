@@ -117,9 +117,6 @@ class Caller {
      * https://stackoverflow.com/questions/9644704/how-to-get-specific-contact-number-by-using-contact-id
      */
     fun getNameByContactId(contactId: String) : String{
-
-
-
         val cContactIdString = ContactsContract.Contacts._ID
         val cCONTACT_CONTENT_URI = ContactsContract.Contacts.CONTENT_URI
         val cDisplayNameColumn = ContactsContract.Contacts.DISPLAY_NAME
@@ -149,15 +146,11 @@ class Caller {
     public fun getContactIdByGestureId(gestureId : Long) : Int {
         val dbManager = DbManager(context)
         var result = 0
-        val cursor = dbManager.queryOneWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_CONTACT_ID + " = " + gestureId)
+        val cursor = dbManager.queryWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_ID + " = " + gestureId)
         if (cursor != null) {
             cursor.moveToFirst()
-            while (cursor.moveToNext()) {
-                for(index in Constants.GESTURES_COLUMNS) {
-                    result = cursor.getString(cursor.getColumnIndex(index)).toInt()
+                    result = cursor.getString(cursor.getColumnIndex(Constants.GESTURES_CONTACT_ID)).toInt()
                     Log.i("Contact_Id", result.toString())
-                }
-            }
         }
         cursor.close()
         return result

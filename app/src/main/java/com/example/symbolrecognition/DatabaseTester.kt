@@ -27,6 +27,26 @@ class DatabaseTester {
         cursor.close()
     }
 
+    private fun logAllWithWhere(table: String, columns : List<String>, where : String) {
+        Log.i("DbLog", "Log of table " + table)
+        val cursor = dbManager.queryWithWhere(table, where)
+        if (cursor != null) {
+            cursor.moveToFirst()
+            while (cursor.moveToNext()) {
+                var result = ""
+                for(index in columns) {
+                    result += cursor.getString(cursor.getColumnIndex(index)) + "| "
+                }
+                Log.i("Row", result)
+            }
+        }
+        cursor.close()
+    }
+
+    public fun logGestuesWithWhere(where : String) {
+        logAllWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_COLUMNS, where)
+    }
+
     public fun logGestures() {
         logAllRows(Constants.GESTURES_TABLE, Constants.GESTURES_COLUMNS)
     }

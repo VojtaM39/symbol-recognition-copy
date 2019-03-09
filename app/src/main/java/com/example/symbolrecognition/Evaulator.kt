@@ -222,7 +222,7 @@ class Evaulator {
     {
         var dbManager = DbManager(context)
         var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
-        val cursor = dbManager.queryOneWithWhere(Constants.POINTS_TABLE, where) //upravit
+        val cursor = dbManager.queryWithWhere(Constants.POINTS_TABLE, where) //upravit
         var arrMovesX = arrayOf<Short>()
         var arrMovesY = arrayOf<Short>()
         var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0

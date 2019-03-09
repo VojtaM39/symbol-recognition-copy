@@ -111,6 +111,23 @@ class DrawManager {
         insertLinesToDatabase(gestureId)
     }
 
+    public fun updateGesture(gestureId: Long) {
+        deleteByGestureId(gestureId, Constants.POINTS_TABLE)
+        deleteByGestureId(gestureId, Constants.RATIOS_TABLE)
+        deleteByGestureId(gestureId, Constants.LINES_TABLE)
+        insertPointsToDatabase(gestureId)
+        insertRatiosToDatabase(gestureId)
+        insertLinesToDatabase(gestureId)
+    }
+
+    public fun deleteGestureTest(gestureId: Long) {
+        dbManager.delete(Constants.GESTURES_ID + " = ?", arrayOf(gestureId.toString()), Constants.GESTURES_TABLE)
+    }
+
+    private fun deleteByGestureId(gestureId: Long, table : String) {
+        dbManager.delete( "gesture_id = ?", arrayOf(gestureId.toString()),table)
+    }
+
     private fun insertGestureToDatabase(contactId : Long) : Long {
         var values = ContentValues()
         values.put("contact_id", contactId)

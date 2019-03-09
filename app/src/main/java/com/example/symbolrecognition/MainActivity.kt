@@ -43,8 +43,7 @@ class MainActivity : AppCompatActivity() {
     fun launchAddActivity(view: View)
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
-        intent.putExtra("addingToDatabase", true)
-       // intent.putExtra("gestureId", 1)
+        intent.putExtra("gestureId", 5)
         startActivity(intent)
     }
 
@@ -56,9 +55,6 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         */
         databaseTester.logPoints()
-        databaseTester.logRatios()
-        databaseTester.logLines()
-        databaseTester.logGestures()
     }
 
     fun launchEditActivity(view: View)
