@@ -21,7 +21,7 @@ class Evaulator {
     private var drewGestureThickness = mutableListOf<Array<Short>>()
 
     //directionsAlgorithm
-    private val MAX_RATIO_DIFF = 0.35f
+    private val MAX_RATIO_DIFF = 0.2f
     //final decision
     private val directionsAlgorithmWeight = 0.3f
     private val thicknessAlgorithmWeight = 0.4f
@@ -86,12 +86,12 @@ class Evaulator {
         val cursor = dbManager.queryAll("Ratios")
         if (cursor != null) {
             cursor.moveToFirst()
-            while (cursor.moveToNext()) {
+            do {
                 id = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_GESTURE_ID)).toLong()
                 ratioX = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_X)).toFloat()
                 ratioY = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_Y)).toFloat()
                 result.add(RatioResult(id,ratioX,ratioY))
-            }
+            } while (cursor.moveToNext())
         }
         cursor.close()
         return result
@@ -358,48 +358,5 @@ class Evaulator {
         if(mostSimilarValue < minimalSimilarity)
             return null
         return mostSimilarIndex
-    }
-
-    private fun printPointsOfMutableList(connectedPoints: MutableList<Array<Short>>, thickness: MutableList<Array<Short>>)
-    {
-        var arr = arrayOf<Array<Short>>()
-        for(y in (0..50))
-        {
-            var helpArr = arrayOf<Short>()
-            for(x in (0..50))
-            {
-                helpArr += 0
-            }
-            arr += helpArr
-        }
-        for(i in 0..(connectedPoints[0].size - 1))
-        {
-            print("${connectedPoints[0][i]} ${connectedPoints[1][i]} / ")
-            arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1.toShort()
-        }
-        for(i in 0..(thickness[0].size - 1))
-        {
-            print("${thickness[0][i]} ${thickness[1][i]} / ")
-            arr[thickness[1][i].toInt()][thickness[0][i].toInt()] = 1.toShort()
-        }
-        /*
-        for(y in (0..SQUARE_SIZE))
-        {
-            for(x in (0..SQUARE_SIZE))
-            {
-                print("${arr[y][x]} ")
-            }
-            println()
-        }*/
-        var result: String
-        for(i in 0..arr.size - 1)
-        {
-            result = ""
-            for(j in 0..arr[i].size - 1)
-            {
-                result += arr[i][j].toString() + " "
-            }
-            Log.i("", result)
-        }
     }
 }
