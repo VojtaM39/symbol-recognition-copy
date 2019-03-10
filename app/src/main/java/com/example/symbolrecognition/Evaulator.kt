@@ -42,6 +42,8 @@ class Evaulator {
 
         //filtr pomoci directionsAlgorithmu
         var matchingGestures = getMatchingRatios()
+        if(matchingGestures.isEmpty())
+            return null
         for(matchingGesture in matchingGestures)
         {
             directionsAlgorithmValue += matchingGesture.result
@@ -246,8 +248,8 @@ class Evaulator {
 
                 if(moveNumber != index)
                 {
-                    gestureMovesX.add(moveNumber, arrMovesX)
-                    gestureMovesY.add(moveNumber, arrMovesY)
+                    gestureMovesX.add(index, arrMovesX)
+                    gestureMovesY.add(index, arrMovesY)
                     arrMovesX = arrayOf<Short>()
                     arrMovesY = arrayOf<Short>()
                     index = moveNumber
