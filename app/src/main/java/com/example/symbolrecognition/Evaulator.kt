@@ -23,8 +23,9 @@ class Evaulator {
     //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
     //final decision
-    private val directionsAlgorithmWeight = 0.35f
-    private val thicknessAlgorithmWeight: Float = 1 - directionsAlgorithmWeight //0.65f
+    private val directionsAlgorithmWeight = 0.3f
+    private val thicknessAlgorithmWeight = 0.4f
+    private val lengthAlgorithmWeight = 0.3f
     private val minimalSimilarity = 0.5f
 
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
@@ -39,6 +40,7 @@ class Evaulator {
         //var LDValue = arrayOf<Float>()
         var directionsAlgorithmValue = arrayOf<Float>()
         var thicknessAlgorithmValue = arrayOf<Float>()
+        var lengthAlgorithmValue = arrayOf<Float>()
         var matchingGesturesIds = mutableListOf<Long>()
 
         //filtr pomoci directionsAlgorithmu
@@ -59,12 +61,14 @@ class Evaulator {
         }*/
 
         //thicknessAlgorithm
-        var thicknessAlgorithmResults = getthicknessAlgorithmValues(matchingGesturesIds)
-        for(thicknessAlgorithmResult in thicknessAlgorithmResults)
-            thicknessAlgorithmValue += thicknessAlgorithmResult.result
+        var thicknessAlgorithmResults = getThicknessAlgorithmValues(matchingGesturesIds)
+        for(thicknessAlgorithmResult in thicknessAlgorithmResults) {
+            thicknessAlgorithmValue += thicknessAlgorithmResult.result1
+            lengthAlgorithmValue += thicknessAlgorithmResult.result2
+        }
 
         //vyber konecneho vysledku
-        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue, lengthAlgorithmValue)
         if(result == null)
             return null
         else
@@ -105,8 +109,8 @@ class Evaulator {
         //cyklus prochazi vsechny gesta v databazi a hleda podobne
         for(i in ratios.indices) {
             if((ratios[i].ratioX - ratioX).absoluteValue < MAX_RATIO_DIFF && (ratios[i].ratioY - ratioY).absoluteValue < MAX_RATIO_DIFF) {
-                var valueX = getdirectionsAlgorithmValue(ratios[i].ratioX, ratioX)
-                var valueY = getdirectionsAlgorithmValue(ratios[i].ratioY, ratioY)
+                var valueX = getAlgorithmValue(ratios[i].ratioX, ratioX)
+                var valueY = getAlgorithmValue(ratios[i].ratioY, ratioY)
                 var value: Float = (valueX + valueY) / 2
                 result.add(AlgorithmResult(ratios[i].id, value))
             }
@@ -117,12 +121,12 @@ class Evaulator {
     /**
      * Vrati pomer vysledku directionsAlgorithmu
      */
-    private fun getdirectionsAlgorithmValue(ratio1: Float, ratio2: Float): Float
+    private fun getAlgorithmValue(value1: Float, value2: Float): Float
     {
-        if(ratio1 >= ratio2)
-            return ratio2 / ratio1
+        if(value1 >= value2)
+            return value2 / value1
         else
-            return ratio1 / ratio2
+            return value1 / value2
     }
 
     /**
@@ -185,17 +189,19 @@ class Evaulator {
         return results
     }
 
-    private fun getthicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
+    private fun getThicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<Algorithm2Results>
     {
-        var finalResult = mutableListOf<AlgorithmResult>()
+        var finalResult = mutableListOf<Algorithm2Results>()
         var drewGestureLength = getGestureLength(movesX, movesY)
         var alreadyExistsDrewGestureThickness = false
 
         for(matchingGestureId in matchingGesturesIds)
         {
-            var result: AlgorithmResult
+            var result: Algorithm2Results
             getGestureFromDatabase(matchingGestureId)
             var databaseGestureLength = getGestureLength(gestureMovesX, gestureMovesY)
+
+            var gestureLengthRatio: Float = getAlgorithmValue(drewGestureLength, databaseGestureLength)
 
             if(drewGestureLength >= databaseGestureLength) //vetsi je prave nakreslene gesto
             {
@@ -203,7 +209,7 @@ class Evaulator {
                 var databaseGesturePoints = connectingPoints.connectPoints()
                 var databaseGestureThickness = connectingPoints.getThickness()
 
-                result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness))
+                result = Algorithm2Results(matchingGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness), gestureLengthRatio)
             }
             else //vetsi je gesto z databaze
             {
@@ -215,7 +221,7 @@ class Evaulator {
                     drewGestureThickness = connectingPoints.getThickness()
                     alreadyExistsDrewGestureThickness = true
                 }
-                result = AlgorithmResult(matchingGestureId, getRatioOfContainedPoints(gestureMovesX, gestureMovesY, drewGesturePoints, drewGestureThickness))
+                result = Algorithm2Results(matchingGestureId, getRatioOfContainedPoints(gestureMovesX, gestureMovesY, drewGesturePoints, drewGestureThickness), gestureLengthRatio)
             }
             //ulozeni do finalResult
             finalResult.add(result)
@@ -294,6 +300,7 @@ class Evaulator {
         for(i in thickness[0].indices)
             arr[thickness[1][i].toInt()][thickness[0][i].toInt()] = 1
 
+        /*
         var result: String
         for(i in 0..arr.size - 1)
         {
@@ -304,6 +311,7 @@ class Evaulator {
             }
             Log.i("", result)
         }
+        */
 
         for(i in movesX.indices)
         {
@@ -320,10 +328,10 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Int?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>, lengthAlgorithmValue: Array<Float>): Int?
     {
         var mostSimilarIndex: Int = 0
-        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight)
+        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight + (lengthAlgorithmValue[mostSimilarIndex] * lengthAlgorithmWeight))
         if(ids.size > 1)
         {
             for (currentIndex in 1..(ids.size - 1))
