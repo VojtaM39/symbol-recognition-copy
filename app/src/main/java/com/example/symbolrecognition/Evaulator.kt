@@ -336,7 +336,7 @@ class Evaulator {
         {
             for (currentIndex in 1..(ids.size - 1))
             {
-                var currentValue: Float = (directionsAlgorithmValue[currentIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[currentIndex] * thicknessAlgorithmWeight)
+                var currentValue: Float = (directionsAlgorithmValue[currentIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[currentIndex] * thicknessAlgorithmWeight + (lengthAlgorithmValue[mostSimilarIndex] * lengthAlgorithmWeight))
                 if(currentValue > mostSimilarValue)
                 {
                     mostSimilarValue = currentValue
