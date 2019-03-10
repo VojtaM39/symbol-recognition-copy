@@ -8,17 +8,11 @@ import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
 import android.view.View.OnTouchListener
 import android.widget.Toast
 import com.example.symbolrecognition.DrawView.OnDrawEndListener
-import android.view.Window
 import android.opengl.ETC1.getHeight
-import android.view.ViewTreeObserver
-
-
-
+import android.view.*
 
 
 class DrawingActivity : AppCompatActivity() {

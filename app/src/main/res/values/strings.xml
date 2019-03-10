@@ -7,4 +7,6 @@
     <string name="text_view">Text View</string>
     <string name="delete_gesture">Delete gesture</string>
     <string name="create">Create</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

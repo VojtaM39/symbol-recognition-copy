@@ -60,7 +60,6 @@ class AddActivity : AppCompatActivity()
 
         createBtn.setOnClickListener {
             //Uzivatel uz vybral kontakt
-            //TODO overit malovani
             if(!selected || !drawView.getDrew()) {
                 Log.i("Add", "Error add")
                 Toast.makeText(this, "You have to fill contact and draw gesture.",Toast.LENGTH_SHORT).show()

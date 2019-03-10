@@ -112,7 +112,6 @@ class DrawManager {
     }
 
     public fun updateGesture(gestureId: Long) {
-        //TODO mazani gesta
         dbManager.deleteGesturesData(gestureId)
         insertPointsToDatabase(gestureId)
         insertRatiosToDatabase(gestureId)
@@ -223,7 +222,6 @@ class DrawManager {
      * Metoda zvetsi/zmensi dane tahy na ctverec podle promenne SQUARE_SIZE
      */
     private fun resizeMovesHelper(movesBigger :MutableList<Array<Short>>, movesSmaller :MutableList<Array<Short>>) {
-        //TODO dodelat predelani velikosti
         var biggerMax : Short = movesMax(movesBigger)
         var biggerMin : Short = movesMin(movesBigger)
         var smallerMin : Short = movesMin(movesSmaller)
