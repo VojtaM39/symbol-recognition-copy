@@ -25,7 +25,7 @@ class Evaulator {
     //final decision
     private val directionsAlgorithmWeight = 0.35f
     private val thicknessAlgorithmWeight: Float = 1 - directionsAlgorithmWeight //0.65f
-    private val minimalSimilarity = 0.8f
+    private val minimalSimilarity = 0.5f
 
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
         this.context = context
