@@ -48,12 +48,11 @@ class MainActivity : AppCompatActivity() {
 
     fun launchDrawingActivity(view: View)
     {
-        /**
+
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
-        */
-        databaseTester.logPoints()
+
     }
 
     fun launchEditActivity(view: View)

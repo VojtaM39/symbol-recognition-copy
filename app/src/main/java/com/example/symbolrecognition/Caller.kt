@@ -19,7 +19,6 @@ import android.widget.Toast
 class Caller {
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
-    private var number : String = ""
     private var name : String = ""
     constructor(context: Context) {
         this.context = context
@@ -51,9 +50,6 @@ class Caller {
         return ""
 
 }
-
-
-
 
     /**
      * Zdroj: https://pranaybhalerao.wordpress.com/2018/02/11/run-time-permission-in-androidkotlin/
@@ -87,28 +83,29 @@ class Caller {
         }
     }
 
-    private fun getOneContact(contactId: Int) : String {
+    private fun getContactNumber(contactId: Int) : String {
         return getContactDetails(contactId, "number")
     }
 
     public fun getContactName(contactId : Int) : String {
         return getContactDetails(contactId, "name")
     }
-    private fun logContact() {
-        Log.i("Name:", this.name)
-        Log.i("Phone number:", this.number)
 
-    }
-
-    private fun call() {
+    fun call(number : String) {
         val intent = Intent(Intent.ACTION_DIAL)
         intent.data = Uri.parse("tel:$number")
         context.startActivity(intent)
     }
-    public fun run() {
-        logContact()
-        call()
+
+    fun call(gestureId : Long?) {
+        var number : String
+        number = getContactNumber(getContactIdByGestureId(gestureId!!))
+        val intent = Intent(Intent.ACTION_DIAL)
+        intent.data = Uri.parse("tel:$number")
+        context.startActivity(intent)
     }
+
+
     public fun getName() : String {
         return this.name
     }

@@ -63,6 +63,7 @@ class DbManager
 
     fun queryWithWhere(table : String, where : String) : Cursor {
         var query = "select * from " + table + " where " + where
+        Log.i("Query",query)
         return db!!.rawQuery(query, null)
     }
 

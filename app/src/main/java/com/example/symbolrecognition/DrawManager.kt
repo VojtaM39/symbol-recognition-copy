@@ -11,6 +11,7 @@ import android.gesture.Gesture
 import android.graphics.Point
 import android.view.Display
 import android.view.WindowManager
+import android.widget.Toast
 
 
 class DrawManager {
@@ -34,6 +35,7 @@ class DrawManager {
     private val lineDetector : LineDetector
     private val databaseTester : DatabaseTester
     private val evaulator : Evaulator
+    private val caller : Caller
     constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context, drawViewHeight : Int) {
         this.drawViewHeight = drawViewHeight
         this.context = context
@@ -59,6 +61,7 @@ class DrawManager {
         this.databaseTester = DatabaseTester(context)
         this.lineDetector = LineDetector(movesX, movesY)
         this.evaulator = Evaulator(context, movesX, movesY)
+        this.caller = Caller(context)
     }
 
   //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
@@ -97,7 +100,13 @@ class DrawManager {
 
     public fun run() {
         this.runAlgorithms(movesX,movesY)
-        //evaulator.run()
+        var result : Long? = evaulator.run()
+        if(result != null) {
+            this.caller.call(result)
+        }
+        else {
+            Toast.makeText(context, "Contact was not founded.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

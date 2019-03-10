@@ -1,7 +1,6 @@
 package com.example.symbolrecognition
 
 import android.content.Context
-import android.widget.Toast
 import java.lang.Math.pow
 import java.lang.Math.sqrt
 import kotlin.math.absoluteValue
@@ -34,7 +33,7 @@ class Evaulator {
         this.directionsAlgorithm = DirectionsAlgorithm(this.movesX, this.movesY)
         this.lineDetector = LineDetector(this.movesX, this.movesY)
     }
-    public fun run() {
+    public fun run() : Long?{
         //var LDValue = arrayOf<Float>()
         var directionsAlgorithmValue = arrayOf<Float>()
         var thicknessAlgorithmValue = arrayOf<Float>()
@@ -61,12 +60,8 @@ class Evaulator {
             thicknessAlgorithmValue += thicknessAlgorithmResult.result
 
         //vyber konecneho vysledku
-        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
-        var finalResult: Long?
-        if(result == null)
-            finalResult = null
-        else
-            finalResult = matchingGesturesIds[finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)!!.toInt()]
+        var finalResult: Long? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        return finalResult
     }
 
     /**
@@ -305,10 +300,10 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Int?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
     {
-        var mostSimilarIndex: Int = 0
-        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight)
+        var mostSimilarIndex: Long = 0
+        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex.toInt()] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex.toInt()] * thicknessAlgorithmWeight)
         if(ids.size > 1)
         {
             for (currentIndex in 1..(ids.size - 1))
@@ -317,14 +312,14 @@ class Evaulator {
                 if(currentValue > mostSimilarValue)
                 {
                     mostSimilarValue = currentValue
-                    mostSimilarIndex = currentIndex
+                    mostSimilarIndex = currentIndex.toLong()
                 }
                 else if(currentValue == mostSimilarValue)
                 {
-                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex])
+                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex.toInt()])
                     {
                         mostSimilarValue = currentValue
-                        mostSimilarIndex = currentIndex
+                        mostSimilarIndex = currentIndex.toLong()
                     }
                 }
             }
