@@ -21,10 +21,12 @@ class EditActivity : AppCompatActivity()
     private var listContacts = ArrayList<Contact>()
     private lateinit var caller : Caller
     private var editOnClick: Boolean = true
+    private lateinit var dbManager : DbManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit)
+        this.dbManager = DbManager(this)
         editOnClick = intent.getBooleanExtra("editOnClick", true)
         if(!editOnClick)
             title = "Delete"
@@ -238,8 +240,9 @@ class EditActivity : AppCompatActivity()
         builder.setPositiveButton("Delete",
             DialogInterface.OnClickListener
             {
-                dialog, which -> Toast.makeText(applicationContext,"Gesture deleted", Toast.LENGTH_SHORT).show()
-                //do something
+                dialog, which -> Toast.makeText(applicationContext,"Gesture deleted,ID: " + contact.gesturesId, Toast.LENGTH_SHORT).show()
+                dbManager.deleteGesture(contact.gesturesId!!.toLong())
+                //TODO dodelat delete vseho...
             })
         builder.setNegativeButton("Cancel", null)
         builder.show()

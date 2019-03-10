@@ -112,9 +112,8 @@ class DrawManager {
     }
 
     public fun updateGesture(gestureId: Long) {
-        deleteByGestureId(gestureId, Constants.POINTS_TABLE)
-        deleteByGestureId(gestureId, Constants.RATIOS_TABLE)
-        deleteByGestureId(gestureId, Constants.LINES_TABLE)
+        //TODO mazani gesta
+        dbManager.deleteGesturesData(gestureId)
         insertPointsToDatabase(gestureId)
         insertRatiosToDatabase(gestureId)
         insertLinesToDatabase(gestureId)
@@ -125,7 +124,7 @@ class DrawManager {
     }
 
     private fun deleteByGestureId(gestureId: Long, table : String) {
-        dbManager.delete( "gesture_id = ?", arrayOf(gestureId.toString()),table)
+        dbManager.delete("gesture_id=?",arrayOf(gestureId.toString()),table)
     }
 
     private fun insertGestureToDatabase(contactId : Long) : Long {

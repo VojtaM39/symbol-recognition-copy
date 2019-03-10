@@ -71,6 +71,17 @@ class DbManager
         val count = db!!.delete(table, selection, selectionArgs)
         return count
     }
+    fun deleteGesture(gestureId : Long) {
+        db!!.delete(Constants.GESTURES_TABLE,Constants.GESTURES_ID + " = ?", arrayOf(gestureId.toString()))
+        db!!.delete(Constants.POINTS_TABLE,Constants.POINTS_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+        db!!.delete(Constants.LINES_TABLE,Constants.LINES_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+        db!!.delete(Constants.RATIOS_TABLE,Constants.RATIOS_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+    }
+    fun deleteGesturesData(gestureId: Long) {
+        db!!.delete(Constants.POINTS_TABLE,Constants.POINTS_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+        db!!.delete(Constants.LINES_TABLE,Constants.LINES_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+        db!!.delete(Constants.RATIOS_TABLE,Constants.RATIOS_GESTURE_ID + " = ?", arrayOf(gestureId.toString()))
+    }
 
 
 /**

@@ -75,7 +75,7 @@ class AddActivity : AppCompatActivity()
                     drawManager.createGesture(contactId)
                 }
                 else {
-                    drawManager.updateGesture(intent.getLongExtra("gesture_id", 0))
+                    drawManager.updateGesture(this.editingGestureId)
                 }
                 Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, MainActivity::class.java)

@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
     fun launchAddActivity(view: View)
     {
         var intent: Intent = Intent(this, AddActivity::class.java)
-        intent.putExtra("gestureId", 5)
         startActivity(intent)
     }
 
