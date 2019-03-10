@@ -105,7 +105,7 @@ class DrawManager {
             this.caller.call(result)
         }
         else {
-            Toast.makeText(context, "Contact was not founded.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Contact was not found.", Toast.LENGTH_SHORT).show()
         }
     }
 

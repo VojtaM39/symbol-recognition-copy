@@ -242,6 +242,7 @@ class EditActivity : AppCompatActivity()
             {
                 dialog, which -> Toast.makeText(applicationContext,"Gesture deleted,ID: " + contact.gesturesId, Toast.LENGTH_SHORT).show()
                 dbManager.deleteGesture(contact.gesturesId!!.toLong())
+                loadQueryAll()
                 //TODO dodelat delete vseho...
             })
         builder.setNegativeButton("Cancel", null)
