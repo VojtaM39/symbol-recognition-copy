@@ -1,6 +1,7 @@
 package com.example.symbolrecognition
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import java.lang.Math.pow
 import java.lang.Math.sqrt
@@ -42,7 +43,7 @@ class Evaulator {
 
         //filtr pomoci directionsAlgorithmu
         var matchingGestures = getMatchingRatios()
-        if(matchingGestures.isEmpty())
+        if(matchingGestures.isEmpty()) //zaridime, ze do nasledujicich radku nikdy nevstoupi pole s gesty, ktere by bylo prazdne
             return null
         for(matchingGesture in matchingGestures)
         {
@@ -187,8 +188,6 @@ class Evaulator {
     private fun getthicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
         var finalResult = mutableListOf<AlgorithmResult>()
-        if(matchingGesturesIds.isEmpty())
-            return finalResult
         var drewGestureLength = getGestureLength(movesX, movesY)
         var alreadyExistsDrewGestureThickness = false
 
@@ -290,14 +289,25 @@ class Evaulator {
                 helpArr += 0
             arr += helpArr
         }
-        for(i in 0..(connectedPoints[0].size - 1))
+        for(i in connectedPoints[0].indices)
             arr[connectedPoints[1][i].toInt()][connectedPoints[0][i].toInt()] = 1
-        for(i in 0..(thickness[0].size - 1))
+        for(i in thickness[0].indices)
             arr[thickness[1][i].toInt()][thickness[0][i].toInt()] = 1
 
-        for(i in 0..(movesX.size - 1))
+        var result: String
+        for(i in 0..arr.size - 1)
         {
-            for (j in 0..(movesX[i].size - 1))
+            result = ""
+            for(j in 0..arr[i].size - 1)
+            {
+                result += arr[i][j].toString() + " "
+            }
+            Log.i("", result)
+        }
+
+        for(i in movesX.indices)
+        {
+            for (j in movesX[i].indices)
             {
                 if (arr[movesY[i][j].toInt()][movesX[i][j].toInt()] == 1)
                 {
