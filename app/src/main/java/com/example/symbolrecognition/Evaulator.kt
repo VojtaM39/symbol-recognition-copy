@@ -187,7 +187,7 @@ class Evaulator {
     private fun getthicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
         var finalResult = mutableListOf<AlgorithmResult>()
-        if(matchingGesturesIds.size == 0)
+        if(matchingGesturesIds.isEmpty())
             return finalResult
         var drewGestureLength = getGestureLength(movesX, movesY)
         var alreadyExistsDrewGestureThickness = false
