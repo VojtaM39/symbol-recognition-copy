@@ -1,6 +1,7 @@
 package com.example.symbolrecognition
 
 import android.content.Context
+import android.widget.Toast
 import java.lang.Math.pow
 import java.lang.Math.sqrt
 import kotlin.math.absoluteValue
@@ -33,7 +34,7 @@ class Evaulator {
         this.directionsAlgorithm = DirectionsAlgorithm(this.movesX, this.movesY)
         this.lineDetector = LineDetector(this.movesX, this.movesY)
     }
-    public fun run() : Long?{
+    public fun run(): Long? {
         //var LDValue = arrayOf<Float>()
         var directionsAlgorithmValue = arrayOf<Float>()
         var thicknessAlgorithmValue = arrayOf<Float>()
@@ -60,8 +61,11 @@ class Evaulator {
             thicknessAlgorithmValue += thicknessAlgorithmResult.result
 
         //vyber konecneho vysledku
-        var finalResult: Long? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
-        return finalResult
+        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        if(result == null)
+            return null
+        else
+            return matchingGesturesIds[result]
     }
 
     /**
@@ -75,13 +79,12 @@ class Evaulator {
         val cursor = dbManager.queryAll("Ratios")
         if (cursor != null) {
             cursor.moveToFirst()
-            do {
+            while (cursor.moveToNext()) {
                 id = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_GESTURE_ID)).toLong()
                 ratioX = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_X)).toFloat()
                 ratioY = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_Y)).toFloat()
                 result.add(RatioResult(id,ratioX,ratioY))
             }
-            while (cursor.moveToNext())
         }
         cursor.close()
         return result
@@ -182,6 +185,8 @@ class Evaulator {
     private fun getthicknessAlgorithmValues(matchingGesturesIds: MutableList<Long>): MutableList<AlgorithmResult>
     {
         var finalResult = mutableListOf<AlgorithmResult>()
+        if(matchingGesturesIds.size == 0)
+            return finalResult
         var drewGestureLength = getGestureLength(movesX, movesY)
         var alreadyExistsDrewGestureThickness = false
 
@@ -222,6 +227,8 @@ class Evaulator {
      */
     private fun getGestureFromDatabase(gestureId: Long)
     {
+        gestureMovesX = mutableListOf<Array<Short>>()
+        gestureMovesY = mutableListOf<Array<Short>>()
         var dbManager = DbManager(context)
         var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
         val cursor = dbManager.queryWithWhere(Constants.POINTS_TABLE, where) //upravit
@@ -301,10 +308,10 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Int?
     {
-        var mostSimilarIndex: Long = 0
-        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex.toInt()] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex.toInt()] * thicknessAlgorithmWeight)
+        var mostSimilarIndex: Int = 0
+        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight)
         if(ids.size > 1)
         {
             for (currentIndex in 1..(ids.size - 1))
@@ -313,14 +320,14 @@ class Evaulator {
                 if(currentValue > mostSimilarValue)
                 {
                     mostSimilarValue = currentValue
-                    mostSimilarIndex = currentIndex.toLong()
+                    mostSimilarIndex = currentIndex
                 }
                 else if(currentValue == mostSimilarValue)
                 {
-                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex.toInt()])
+                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex])
                     {
                         mostSimilarValue = currentValue
-                        mostSimilarIndex = currentIndex.toLong()
+                        mostSimilarIndex = currentIndex
                     }
                 }
             }
