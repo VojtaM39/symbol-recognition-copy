@@ -21,7 +21,7 @@ class Evaulator {
     private var drewGestureThickness = mutableListOf<Array<Short>>()
 
     //directionsAlgorithm
-    private val MAX_RATIO_DIFF = 0.2f
+    private val MAX_RATIO_DIFF = 0.35f
     //final decision
     private val directionsAlgorithmWeight = 0.35f
     private val thicknessAlgorithmWeight: Float = 1 - directionsAlgorithmWeight //0.65f
