@@ -43,7 +43,7 @@ class Evaulator {
 
         //filtr pomoci directionsAlgorithmu
         var matchingGestures = getMatchingRatios()
-        if(matchingGestures.isEmpty()) //zaridime, ze do nasledujicich radku nikdy nevstoupi pole s gesty, ktere by bylo prazdne
+        if(matchingGestures.isEmpty())
             return null
         for(matchingGesture in matchingGestures)
         {
