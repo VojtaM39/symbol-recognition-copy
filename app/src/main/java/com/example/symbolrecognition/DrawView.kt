@@ -36,7 +36,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     fun resetTimer() {
         if(useTimer) {
             this.removeCallbacks(myRunnable)
-            this.postDelayed(myRunnable, 3000)
+            this.postDelayed(myRunnable, 500)
         }
     }
     val myRunnable = Runnable {
