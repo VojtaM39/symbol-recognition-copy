@@ -1,6 +1,7 @@
 package com.example.symbolrecognition
 
 import android.content.Context
+import android.widget.Toast
 import java.lang.Math.pow
 import java.lang.Math.sqrt
 import kotlin.math.absoluteValue
@@ -60,7 +61,12 @@ class Evaulator {
             thicknessAlgorithmValue += thicknessAlgorithmResult.result
 
         //vyber konecneho vysledku
-        var finalResult: Long? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)
+        var finalResult: Long?
+        if(result == null)
+            finalResult = null
+        else
+            finalResult = matchingGesturesIds[finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue)!!.toInt()]
     }
 
     /**
@@ -299,10 +305,10 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Long?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>): Int?
     {
-        var mostSimilarIndex: Long = 0
-        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex.toInt()] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex.toInt()] * thicknessAlgorithmWeight)
+        var mostSimilarIndex: Int = 0
+        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight)
         if(ids.size > 1)
         {
             for (currentIndex in 1..(ids.size - 1))
@@ -311,14 +317,14 @@ class Evaulator {
                 if(currentValue > mostSimilarValue)
                 {
                     mostSimilarValue = currentValue
-                    mostSimilarIndex = currentIndex.toLong()
+                    mostSimilarIndex = currentIndex
                 }
                 else if(currentValue == mostSimilarValue)
                 {
-                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex.toInt()])
+                    if (thicknessAlgorithmValue[currentIndex] > thicknessAlgorithmValue[mostSimilarIndex])
                     {
                         mostSimilarValue = currentValue
-                        mostSimilarIndex = currentIndex.toLong()
+                        mostSimilarIndex = currentIndex
                     }
                 }
             }
