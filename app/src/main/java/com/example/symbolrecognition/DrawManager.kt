@@ -102,7 +102,7 @@ class DrawManager {
         this.runAlgorithms(movesX,movesY)
         var result : Long? = evaulator.run()
         if(result != null) {
-            this.caller.call(result)
+            this.caller.openContact(result)
         }
         else {
             Toast.makeText(context, "Contact was not found.", Toast.LENGTH_SHORT).show()

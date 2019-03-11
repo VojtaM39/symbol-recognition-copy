@@ -15,6 +15,29 @@ import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat.startActivity
 import android.widget.Toast
+import android.support.v4.content.ContextCompat.startActivity
+import android.R.id.message
+import android.R.attr.phoneNumber
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Caller {
     private val context : Context
@@ -151,5 +174,23 @@ class Caller {
         }
         cursor.close()
         return result
+    }
+
+    public fun openSms(gestureId: Long?) {
+        var number : String
+        number = getContactNumber(getContactIdByGestureId(gestureId!!))
+        val smsIntent = Intent(Intent.ACTION_VIEW)
+        smsIntent.type = "vnd.android-dir/mms-sms"
+        smsIntent.putExtra("address", number)
+        context.startActivity(smsIntent)
+    }
+
+    //https://stackoverflow.com/questions/4275167/how-to-open-a-contact-card-in-android-by-id
+    public fun openContact(gestureId: Long?) {
+        var contactId = getContactIdByGestureId(gestureId!!)
+        val uri = Uri.parse(ContactsContract.Contacts.CONTENT_URI.toString() + "/" + contactId.toString())
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setData(uri)
+        context.startActivity(intent)
     }
 }

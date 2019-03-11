@@ -5,6 +5,14 @@ class Constants {
         val SQUARE_SIZE = 50
 
         /**
+         * Id akcí, při vyhodnocení
+         */
+        val ACTION_CONTACT : Short = 0
+        val ACTION_CALL : Short = 1
+        val ACTION_SMS : Short = 2
+
+
+        /**
         Database tables
          */
         val CONTACTS_TABLE = "Contacts"

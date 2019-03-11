@@ -86,12 +86,13 @@ class Evaulator {
         val cursor = dbManager.queryAll("Ratios")
         if (cursor != null) {
             cursor.moveToFirst()
-            while (cursor.moveToNext()) {
+             do {
                 id = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_GESTURE_ID)).toLong()
                 ratioX = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_X)).toFloat()
                 ratioY = cursor.getString(cursor.getColumnIndex(Constants.RATIOS_Y)).toFloat()
                 result.add(RatioResult(id,ratioX,ratioY))
             }
+            while (cursor.moveToNext())
         }
         cursor.close()
         return result
