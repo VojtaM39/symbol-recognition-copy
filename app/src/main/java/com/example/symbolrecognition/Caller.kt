@@ -152,4 +152,12 @@ class Caller {
         cursor.close()
         return result
     }
+
+    public fun openContact(gestureId: Long?) {
+        val contactId = getContactIdByGestureId(gestureId!!)
+        Log.i("Name", getContactName(contactId).toString())
+        val contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
+        val intent = Intent(Intent.ACTION_VIEW, contactUri)
+        context.startActivity(intent)
+    }
 }
