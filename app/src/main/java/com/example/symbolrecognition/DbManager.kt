@@ -10,12 +10,14 @@ import android.widget.Toast
 
 class DbManager
 {
-    private val dbName = "JSAContacts2"
-    private val dbVersion = 14
+    private val dbName = "JSAContacts4"
+    private val dbVersion = 16
 
     private val dbTableGestures = Constants.GESTURES_TABLE
     private val colGesturesId = Constants.GESTURES_ID
     private val colGesturesContactId = Constants.GESTURES_CONTACT_ID
+
+    private val dbTablePointsPredefined = Constants.POINTS_PREDEFINED_TABLE
 
     private val dbTablePoints = Constants.POINTS_TABLE
     private val colPointsId = Constants.POINTS_ID
@@ -40,6 +42,7 @@ class DbManager
 
     private val CREATE_TABLE_GESTURES_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableGestures + " (" + colGesturesId + " INTEGER PRIMARY KEY," + colGesturesContactId + " INT);"
     private val CREATE_TABLE_POINTS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTablePoints + " (" + colPointsId + " INTEGER PRIMARY KEY," + colPointsGestureId + " INT, " + colPointsMoveNumber + " INT, " + colPointsPointX + " INT, " + colPointsPointY + " INT);"
+    private val CREATE_TABLE_POINTS_PREDEFINED_SQL = "CREATE TABLE IF NOT EXISTS " + dbTablePointsPredefined + " (" + colPointsId + " INTEGER PRIMARY KEY," + colPointsGestureId + " INT, " + colPointsMoveNumber + " INT, " + colPointsPointX + " INT, " + colPointsPointY + " INT);"
     private val CREATE_TABLE_RATIOS_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableRatios + " (" + colRatiosId + " INTEGER PRIMARY KEY," + colRatiosGestureId + " INT, " + colRatiosXRatio + " FLOAT, " + colRatiosYRatio + " FLOAT);"
     private val CREATE_TABLE_LINES_SQL = "CREATE TABLE IF NOT EXISTS " + dbTableLines + " (" + colLinesId + " INTEGER PRIMARY KEY," + colLinesGestureId + " INT, " + colLinesX1 + " INT, " + colLinesY1 + " INT, " + colLinesX2 + " INT, " + colLinesY2 + " INT);"
 
@@ -110,8 +113,21 @@ class DbManager
         override fun onCreate(db: SQLiteDatabase?) {
             db!!.execSQL(CREATE_TABLE_GESTURES_SQL)
             db!!.execSQL(CREATE_TABLE_POINTS_SQL)
+            db!!.execSQL(CREATE_TABLE_POINTS_PREDEFINED_SQL)
             db!!.execSQL(CREATE_TABLE_RATIOS_SQL)
             db!!.execSQL(CREATE_TABLE_LINES_SQL)
+
+            var values : ContentValues
+            for(i in Constants.PREDEFINED_GESTURES_X.indices) {
+                for(j in Constants.PREDEFINED_GESTURES_X[i].indices) {
+                    values = ContentValues()
+                    values.put("gesture_id", (i+1))
+                    values.put("move_number", 0)
+                    values.put("point_x", Constants.PREDEFINED_GESTURES_X[i][j])
+                    values.put("point_y", Constants.PREDEFINED_GESTURES_Y[i][j])
+                    db.insert(Constants.POINTS_PREDEFINED_TABLE,null,values)
+                }
+            }
 
             Toast.makeText(this.context, " database is created", Toast.LENGTH_LONG).show()
         }
@@ -119,6 +135,7 @@ class DbManager
         override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
             db!!.execSQL("Drop table IF EXISTS " + dbTableGestures)
             db!!.execSQL("Drop table IF EXISTS " + dbTablePoints)
+            db!!.execSQL("Drop table IF EXISTS " + dbTablePointsPredefined)
             db!!.execSQL("Drop table IF EXISTS " + dbTableRatios)
             db!!.execSQL("Drop table IF EXISTS " + dbTableLines)
         }

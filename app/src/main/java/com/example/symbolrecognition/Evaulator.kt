@@ -13,13 +13,15 @@ class Evaulator {
     private val dbManager : DbManager
     private val movesX : MutableList<Array<Short>> //hodnoty prave nakresleneho gesta
     private val movesY : MutableList<Array<Short>> //hodnoty prave nakresleneho gesta
+    private val movesXExtra : MutableList<Array<Short>> //hodnoty maleho symbolu
+    private val movesYExtra : MutableList<Array<Short>> //hodnoty maleho symbolu
     private val directionsAlgorithm : DirectionsAlgorithm
     private val lineDetector : LineDetector
     private var gestureMovesX = mutableListOf<Array<Short>>()
     private var gestureMovesY = mutableListOf<Array<Short>>()
     private var drewGesturePoints = mutableListOf<Array<Short>>()
     private var drewGestureThickness = mutableListOf<Array<Short>>()
-
+    val predefinedGesturesIds = mutableListOf<Long>(1,2)
     //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
     //final decision
@@ -28,11 +30,13 @@ class Evaulator {
     private val lengthAlgorithmWeight = 0.1f
     private val minimalSimilarity = 0.7f
 
-    constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
+    constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>, movesXExtra : MutableList<Array<Short>>, movesYExtra : MutableList<Array<Short>>) {
         this.context = context
         this.dbManager = DbManager(context)
         this.movesX = movesX
         this.movesY = movesY
+        this.movesXExtra = movesXExtra
+        this.movesYExtra = movesYExtra
         this.directionsAlgorithm = DirectionsAlgorithm(this.movesX, this.movesY)
         this.lineDetector = LineDetector(this.movesX, this.movesY)
     }
@@ -73,6 +77,29 @@ class Evaulator {
             return null
         else
             return matchingGesturesIds[result]
+    }
+
+    public fun getAction() : Short {
+        if(this.movesXExtra.size == 0) {
+            return Constants.ACTION_CONTACT
+        }
+        var thicknessAlgorithmValue = arrayOf<Float>()
+        //thicknessAlgorithm
+        var thicknessAlgorithmResults = getExtraThicknessAlgorithmValues()
+        for(thicknessAlgorithmResult in thicknessAlgorithmResults) {
+            thicknessAlgorithmValue += thicknessAlgorithmResult.result1
+        }
+
+        //vyber konecneho vysledku
+        var result: Int? = finalDecisionExtra(thicknessAlgorithmValue)
+        if(result == null)
+            return Constants.ACTION_CONTACT
+        else
+            when(predefinedGesturesIds[result].toInt()) {
+               1 -> return Constants.ACTION_CALL
+               2 -> return Constants.ACTION_SMS
+                else -> return Constants.ACTION_CONTACT
+            }
     }
 
     /**
@@ -270,6 +297,73 @@ class Evaulator {
         }
     }
 
+    private fun getPredefinedGestureFromDatabase(gestureId: Long)
+    {
+        gestureMovesX = mutableListOf<Array<Short>>()
+        gestureMovesY = mutableListOf<Array<Short>>()
+        var dbManager = DbManager(context)
+        var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
+        val cursor = dbManager.queryWithWhere(Constants.POINTS_PREDEFINED_TABLE, where) //upravit
+        var arrMovesX = arrayOf<Short>()
+        var arrMovesY = arrayOf<Short>()
+        var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                val moveNumber = cursor.getInt(cursor.getColumnIndex(Constants.POINTS_MOVE_NUMBER))
+                val pointX = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_X))
+                val pointY = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_Y))
+
+                arrMovesX += pointX
+                arrMovesY += pointY
+            } while (cursor.moveToNext())
+            gestureMovesX.add(index, arrMovesX)
+            gestureMovesY.add(index, arrMovesY)
+        }
+    }
+    private fun getExtraThicknessAlgorithmValues(): MutableList<Algorithm2Results>
+    {
+        var finalResult = mutableListOf<Algorithm2Results>()
+        var drewGestureLength = getGestureLength(movesXExtra, movesYExtra)
+        var alreadyExistsDrewGestureThickness = false
+
+
+        for(predefinedGestureId in predefinedGesturesIds)
+        {
+            var result: Algorithm2Results
+            getPredefinedGestureFromDatabase(predefinedGestureId)
+            var databaseGestureLength = getGestureLength(gestureMovesX, gestureMovesY)
+
+            var gestureLengthRatio: Float = getAlgorithmValue(drewGestureLength, databaseGestureLength)
+
+            if(drewGestureLength >= databaseGestureLength) //vetsi je prave nakreslene gesto
+            {
+                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
+                var databaseGesturePoints = connectingPoints.connectPoints()
+                var databaseGestureThickness = connectingPoints.getThickness()
+
+                result = Algorithm2Results(predefinedGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness), gestureLengthRatio)
+            }
+            else //vetsi je gesto z databaze
+            {
+                if(!alreadyExistsDrewGestureThickness)
+                {
+                    //ziskat tloustku z prave nakresleneho gesta
+                    val connectingPoints = ConnectingPoints(movesXExtra, movesYExtra)
+                    drewGesturePoints = connectingPoints.connectPoints()
+                    drewGestureThickness = connectingPoints.getThickness()
+                    alreadyExistsDrewGestureThickness = true
+                }
+                result = Algorithm2Results(predefinedGestureId, getRatioOfContainedPoints(gestureMovesX, gestureMovesY, drewGesturePoints, drewGestureThickness), gestureLengthRatio)
+            }
+            //ulozeni do finalResult
+            finalResult.add(result)
+        }
+        return finalResult
+    }
+
     /**
      * metoda ziska konecnou vzdalenost mezi body
      */
@@ -354,6 +448,24 @@ class Evaulator {
                 }
             }
         }
+        //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
+        if(mostSimilarValue < minimalSimilarity)
+            return null
+        return mostSimilarIndex
+    }
+
+    private fun finalDecisionExtra(thicknessAlgorithmValue: Array<Float>) : Int? {
+        var mostSimilarIndex: Int = 0
+        var mostSimilarValue: Float = thicknessAlgorithmValue[mostSimilarIndex]
+            for (currentIndex in 1..(predefinedGesturesIds.size - 1))
+            {
+                var currentValue: Float = thicknessAlgorithmValue[currentIndex]
+                if(currentValue >= mostSimilarValue)
+                {
+                    mostSimilarValue = currentValue
+                    mostSimilarIndex = currentIndex
+                }
+            }
         //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
         if(mostSimilarValue < minimalSimilarity)
             return null

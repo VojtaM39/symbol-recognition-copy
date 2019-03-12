@@ -18,6 +18,7 @@ class Constants {
         val CONTACTS_TABLE = "Contacts"
         val GESTURES_TABLE = "Gestures"
         val POINTS_TABLE = "Points"
+        val POINTS_PREDEFINED_TABLE = "PointsPredefined"
         val RATIOS_TABLE = "Ratios"
         val LINES_TABLE = "Lines"
 
@@ -61,5 +62,19 @@ class Constants {
         val LINES_Y2 = "y2"
 
         val LINES_COLUMNS = listOf(LINES_ID, LINES_GESTURE_ID, LINES_X1, LINES_Y1, LINES_X2, LINES_Y2)
+
+        //Predefined gestures
+        val PREDEFINED_GESTURES_X = listOf<Array<Short>>(
+            arrayOf(25, 24, 23, 21, 19, 16, 13, 9, 4, 1, 0, 0, 2, 7, 14, 26, 39, 49, 50),
+            arrayOf(0, 5, 13, 22, 31, 41, 50)
+
+        )
+
+        val PREDEFINED_GESTURES_Y = listOf<Array<Short>>(
+            arrayOf(11, 9, 7, 5, 3, 2, 2, 4, 10, 16, 23, 30, 37, 43, 46, 47, 46, 42, 42),
+            arrayOf(25, 25, 25, 25, 25, 25, 25)
+
+
+        )
     }
 }

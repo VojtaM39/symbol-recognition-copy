@@ -18,8 +18,12 @@ class DrawManager {
     private val drawViewHeight : Int
     private var pointsX : Array<Float>
     private var pointsY : Array<Float>
+    private var pointsExtraX = arrayOf<Float>()
+    private var pointsExtraY = arrayOf<Float>()
     private var pointsXResult : Array<Short>
     private var pointsYResult : Array<Short>
+    private var pointsXExtraResult = arrayOf<Short>()
+    private var pointsYExtraResult = arrayOf<Short>()
     private var touchCount : Int
     private val endsOfMove : Array<Int>
     private val SQUARE_SIZE : Int = Constants.SQUARE_SIZE
@@ -49,63 +53,88 @@ class DrawManager {
         }
         else {
             this.existsExtraSymbol = areaDivider.doesExistsExtraSymbol()
+            if(this.existsExtraSymbol) {
+                //Pokud existuje extra symbol, dame ho do zvlastniho pole a odstranime z hlavniho gesta
+                this.pointsExtraX = createExtraPoints(pointsX)
+                this.pointsExtraY = createExtraPoints(pointsY)
+                this.pointsX = deleteLastMove(pointsX)
+                this.pointsY = deleteLastMove(pointsY)
+            }
         }
-        processArrays()
+        processArrays(this.pointsX, this.pointsY)
+        if(this.existsExtraSymbol) {
+            processArrays(pointsExtraX, pointsExtraY)
+        }
+
         this.pointsXResult = floatToShort(this.pointsX)
         this.pointsYResult = floatToShort(this.pointsY)
-
-        generateMoves(movesX, movesXExtra, pointsXResult, endsOfMove, existsExtraSymbol)
-        generateMoves(movesY, movesYExtra, pointsYResult, endsOfMove, existsExtraSymbol)
+        if(this.existsExtraSymbol) {
+            this.pointsXExtraResult = floatToShort(this.pointsExtraX)
+            this.pointsYExtraResult = floatToShort(this.pointsExtraY)
+        }
+        this.movesX = generateMoves(pointsXResult, false)
+        this.movesY = generateMoves(pointsYResult, false)
+        if(this.existsExtraSymbol) {
+            this.movesXExtra = generateMoves(pointsXExtraResult, true)
+            this.movesYExtra = generateMoves(pointsYExtraResult, true)
+        }
         this.dbManager = DbManager(this.context)
         this.directionsAlgorithm = DirectionsAlgorithm(movesX, movesY)
         this.databaseTester = DatabaseTester(context)
         this.lineDetector = LineDetector(movesX, movesY)
-        this.evaulator = Evaulator(context, movesX, movesY)
+        this.evaulator = Evaulator(context, movesX, movesY, movesXExtra, movesYExtra)
         this.caller = Caller(context)
     }
 
   //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
-    private fun generateMoves(moves : MutableList<Array<Short>>,movesExtra : MutableList<Array<Short>>, points : Array<Short>, endsOfMove: Array<Int>, existsExtraSymbol : Boolean) {
-      //posledni index do ktereho ma cyklus jet
-      var lastIndex : Int
-      if(existsExtraSymbol) {
-          lastIndex = endsOfMove[endsOfMove.lastIndex-1]
+    private fun generateMoves(points : Array<Short>, extra : Boolean) : MutableList<Array<Short>>{
+      var moves = mutableListOf<Array<Short>>()
+      var array = arrayOf<Short>()
+      for(i in points.indices) {
+          array += points[i]
+          //Pokud je dane id posledni v tahu nebo posledni bod v celem poli (kvuli extra poli), vytvori se nove pole
+          if((this.endsOfMove.contains(i) && !extra)  || (i == points.size-1 && extra)) {
+              moves.add(array)
+              array = arrayOf()
+          }
       }
-      else {
-          lastIndex = endsOfMove.last()
-      }
-      //pomocne pole, do ktereho se budou davat body daneho tahu
-        var array = arrayOf<Short>()
-        //list vsech poli
-        var listOfMoves = mutableListOf<Array<Short>>()
-
-        for(i in 0..lastIndex) {
-            array += points[i]
-            if(endsOfMove.contains(i)) {
-                moves.add(array)
-                array = arrayOf<Short>()
-
-            }
-        }
-        if(existsExtraSymbol) {
-            for(i in lastIndex+1..endsOfMove.last()) {
-                array += points[i]
-                if(endsOfMove.contains(i)) {
-                    movesExtra.add(array)
-                }
-            }
-        }
-
+    return moves
     }
 
     public fun run() {
+        logMoves()
         var result : Long? = evaulator.run()
+        val action = evaulator.getAction()
+
         if(result != null) {
-            this.caller.openContact(result)
+            when(action) {
+                Constants.ACTION_CONTACT -> caller.call(result)
+                Constants.ACTION_CALL -> caller.call(result)
+                Constants.ACTION_SMS -> caller.openSms(result)
+            }
         }
+
         else {
             Toast.makeText(context, "Contact was not found.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun createExtraPoints(points : Array<Float>) : Array<Float> {
+        var result = arrayOf<Float>()
+        val lastIndex = endsOfMove[endsOfMove.size-2]
+        for (i in lastIndex+1..points.size-1) {
+            result+=points[i]
+        }
+        return result
+    }
+
+    private fun deleteLastMove(points: Array<Float>) : Array<Float> {
+        var result = arrayOf<Float>()
+        val lastIndex = endsOfMove[endsOfMove.size-2]
+        for (i in 0..lastIndex) {
+            result+=points[i]
+        }
+        return result
     }
 
     /**
@@ -215,9 +244,9 @@ class DrawManager {
         return result
     }
     //Metoda vola metodu cropArrays, dosazuje do ni v poradi podle toho, ktera osa ma vetsi rozptyl
-    private fun processArrays() {
-        Log.i("Pocet bodu", this.pointsX.size.toString())
-        if((this.pointsX.max()!! - this.pointsX.min()!!) > (this.pointsY.max()!! - this.pointsY.min()!!)) {
+    private fun processArrays(pointsX: Array<Float>, pointsY: Array<Float>) {
+        Log.i("Pocet bodu", pointsX.size.toString())
+        if((pointsX.max()!! - pointsX.min()!!) > (pointsY.max()!! - pointsY.min()!!)) {
             cropArrays(pointsX, pointsY)
         }
         else {
@@ -309,7 +338,15 @@ class DrawManager {
             for(j in 0..movesY[i].size-1) {
                 result += movesY[i][j].toString() + ", "
             }
-            Log.i("Tah:", result)
+            Log.i("Y", result)
+        }
+
+        for(i in 0..movesX.size-1) {
+            result = ""
+            for(j in 0..movesX[i].size-1) {
+                result += movesX[i][j].toString() + ", "
+            }
+            Log.i("X", result)
         }
         if(existsExtraSymbol) {
             Log.i("Extra","Extra symbol existuje")

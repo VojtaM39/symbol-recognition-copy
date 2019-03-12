@@ -65,4 +65,8 @@ class DatabaseTester {
     public fun logRatios() {
         logAllRows(Constants.RATIOS_TABLE, Constants.RATIOS_COLUMNS)
     }
+
+    public fun logPredefinedPoints() {
+        logAllRows(Constants.POINTS_PREDEFINED_TABLE, Constants.POINTS_COLUMNS)
+    }
 }

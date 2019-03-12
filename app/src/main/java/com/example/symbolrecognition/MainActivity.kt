@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     fun launchDrawingActivity(view: View)
     {
-
+        databaseTester.logPredefinedPoints()
         var intent: Intent = Intent(this, DrawingActivity::class.java)
         intent.putExtra("addingToDatabase", false)
         startActivity(intent)
