@@ -64,6 +64,14 @@ class DbManager
         return db!!.rawQuery("select * from " + table, null)
     }
 
+    fun count(table: String) : Int{
+        val countCursor = db!!.rawQuery("select count(*) from " + table, null)
+        countCursor.moveToFirst()
+        val count = countCursor.getInt(0)
+        countCursor
+        return count
+    }
+
     fun queryWithWhere(table : String, where : String) : Cursor {
         var query = "select * from " + table + " where " + where
         Log.i("Query",query)
