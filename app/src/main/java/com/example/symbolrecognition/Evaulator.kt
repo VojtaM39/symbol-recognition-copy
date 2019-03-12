@@ -23,9 +23,9 @@ class Evaulator {
     //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
     //final decision
-    private val directionsAlgorithmWeight = 0.3f
-    private val thicknessAlgorithmWeight = 0.4f
-    private val lengthAlgorithmWeight = 0.3f
+    private val directionsAlgorithmWeight = 0.4f
+    private val thicknessAlgorithmWeight = 0.5f
+    private val lengthAlgorithmWeight = 0.1f
     private val minimalSimilarity = 0.7f
 
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>) {
