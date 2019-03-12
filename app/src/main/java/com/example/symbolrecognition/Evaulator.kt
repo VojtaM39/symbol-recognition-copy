@@ -344,7 +344,7 @@ class Evaulator {
                 var databaseGesturePoints = connectingPoints.connectPoints()
                 var databaseGestureThickness = connectingPoints.getThickness()
 
-                result = Algorithm2Results(predefinedGestureId, getRatioOfContainedPoints(movesX, movesY, databaseGesturePoints, databaseGestureThickness), gestureLengthRatio)
+                result = Algorithm2Results(predefinedGestureId, getRatioOfContainedPoints(movesXExtra, movesYExtra, databaseGesturePoints, databaseGestureThickness), gestureLengthRatio)
             }
             else //vetsi je gesto z databaze
             {
