@@ -99,7 +99,6 @@ class DrawManager {
     }
 
     public fun run() {
-        this.runAlgorithms(movesX,movesY)
         var result : Long? = evaulator.run()
         if(result != null) {
             this.caller.openContact(result)
