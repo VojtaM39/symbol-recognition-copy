@@ -86,6 +86,10 @@ class DrawManager {
         this.caller = Caller(context)
     }
 
+    public fun getExistsExtraSymbol() : Boolean {
+        return this.existsExtraSymbol
+    }
+
   //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, extra : Boolean) : MutableList<Array<Short>>{
       var moves = mutableListOf<Array<Short>>()

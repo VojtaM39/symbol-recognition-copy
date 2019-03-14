@@ -74,16 +74,21 @@ class AddActivity : AppCompatActivity()
                 var touchCount = drawView.getTouches()
                 var endsOfMove = drawView.getEndsOfMove()
                 var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
-                if(!intent.hasExtra("gestureId")) {
-                    drawManager.createGesture(contactId)
+                //uzivatel vytvoril gesto, ktere obsahuje maly symbol
+                if(drawManager.getExistsExtraSymbol()) {
+                    Toast.makeText(this,"You drew gesture, that contains small extra gesture.",Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    drawManager.updateGesture(this.editingGestureId)
+                    if(!intent.hasExtra("gestureId")) {
+                        drawManager.createGesture(contactId)
+                    }
+                    else {
+                        drawManager.updateGesture(this.editingGestureId)
+                    }
+                    Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
-                Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-
             }
         }
 
