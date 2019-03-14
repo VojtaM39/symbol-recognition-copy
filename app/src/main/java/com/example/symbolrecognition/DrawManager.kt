@@ -126,6 +126,22 @@ class DrawManager {
         return true
     }
 
+    //Metoda vraci jmeno kontaktu, ktere nejvic odpovida gestu
+    public fun getMostSimilarContactName() : String? {
+        var result : Long? = evaulator.run()
+        if(result == null) {
+            return null
+        }
+        else {
+            return caller.getContactName(caller.getContactIdByGestureId(result!!))
+        }
+    }
+
+    public fun getMostSimilarValue() : Float {
+        return evaulator.getMostSimilarValueOfMain()
+    }
+
+
     private fun createExtraPoints(points : Array<Float>) : Array<Float> {
         var result = arrayOf<Float>()
         val lastIndex = endsOfMove[endsOfMove.size-2]

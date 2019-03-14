@@ -21,6 +21,7 @@ class Evaulator {
     private var gestureMovesY = mutableListOf<Array<Short>>()
     private var drewGesturePoints = mutableListOf<Array<Short>>()
     private var drewGestureThickness = mutableListOf<Array<Short>>()
+    private var mostSimilarValueMain = 0f
     val predefinedGesturesIds = mutableListOf<Long>(1,2)
     //directionsAlgorithm
     private val MAX_RATIO_DIFF = 0.2f
@@ -100,6 +101,11 @@ class Evaulator {
                2 -> return Constants.ACTION_SMS
                 else -> return Constants.ACTION_CONTACT
             }
+    }
+
+    public fun getMostSimilarValueOfMain() : Float {
+        run()
+        return mostSimilarValueMain
     }
 
     /**
@@ -427,7 +433,7 @@ class Evaulator {
     private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>, lengthAlgorithmValue: Array<Float>): Int?
     {
         var mostSimilarIndex: Int = 0
-        var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight + (lengthAlgorithmValue[mostSimilarIndex] * lengthAlgorithmWeight))
+        var mostSimilarValue = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight + (lengthAlgorithmValue[mostSimilarIndex] * lengthAlgorithmWeight))
         if(ids.size > 1)
         {
             for (currentIndex in 1..(ids.size - 1))
@@ -448,8 +454,9 @@ class Evaulator {
                 }
             }
         }
+        this.mostSimilarValueMain = mostSimilarValue
         //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
-        if(mostSimilarValue < minimalSimilarity)
+        if(mostSimilarValueMain < minimalSimilarity)
             return null
         return mostSimilarIndex
     }

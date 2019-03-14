@@ -25,6 +25,7 @@ class AddActivity : AppCompatActivity()
     private var editingGestureId : Long = 0
     private var successSaveToast = "Contact was created successfully"
     private val context = this
+    private val MAX_SIMILARITY = 0.85f
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
@@ -74,9 +75,20 @@ class AddActivity : AppCompatActivity()
                 var touchCount = drawView.getTouches()
                 var endsOfMove = drawView.getEndsOfMove()
                 var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
+
+                var result : Float? = null
+                var similarContactName : String? = null
+                var numberOfGestures = dbManager.count(Constants.GESTURES_TABLE)
+                if(numberOfGestures==0) {
+                    result = drawManager.getMostSimilarValue()
+                    similarContactName = drawManager.getMostSimilarContactName()
+                }
                 //uzivatel vytvoril gesto, ktere obsahuje maly symbol
                 if(drawManager.getExistsExtraSymbol()) {
                     Toast.makeText(this,"You drew gesture, that contains small extra gesture.",Toast.LENGTH_SHORT).show()
+                }
+                else if(drawManager.getMostSimilarValue() > MAX_SIMILARITY) {
+                    Toast.makeText(this,"This gesture is too similar to gesture of contact " + drawManager.getMostSimilarContactName(),Toast.LENGTH_SHORT).show()
                 }
                 else {
                     if(!intent.hasExtra("gestureId")) {
