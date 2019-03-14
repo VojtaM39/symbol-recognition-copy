@@ -24,6 +24,9 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+
+
 
 
 
@@ -186,11 +189,24 @@ class Caller {
     }
 
     //https://stackoverflow.com/questions/4275167/how-to-open-a-contact-card-in-android-by-id
-    public fun openContact(gestureId: Long?) {
-        var contactId = getContactIdByGestureId(gestureId!!)
-        val uri = Uri.parse(ContactsContract.Contacts.CONTENT_URI.toString() + "/" + contactId.toString())
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.setData(uri)
+    fun openContact(gestureId: Long?) {
+        val contactId = getContactIdByGestureId(gestureId!!)
+        Log.i("Name", getContactName(contactId).toString())
+        val contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
+        val intent = Intent(Intent.ACTION_VIEW, contactUri)
         context.startActivity(intent)
     }
+    /*
+    fun openQuickContact(gestureId: Long?)
+    {
+        val contactId = getContactIdByGestureId(gestureId!!)
+        Log.i("Name", getContactName(contactId).toString())
+        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
+        val intent = ContactsContract.QuickContact()(
+            context, uri,
+            ContactsContract.QuickContact.MODE_LARGE, null
+        )
+        context.startActivity(intent)
+    }
+    */
 }

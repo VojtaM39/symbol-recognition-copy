@@ -72,11 +72,11 @@ class Evaulator {
         }
 
         //vyber konecneho vysledku
-        var result: Int? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue, lengthAlgorithmValue)
+        var result: Long? = finalDecision(matchingGesturesIds, directionsAlgorithmValue, thicknessAlgorithmValue, lengthAlgorithmValue)
         if(result == null)
             return null
         else
-            return matchingGesturesIds[result]
+            return result
     }
 
     public fun getAction() : Short {
@@ -424,7 +424,7 @@ class Evaulator {
         return (contains.toFloat() / points)
     }
 
-    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>, lengthAlgorithmValue: Array<Float>): Int?
+    private fun finalDecision(ids: MutableList<Long>, directionsAlgorithmValue: Array<Float>, thicknessAlgorithmValue: Array<Float>, lengthAlgorithmValue: Array<Float>): Long?
     {
         var mostSimilarIndex: Int = 0
         var mostSimilarValue: Float = (directionsAlgorithmValue[mostSimilarIndex] * directionsAlgorithmWeight) + (thicknessAlgorithmValue[mostSimilarIndex] * thicknessAlgorithmWeight + (lengthAlgorithmValue[mostSimilarIndex] * lengthAlgorithmWeight))
@@ -451,7 +451,7 @@ class Evaulator {
         //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
         if(mostSimilarValue < minimalSimilarity)
             return null
-        return mostSimilarIndex
+        return ids[mostSimilarIndex]
     }
 
     private fun finalDecisionExtra(thicknessAlgorithmValue: Array<Float>) : Int? {
