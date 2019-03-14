@@ -17,7 +17,7 @@ class AreaDivider {
         this.pointsY = pointsY
         this.endsOfMove = endsOfMove
         this.drawViewHeight = drawViewHeight
-        MINIMAL_DISTANCE_OF_GESTURES = (drawViewHeight * 0.2).toFloat()
+        MINIMAL_DISTANCE_OF_GESTURES = 80f
     }
 
     /**

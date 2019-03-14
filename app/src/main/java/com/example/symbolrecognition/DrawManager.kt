@@ -101,7 +101,8 @@ class DrawManager {
     return moves
     }
 
-    public fun run() {
+    //Pokud gesto bylo nalezeno, spusti akci, vraci truem, jinak vraci false
+    public fun run() : Boolean {
         logMoves()
         var result : Long? = evaulator.run()
         val action = evaulator.getAction()
@@ -116,7 +117,9 @@ class DrawManager {
 
         else {
             Toast.makeText(context, "Contact was not found.", Toast.LENGTH_SHORT).show()
+            return false
         }
+        return true
     }
 
     private fun createExtraPoints(points : Array<Float>) : Array<Float> {

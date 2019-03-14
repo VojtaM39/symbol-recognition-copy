@@ -68,7 +68,15 @@ class DbManager
         val countCursor = db!!.rawQuery("select count(*) from " + table, null)
         countCursor.moveToFirst()
         val count = countCursor.getInt(0)
-        countCursor
+        countCursor.close()
+        return count
+    }
+
+    fun countWithWhere(table: String, where : String) : Int{
+        val countCursor = db!!.rawQuery("select count(*) from " + table + " where " + where, null)
+        countCursor.moveToFirst()
+        val count = countCursor.getInt(0)
+        countCursor.close()
         return count
     }
 

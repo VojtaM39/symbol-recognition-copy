@@ -25,20 +25,6 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Caller {
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
@@ -112,12 +98,6 @@ class Caller {
 
     public fun getContactName(contactId : Int) : String {
         return getContactDetails(contactId, "name")
-    }
-
-    fun call(number : String) {
-        val intent = Intent(Intent.ACTION_DIAL)
-        intent.data = Uri.parse("tel:$number")
-        context.startActivity(intent)
     }
 
     fun call(gestureId : Long?) {

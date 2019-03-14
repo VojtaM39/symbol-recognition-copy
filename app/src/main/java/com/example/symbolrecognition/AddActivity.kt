@@ -21,12 +21,14 @@ class AddActivity : AppCompatActivity()
     private var height : Int = 0
     private var selected = false
     private var edit = false
+    private lateinit var dbManager : DbManager
     private var editingGestureId : Long = 0
     private var successSaveToast = "Contact was created successfully"
+    private val context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
-
+        dbManager = DbManager(this)
         caller  = Caller(this)
         caller.setupPermissions()
 
@@ -59,6 +61,8 @@ class AddActivity : AppCompatActivity()
         }
 
         createBtn.setOnClickListener {
+
+
             //Uzivatel uz vybral kontakt
             if(!selected || !drawView.getDrew()) {
                 Log.i("Add", "Error add")
@@ -106,8 +110,14 @@ class AddActivity : AppCompatActivity()
                         val columnName: Int = getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
                         val name: String? = getString(columnName)
                         Log.i("Contact picker", "Picked contact ID: " + id)
-                        nameTxtView.setText(name)
-                        contactId = id!!
+                        //Pro vybrany kontakt uz existuje gesto
+                        if(dbManager.countWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_CONTACT_ID + "=" + id.toString()) > 0) {
+                            Toast.makeText(context, "Gesture for this contact was already created",Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            nameTxtView.setText(name)
+                            contactId = id!!
+                        }
                     }
                 }
             }
