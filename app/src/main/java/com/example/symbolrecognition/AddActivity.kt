@@ -21,12 +21,15 @@ class AddActivity : AppCompatActivity()
     private var height : Int = 0
     private var selected = false
     private var edit = false
+    private lateinit var dbManager : DbManager
     private var editingGestureId : Long = 0
     private var successSaveToast = "Contact was created successfully"
+    private val context = this
+    private val MAX_SIMILARITY = 0.85f
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
-
+        dbManager = DbManager(this)
         caller  = Caller(this)
         caller.setupPermissions()
 
@@ -59,6 +62,8 @@ class AddActivity : AppCompatActivity()
         }
 
         createBtn.setOnClickListener {
+
+
             //Uzivatel uz vybral kontakt
             if(!selected || !drawView.getDrew()) {
                 Log.i("Add", "Error add")
@@ -70,16 +75,32 @@ class AddActivity : AppCompatActivity()
                 var touchCount = drawView.getTouches()
                 var endsOfMove = drawView.getEndsOfMove()
                 var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
-                if(!intent.hasExtra("gestureId")) {
-                    drawManager.createGesture(contactId)
+
+                var result : Float? = null
+                var similarContactName : String? = null
+                var numberOfGestures = dbManager.count(Constants.GESTURES_TABLE)
+                if(numberOfGestures==0) {
+                    result = drawManager.getMostSimilarValue()
+                    similarContactName = drawManager.getMostSimilarContactName()
+                }
+                //uzivatel vytvoril gesto, ktere obsahuje maly symbol
+                if(drawManager.getExistsExtraSymbol()) {
+                    Toast.makeText(this,"You drew gesture, that contains small extra gesture.",Toast.LENGTH_SHORT).show()
+                }
+                else if(drawManager.getMostSimilarValue() > MAX_SIMILARITY) {
+                    Toast.makeText(this,"This gesture is too similar to gesture of contact " + drawManager.getMostSimilarContactName(),Toast.LENGTH_SHORT).show()
                 }
                 else {
-                    drawManager.updateGesture(this.editingGestureId)
+                    if(!intent.hasExtra("gestureId")) {
+                        drawManager.createGesture(contactId)
+                    }
+                    else {
+                        drawManager.updateGesture(this.editingGestureId)
+                    }
+                    Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
-                Toast.makeText(this, this.successSaveToast,Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-
             }
         }
 
@@ -106,8 +127,14 @@ class AddActivity : AppCompatActivity()
                         val columnName: Int = getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
                         val name: String? = getString(columnName)
                         Log.i("Contact picker", "Picked contact ID: " + id)
-                        nameTxtView.setText(name)
-                        contactId = id!!
+                        //Pro vybrany kontakt uz existuje gesto
+                        if(dbManager.countWithWhere(Constants.GESTURES_TABLE, Constants.GESTURES_CONTACT_ID + "=" + id.toString()) > 0) {
+                            Toast.makeText(context, "Gesture for this contact was already created",Toast.LENGTH_SHORT).show()
+                        }
+                        else{
+                            nameTxtView.setText(name)
+                            contactId = id!!
+                        }
                     }
                 }
             }

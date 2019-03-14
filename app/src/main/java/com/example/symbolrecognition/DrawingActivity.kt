@@ -22,6 +22,7 @@ class DrawingActivity : AppCompatActivity() {
     private var endsOfMove = arrayOf<Int>()
     lateinit var drawManager : DrawManager
     lateinit var dbManager: DbManager
+    private var result = true
     val context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +51,10 @@ class DrawingActivity : AppCompatActivity() {
                 endsOfMove = drawView.getEndsOfMove()
                 drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, context, height)
                 //drawManager.createGesture("Test", "55555555555")
-                drawManager.run()
+                result = drawManager.run()
+                if(!result) {
+                    drawView.resetGesture()
+                }
             }
         })
     }

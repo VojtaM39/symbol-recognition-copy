@@ -86,6 +86,10 @@ class DrawManager {
         this.caller = Caller(context)
     }
 
+    public fun getExistsExtraSymbol() : Boolean {
+        return this.existsExtraSymbol
+    }
+
   //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, extra : Boolean) : MutableList<Array<Short>>{
       var moves = mutableListOf<Array<Short>>()
@@ -101,7 +105,8 @@ class DrawManager {
     return moves
     }
 
-    public fun run() {
+    //Pokud gesto bylo nalezeno, spusti akci, vraci truem, jinak vraci false
+    public fun run() : Boolean {
         logMoves()
         var result : Long? = evaulator.run()
         val action = evaulator.getAction()
@@ -116,8 +121,26 @@ class DrawManager {
 
         else {
             Toast.makeText(context, "Contact was not found.", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        return true
+    }
+
+    //Metoda vraci jmeno kontaktu, ktere nejvic odpovida gestu
+    public fun getMostSimilarContactName() : String? {
+        var result : Long? = evaulator.run()
+        if(result == null) {
+            return null
+        }
+        else {
+            return caller.getContactName(caller.getContactIdByGestureId(result!!))
         }
     }
+
+    public fun getMostSimilarValue() : Float {
+        return evaulator.getMostSimilarValueOfMain()
+    }
+
 
     private fun createExtraPoints(points : Array<Float>) : Array<Float> {
         var result = arrayOf<Float>()
