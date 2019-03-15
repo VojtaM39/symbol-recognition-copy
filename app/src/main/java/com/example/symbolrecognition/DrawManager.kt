@@ -117,7 +117,7 @@ class DrawManager {
 
         if(result != null) {
             when(action) {
-                Constants.ACTION_CONTACT -> caller.call(result)
+                Constants.ACTION_CONTACT -> caller.openContact(result)
                 Constants.ACTION_CALL -> caller.call(result)
                 Constants.ACTION_SMS -> caller.openSms(result)
             }
