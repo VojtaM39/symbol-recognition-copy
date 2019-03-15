@@ -6,30 +6,38 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 
 class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, attrs)  {
     private var mPaint = Paint()
     private var mPath = Path()
-    private val gestureId : Long
+    private var gestureId : Long
     private val dbManager : DbManager
     private var movesX = mutableListOf<Array<Short>>()
     private var movesY = mutableListOf<Array<Short>>()
+    private var viewWidth : Int = 0
+    private var viewHeight : Int = 0
+
 
     init {
         dbManager = DbManager(getContext())
         //TODO Pass Gesture Id by paramater
         gestureId = 1
-        getPoints()
-        createPath()
+
         mPaint.apply {
             color = Color.BLACK
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
-            strokeWidth = 1f
+            strokeWidth = 5f
             isAntiAlias = true
         }
+    }
+
+    public fun setGestureId(id : Long) {
+        this.gestureId = id
+        getPoints()
     }
 
     private fun getPoints() {
@@ -67,9 +75,8 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
     }
 
     private fun createPath() {
-        var width = width
-        var height = height
-        val ratio = (Constants.SQUARE_SIZE / width).toFloat()
+        var ratio : Float = (Constants.SQUARE_SIZE.toFloat() / viewWidth.toFloat())
+        Log.i("ratio", ratio.toString())
         var curX : Float
         var curY : Float
         var lastX = 0f
@@ -83,11 +90,11 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
                 if(j == 0) { //actionDown
                     startX = curX
                     startY = curY
-                    mPath.lineTo(curX, curY)
+                    mPath.moveTo(curX, curY)
 
                 }
                 else if (j == movesX[i].size-1) { //actionUp
-                    mPath.lineTo(curX, curY)
+                    mPath.lineTo(lastX, lastY)
                     // draw a dot on click
                     if (startX == curX && startY == curY) {
                         mPath.lineTo(curX, curY + 2)
@@ -96,7 +103,7 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
                     }
                 }
                 else { //actionMove
-                    mPath.quadTo(curX, curY, (lastX + curX) / 2, (lastY + curY) / 2)
+                    mPath.quadTo(lastX, lastY, (curX + lastX) / 2, (curY + lastY) / 2)
                 }
                 lastX = curX
                 lastY = curY
@@ -109,6 +116,21 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
         createPath()
         super.onDraw(canvas)
         canvas.drawPath(mPath, mPaint)
+    }
+    //https://stackoverflow.com/questions/4074937/android-how-to-get-a-custom-views-height-and-width
+    override fun onSizeChanged(xNew: Int, yNew: Int, xOld: Int, yOld: Int) {
+        super.onSizeChanged(xNew, yNew, xOld, yOld)
+        var size : Int
+        this.viewWidth = xNew
+        Log.i("width", viewWidth.toString())
+        this.viewHeight= yNew
+        createPath()
+        if (width < height) {
+            size = height;
+        } else {
+            size = width;
+        }
+        setMeasuredDimension(size, size);
     }
 
 

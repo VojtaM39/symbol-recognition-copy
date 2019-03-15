@@ -190,6 +190,7 @@ class EditActivity : AppCompatActivity()
             var mContact = contactsList[position]
 
             vh.tvName.text = mContact.contactName
+            vh.preview.setGestureId(mContact.gesturesId!!.toLong())
 
             vh.tvName.setOnClickListener {
 
@@ -256,11 +257,14 @@ class EditActivity : AppCompatActivity()
 
     private class ViewHolder(view: View?) {
         val tvName: TextView
+        val preview: GesturePreviewView
+
         /*val ivEdit: ImageView
         val ivDelete: ImageView*/
 
         init {
             this.tvName = view?.findViewById(R.id.tvName) as TextView
+            this.preview = view?.findViewById(R.id.preview) as GesturePreviewView
             /*this.ivEdit = view?.findViewById(R.id.ivEdit) as ImageView
             this.ivDelete = view?.findViewById(R.id.ivDelete) as ImageView*/
         }

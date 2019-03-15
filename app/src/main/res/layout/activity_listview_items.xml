@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
         android:paddingLeft="16dp"
@@ -10,12 +10,17 @@
         android:paddingBottom="10dp"
         android:clickable="true"
         android:background="?android:attr/selectableItemBackground"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
 
+    <com.example.symbolrecognition.GesturePreviewView
+            android:layout_weight="1"
+            android:id="@+id/preview"
+            android:layout_height="84dp" android:layout_width="153dp"
+            android:padding="5dp"/>
     <TextView android:layout_width="match_parent"
               android:layout_height="50dp"
-              android:id="@+id/tvName" android:textSize="20sp"/>
+              android:id="@+id/tvName" android:textSize="20sp" android:layout_weight="1"/>
 
 
-</RelativeLayout>
+</LinearLayout>
