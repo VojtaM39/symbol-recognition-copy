@@ -90,6 +90,10 @@ class DrawManager {
         return this.existsExtraSymbol
     }
 
+    public fun runEvaluation() : Long? {
+        return this.evaulator.run()
+    }
+
   //Metoda vytvori MutableList ktere bude obsahovat pole s body jednotlivych tahu
     private fun generateMoves(points : Array<Short>, extra : Boolean) : MutableList<Array<Short>>{
       var moves = mutableListOf<Array<Short>>()
@@ -127,13 +131,12 @@ class DrawManager {
     }
 
     //Metoda vraci jmeno kontaktu, ktere nejvic odpovida gestu
-    public fun getMostSimilarContactName() : String? {
-        var result : Long? = evaulator.run()
-        if(result == null) {
+    public fun getMostSimilarContactName(gestureId: Long?) : String? {
+        if(gestureId == null) {
             return null
         }
         else {
-            return caller.getContactName(caller.getContactIdByGestureId(result!!))
+            return caller.getContactName(caller.getContactIdByGestureId(gestureId!!))
         }
     }
 

@@ -69,6 +69,7 @@ class AddActivity : AppCompatActivity()
                 Log.i("Add", "Error add")
                 Toast.makeText(this, "You have to fill contact and draw gesture.",Toast.LENGTH_SHORT).show()
             }
+
             else {
                 var pointsX = drawView.getPointsX()
                 var pointsY = drawView.getPointsY()
@@ -76,19 +77,21 @@ class AddActivity : AppCompatActivity()
                 var endsOfMove = drawView.getEndsOfMove()
                 var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
 
+                var mostSimilarGestureId : Long? = null
                 var result : Float? = null
                 var similarContactName : String? = null
                 var numberOfGestures = dbManager.count(Constants.GESTURES_TABLE)
-                if(numberOfGestures==0) {
+                if(numberOfGestures!=0) {
+                    mostSimilarGestureId = drawManager.runEvaluation()
                     result = drawManager.getMostSimilarValue()
-                    similarContactName = drawManager.getMostSimilarContactName()
+                    similarContactName = drawManager.getMostSimilarContactName(mostSimilarGestureId)
                 }
                 //uzivatel vytvoril gesto, ktere obsahuje maly symbol
                 if(drawManager.getExistsExtraSymbol()) {
                     Toast.makeText(this,"You drew gesture, that contains small extra gesture.",Toast.LENGTH_SHORT).show()
                 }
-                else if(drawManager.getMostSimilarValue() > MAX_SIMILARITY) {
-                    Toast.makeText(this,"This gesture is too similar to gesture of contact " + drawManager.getMostSimilarContactName(),Toast.LENGTH_SHORT).show()
+                else if((result != null)&&(result!! > MAX_SIMILARITY)) {
+                    Toast.makeText(this,"This gesture is too similar to gesture of contact " + similarContactName,Toast.LENGTH_SHORT).show()
                 }
                 else {
                     if(!intent.hasExtra("gestureId")) {

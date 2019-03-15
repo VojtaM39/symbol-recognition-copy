@@ -104,9 +104,9 @@ class Evaulator {
     }
 
     public fun getMostSimilarValueOfMain() : Float {
-        run()
         return mostSimilarValueMain
     }
+
 
     /**
      * Vraci mutable list se vsemi ratios v db
