@@ -30,6 +30,7 @@ class Evaulator {
     private val thicknessAlgorithmWeight = 0.5f
     private val lengthAlgorithmWeight = 0.1f
     private val minimalSimilarity = 0.7f
+    private val minimalSimilarityExtra = 0.5f
 
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>, movesXExtra : MutableList<Array<Short>>, movesYExtra : MutableList<Array<Short>>) {
         this.context = context
@@ -474,7 +475,7 @@ class Evaulator {
                 }
             }
         //rozhodnuti, zda dosahuje vysledek dostacujici hodnoty
-        if(mostSimilarValue < minimalSimilarity)
+        if(mostSimilarValue < minimalSimilarityExtra)
             return null
         return mostSimilarIndex
     }

@@ -17,7 +17,7 @@ import kotlin.concurrent.schedule
 import android.content.ContextWrapper
 import android.os.Handler
 
-
+//https://android.jlelse.eu/a-guide-to-drawing-in-android-631237ab6e28
 class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val useTimer : Boolean
     private var mPaint = Paint()

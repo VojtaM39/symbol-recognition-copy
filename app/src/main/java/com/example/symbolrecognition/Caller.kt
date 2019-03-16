@@ -34,18 +34,6 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.provider.ContactsContract.PhoneLookup
 import android.support.v4.content.ContextCompat.startActivity
 
-
-
-
-
-
-
-
-
-
-
-
-
 class Caller {
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
