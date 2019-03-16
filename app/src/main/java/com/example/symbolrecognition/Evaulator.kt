@@ -142,12 +142,12 @@ class Evaulator {
         val ratioY = directionsAlgorithm.getYRatio()
         //cyklus prochazi vsechny gesta v databazi a hleda podobne
         for(i in ratios.indices) {
-            //if((ratios[i].ratioX - ratioX).absoluteValue < MAX_RATIO_DIFF && (ratios[i].ratioY - ratioY).absoluteValue < MAX_RATIO_DIFF) {
+            if((ratios[i].ratioX - ratioX).absoluteValue < MAX_RATIO_DIFF && (ratios[i].ratioY - ratioY).absoluteValue < MAX_RATIO_DIFF) {
                 var valueX = getAlgorithmValue(ratios[i].ratioX, ratioX)
                 var valueY = getAlgorithmValue(ratios[i].ratioY, ratioY)
                 var value: Float = (valueX + valueY) / 2
                 result.add(AlgorithmResult(ratios[i].id, value))
-            //}
+            }
         }
         return result
     }
