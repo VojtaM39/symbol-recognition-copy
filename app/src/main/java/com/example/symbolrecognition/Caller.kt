@@ -18,6 +18,8 @@ import android.widget.Toast
 import android.support.v4.content.ContextCompat.startActivity
 import android.R.id.message
 import android.R.attr.phoneNumber
+import android.content.ContentResolver
+import android.database.Cursor
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
@@ -25,6 +27,22 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
 import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.support.v4.content.ContextCompat.startActivity
+import android.provider.ContactsContract.PhoneLookup
+import android.support.v4.content.ContextCompat.startActivity
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -32,8 +50,10 @@ class Caller {
     private val context : Context
     private val CONTACTS_REQUEST_CODE = 101
     private var name : String = ""
+    private lateinit var dbManager : DbManager
     constructor(context: Context) {
         this.context = context
+        this.dbManager = DbManager(context)
     }
     /**
      * Zdroj: https://stackoverflow.com/questions/31447365/getting-contactdetails-from-contact-id-not-working-in-android
@@ -170,23 +190,11 @@ class Caller {
 
     //https://stackoverflow.com/questions/4275167/how-to-open-a-contact-card-in-android-by-id
     fun openContact(gestureId: Long?) {
-        val contactId = getContactIdByGestureId(gestureId!!)
-        Log.i("Name", getContactName(contactId).toString())
-        val contactUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
-        val intent = Intent(Intent.ACTION_VIEW, contactUri)
+        val intent = Intent()
+        intent.action = ContactsContract.Intents.SHOW_OR_CREATE_CONTACT
+        var number : String
+        number = getContactNumber(getContactIdByGestureId(gestureId!!))
+        intent.data = Uri.fromParts("tel", number, null)
         context.startActivity(intent)
     }
-    /*
-    fun openQuickContact(gestureId: Long?)
-    {
-        val contactId = getContactIdByGestureId(gestureId!!)
-        Log.i("Name", getContactName(contactId).toString())
-        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_URI, contactId.toString())
-        val intent = ContactsContract.QuickContact()(
-            context, uri,
-            ContactsContract.QuickContact.MODE_LARGE, null
-        )
-        context.startActivity(intent)
-    }
-    */
 }
