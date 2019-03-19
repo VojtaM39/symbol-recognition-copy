@@ -15,7 +15,7 @@
             android:layout_marginBottom="90dp" app:layout_constraintBottom_toTopOf="@+id/btnEdit"
             android:textSize="32sp" app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="105dp"
             android:layout_marginRight="105dp" android:onClick="launchAddActivity"
-            android:background="@android:color/holo_green_light"/>
+            android:background="@color/colorPrimary"/>
     <Button
             android:text="@string/edit"
             android:layout_width="300dp"
