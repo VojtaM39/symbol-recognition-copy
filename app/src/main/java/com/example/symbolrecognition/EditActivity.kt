@@ -22,6 +22,8 @@ class EditActivity : AppCompatActivity()
     private lateinit var caller : Caller
     private var editOnClick: Boolean = true
     private lateinit var dbManager : DbManager
+    private var movesX = mutableListOf<Array<Short>>()
+    private var movesY = mutableListOf<Array<Short>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,15 +94,52 @@ class EditActivity : AppCompatActivity()
                 var name = caller.getContactName(gesturesContactId)
                 Log.i("name", name)
                 //var name = caller.getNameByContactId(gesturesContactId.toString())
-
+                getMoves(gesturesId.toLong())
                 //do listContacts ulozit pouze gesturesId a jmeno kontaktu - urychlime proces otevirani listview
-                listContacts.add(Contact(gesturesId, name))
+                listContacts.add(Contact(gesturesId, name, movesX, movesY))
 
             } while (cursor.moveToNext())
         }
 
         var contactsAdapter = ContactsAdapter(this, listContacts)
         lvContacts.adapter = contactsAdapter
+    }
+
+    private fun getMoves(gestureId : Long) {
+        movesX = mutableListOf()
+        movesY = mutableListOf()
+
+        var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
+        val cursor = dbManager.queryWithWhere(Constants.POINTS_TABLE, where) //upravit
+        var arrMovesX = arrayOf<Short>()
+        var arrMovesY = arrayOf<Short>()
+        var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
+
+        if (cursor.moveToFirst())
+        {
+            do
+            {
+                val moveNumber = cursor.getInt(cursor.getColumnIndex(Constants.POINTS_MOVE_NUMBER))
+                val pointX = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_X))
+                val pointY = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_Y))
+
+                if(moveNumber != index)
+                {
+                    movesX.add(index, arrMovesX)
+                    movesY.add(index, arrMovesY)
+                    arrMovesX = arrayOf<Short>()
+                    arrMovesY = arrayOf<Short>()
+                    index = moveNumber
+                }
+                if(moveNumber == index)
+                {
+                    arrMovesX += pointX
+                    arrMovesY += pointY
+                }
+            } while (cursor.moveToNext())
+            movesX.add(index, arrMovesX)
+            movesY.add(index, arrMovesY)
+        }
     }
 
     /*fun getContactDetails(contactId: Int): String {
@@ -190,7 +229,8 @@ class EditActivity : AppCompatActivity()
             var mContact = contactsList[position]
 
             vh.tvName.text = mContact.contactName
-            vh.preview.setGestureId(mContact.gesturesId!!.toLong())
+            vh.preview.setMovesX(mContact.movesX!!)
+            vh.preview.setMovesY(mContact.movesY!!)
 
             vh.tvName.setOnClickListener {
 

@@ -33,45 +33,7 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
             strokeWidth = 5f
             isAntiAlias = true
         }
-    }
-
-    public fun setGestureId(id : Long) {
-        this.gestureId = id
-        getPoints()
-    }
-
-    private fun getPoints() {
-        var where = "${Constants.POINTS_GESTURE_ID} = $gestureId"
-        val cursor = dbManager.queryWithWhere(Constants.POINTS_TABLE, where) //upravit
-        var arrMovesX = arrayOf<Short>()
-        var arrMovesY = arrayOf<Short>()
-        var index = 0 //spolehame na to, ze jsou v databazi zaznamy sedridene podle tahu a ze zaciname na indexu 0
-
-        if (cursor.moveToFirst())
-        {
-            do
-            {
-                val moveNumber = cursor.getInt(cursor.getColumnIndex(Constants.POINTS_MOVE_NUMBER))
-                val pointX = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_X))
-                val pointY = cursor.getShort(cursor.getColumnIndex(Constants.POINTS_Y))
-
-                if(moveNumber != index)
-                {
-                    movesX.add(index, arrMovesX)
-                    movesY.add(index, arrMovesY)
-                    arrMovesX = arrayOf<Short>()
-                    arrMovesY = arrayOf<Short>()
-                    index = moveNumber
-                }
-                if(moveNumber == index)
-                {
-                    arrMovesX += pointX
-                    arrMovesY += pointY
-                }
-            } while (cursor.moveToNext())
-            movesX.add(index, arrMovesX)
-            movesY.add(index, arrMovesY)
-        }
+        createPath()
     }
 
     private fun createPath() {
@@ -112,10 +74,20 @@ class GesturePreviewView(context: Context, attrs: AttributeSet) : View(context, 
         invalidate()
     }
 
+    public fun setMovesX(movesX : MutableList<Array<Short>>) {
+        this.movesX = movesX
+    }
+    public fun setMovesY(movesY : MutableList<Array<Short>>) {
+        this.movesY = movesY
+    }
+
+
     override fun onDraw(canvas: Canvas) {
-        createPath()
         super.onDraw(canvas)
         canvas.drawPath(mPath, mPaint)
+        mPath = Path()
+        movesX = mutableListOf()
+        movesY = mutableListOf()
     }
     //https://stackoverflow.com/questions/4074937/android-how-to-get-a-custom-views-height-and-width
     override fun onSizeChanged(xNew: Int, yNew: Int, xOld: Int, yOld: Int) {
