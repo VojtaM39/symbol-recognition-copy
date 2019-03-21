@@ -77,14 +77,20 @@ class Caller {
     public fun setupPermissions() {
         val permission = ContextCompat.checkSelfPermission(context,
             Manifest.permission.READ_CONTACTS)
+        val permissionCall = ContextCompat.checkSelfPermission(context,
+            Manifest.permission.CALL_PHONE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
+            makeRequest()
+        }
+
+        if (permissionCall != PackageManager.PERMISSION_GRANTED) {
             makeRequest()
         }
 
     }
     private fun makeRequest() {
         ActivityCompat.requestPermissions(context as Activity,
-            arrayOf(Manifest.permission.READ_CONTACTS),
+            arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE),
             CONTACTS_REQUEST_CODE)
     }
     fun handlePermission(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -114,7 +120,7 @@ class Caller {
     fun call(gestureId : Long?) {
         var number : String
         number = getContactNumber(getContactIdByGestureId(gestureId!!))
-        val intent = Intent(Intent.ACTION_DIAL)
+        val intent = Intent(Intent.ACTION_CALL)
         intent.data = Uri.parse("tel:$number")
         context.startActivity(intent)
     }
