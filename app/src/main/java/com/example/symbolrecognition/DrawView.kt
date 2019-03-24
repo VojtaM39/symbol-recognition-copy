@@ -70,6 +70,7 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         this.drew = false
         this.pointsX = arrayOf()
         this.pointsY = arrayOf()
+        this.endsOfMove = arrayOf()
     }
     init {
 

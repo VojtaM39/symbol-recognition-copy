@@ -40,6 +40,7 @@ class AddActivity : AppCompatActivity()
         }
 
         if(intent.hasExtra("gestureId")) {
+            setTitle("Edit")
             this.successSaveToast = "Contact was updated successfully"
             createBtn.text = "update"
             contactPickerBtn.isEnabled = false
