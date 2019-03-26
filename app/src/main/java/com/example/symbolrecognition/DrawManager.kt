@@ -24,7 +24,6 @@ class DrawManager {
     private var pointsYResult : Array<Short>
     private var pointsXExtraResult = arrayOf<Short>()
     private var pointsYExtraResult = arrayOf<Short>()
-    private var touchCount : Int
     private val endsOfMove : Array<Int>
     private val SQUARE_SIZE : Int = Constants.SQUARE_SIZE
     private var movesX = mutableListOf<Array<Short>>()
@@ -40,12 +39,11 @@ class DrawManager {
     private val databaseTester : DatabaseTester
     private val evaulator : Evaulator
     private val caller : Caller
-    constructor(pointsX:Array<Float>, pointsY : Array<Float>, touchCount : Int, endsOfMove : Array<Int>, context: Context, drawViewHeight : Int) {
+    constructor(pointsX:Array<Float>, pointsY : Array<Float>, endsOfMove : Array<Int>, context: Context, drawViewHeight : Int) {
         this.drawViewHeight = drawViewHeight
         this.context = context
         this.pointsX = pointsX
         this.pointsY = pointsY
-        this.touchCount = touchCount
         this.endsOfMove = endsOfMove
         this.areaDivider = AreaDivider(pointsY, endsOfMove, drawViewHeight)
         if(this.endsOfMove.size == 1) {

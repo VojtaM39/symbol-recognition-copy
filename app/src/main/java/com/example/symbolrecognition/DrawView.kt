@@ -55,9 +55,6 @@ class DrawView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     public fun  getPointsY(): Array<Float> {
         return pointsY
     }
-    public fun getTouches() : Int {
-        return count
-    }
 
     public fun getEndsOfMove() : Array<Int> {
         return endsOfMove
