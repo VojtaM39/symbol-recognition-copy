@@ -40,6 +40,7 @@ class AddActivity : AppCompatActivity()
         }
 
         if(intent.hasExtra("gestureId")) {
+            setTitle("Edit")
             this.successSaveToast = "Contact was updated successfully"
             createBtn.text = "update"
             contactPickerBtn.isEnabled = false
@@ -73,9 +74,8 @@ class AddActivity : AppCompatActivity()
             else {
                 var pointsX = drawView.getPointsX()
                 var pointsY = drawView.getPointsY()
-                var touchCount = drawView.getTouches()
                 var endsOfMove = drawView.getEndsOfMove()
-                var drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, this, height)
+                var drawManager = DrawManager(pointsX,pointsY,endsOfMove, this, height)
 
                 var mostSimilarGestureId : Long? = null
                 var result : Float? = null

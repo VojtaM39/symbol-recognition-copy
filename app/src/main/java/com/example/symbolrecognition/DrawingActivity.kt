@@ -47,9 +47,8 @@ class DrawingActivity : AppCompatActivity() {
                 Log.v("", "EVENT FIRED")
                 pointsX = drawView.getPointsX()
                 pointsY = drawView.getPointsY()
-                touchCount = drawView.getTouches()
                 endsOfMove = drawView.getEndsOfMove()
-                drawManager = DrawManager(pointsX,pointsY,touchCount,endsOfMove, context, height)
+                drawManager = DrawManager(pointsX,pointsY,endsOfMove, context, height)
                 //drawManager.createGesture("Test", "55555555555")
                 result = drawManager.run()
                 if(!result) {
