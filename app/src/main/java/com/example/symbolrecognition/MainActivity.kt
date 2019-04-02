@@ -68,5 +68,11 @@ class MainActivity : AppCompatActivity() {
         intent.putExtra("editOnClick", false)
         startActivity(intent)
     }
+
+    fun launchSettingsActivity(view: View)
+    {
+        var intent: Intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+    }
 }
 

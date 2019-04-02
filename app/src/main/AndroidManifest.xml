@@ -12,6 +12,9 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".SettingsActivity">
+        </activity>
+
         <receiver android:name=".OpenDrawingActivityWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
@@ -25,9 +28,9 @@
         <activity
                 android:name=".DrawingActivity"
                 android:label="Simple Drawing"
-                android:theme="@style/AppTheme.NoActionBar"
+                android:parentActivityName=".MainActivity"
                 android:screenOrientation="portrait"
-                android:parentActivityName=".MainActivity">
+                android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.symbolrecognition.MainActivity"/>
@@ -35,8 +38,8 @@
         <activity
                 android:name=".AddActivity"
                 android:label="Add"
-                android:screenOrientation="portrait"
-                android:parentActivityName=".MainActivity">
+                android:parentActivityName=".MainActivity"
+                android:screenOrientation="portrait">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.symbolrecognition.MainActivity"/>
@@ -44,14 +47,15 @@
         <activity
                 android:name=".EditActivity"
                 android:label="Edit"
-                android:screenOrientation="portrait"
-                android:parentActivityName=".MainActivity">
+                android:parentActivityName=".MainActivity"
+                android:screenOrientation="portrait">
             <meta-data
                     android:name="android.support.PARENT_ACTIVITY"
                     android:value="com.example.symbolrecognition.MainActivity"/>
         </activity>
-        <activity android:name=".MainActivity"
-                  android:screenOrientation="portrait" >
+        <activity
+                android:name=".MainActivity"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
