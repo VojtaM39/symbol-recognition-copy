@@ -4,6 +4,8 @@ class Constants {
     companion object {
         val SQUARE_SIZE = 50
 
+        val ACCURACY_DEFAULT_VALUE = 0.7f
+
         /**
          * Id akcí, při vyhodnocení
          */

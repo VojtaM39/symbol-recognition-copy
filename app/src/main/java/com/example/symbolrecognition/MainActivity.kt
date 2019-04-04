@@ -1,6 +1,8 @@
 package com.example.symbolrecognition
 
 import android.Manifest
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -22,16 +24,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        this.databaseTester = DatabaseTester(this)
-        /**
-        caller = Caller(7, this)
-        caller.setupPermissions()
-        val drawBtn = findViewById<TextView>(R.id.btnDrawing)
-        drawBtn.setOnClickListener {
 
-            caller.run()
+        val sharedPref = (this as Activity)?.getPreferences(Context.MODE_PRIVATE) ?: return
+        with (sharedPref.edit()) {
+            putFloat(getString(R.string.settings_accuracy), Constants.ACCURACY_DEFAULT_VALUE)
+            commit()
         }
-        */
+
+        this.databaseTester = DatabaseTester(this)
+
+        val sharedPrefTest = (this as Activity)?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val highScore = sharedPref.getFloat(getString(R.string.settings_accuracy),Constants.ACCURACY_DEFAULT_VALUE)
+        Log.i("Shared Preferences Test", highScore.toString())
 
     }
 
