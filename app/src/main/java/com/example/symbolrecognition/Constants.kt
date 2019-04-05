@@ -5,6 +5,7 @@ class Constants {
         val SQUARE_SIZE = 50
 
         val ACCURACY_DEFAULT_VALUE = 0.7f
+        val UNIT_OF_THICKNESS: Int = 4
 
         /**
          * Id akcí, při vyhodnocení
