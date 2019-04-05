@@ -1,6 +1,8 @@
 package com.example.symbolrecognition
 
+import android.app.Activity
 import android.content.Context
+import android.preference.PreferenceManager
 import android.util.Log
 import android.widget.Toast
 import java.lang.Math.pow
@@ -29,8 +31,10 @@ class Evaulator {
     private val directionsAlgorithmWeight = 0.4f
     private val thicknessAlgorithmWeight = 0.5f
     private val lengthAlgorithmWeight = 0.1f
-    private val minimalSimilarity = 0.7f
+    private val minimalSimilarity : Float
     private val minimalSimilarityExtra = 0.5f
+
+
 
     constructor(context: Context, movesX : MutableList<Array<Short>>, movesY : MutableList<Array<Short>>, movesXExtra : MutableList<Array<Short>>, movesYExtra : MutableList<Array<Short>>) {
         this.context = context
@@ -40,7 +44,9 @@ class Evaulator {
         this.movesXExtra = movesXExtra
         this.movesYExtra = movesYExtra
         this.directionsAlgorithm = DirectionsAlgorithm(this.movesX, this.movesY)
+        this.minimalSimilarity = getMinimalSimilarity()
         this.lineDetector = LineDetector(this.movesX, this.movesY)
+
     }
     public fun run(): Long? {
         //var LDValue = arrayOf<Float>()
@@ -479,4 +485,12 @@ class Evaulator {
             return null
         return mostSimilarIndex
     }
+
+    private fun getMinimalSimilarity() : Float {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.context)
+        val accurayFloat = sharedPref.getFloat("accuracy",Constants.ACCURACY_DEFAULT_VALUE)
+        val diff = Constants.MINIMAL_SIMILARITY_SLIDER_MAX - Constants.MINIMAL_SIMILARITY_SLIDER_MIN
+        return Constants.MINIMAL_SIMILARITY_SLIDER_MIN + (diff*accurayFloat)
+    }
+
 }

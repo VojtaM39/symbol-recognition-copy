@@ -10,5 +10,5 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="settings">Settings</string>
-    <string name="settings_accuracy">Settings</string>
+    <string name="settings_accuracy">accuracy</string>
 </resources>
