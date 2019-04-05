@@ -1,11 +1,25 @@
 package com.example.symbolrecognition
 
+import android.app.Activity
+import android.content.Context
+
 class Constants {
     companion object {
+
+
         val SQUARE_SIZE = 50
 
-        val ACCURACY_DEFAULT_VALUE = 0.7f
-        val UNIT_OF_THICKNESS: Int = 4
+        val ACCURACY_DEFAULT_VALUE = 0.4f
+
+        val UNIT_OF_THICKNESS = 4
+        //maximalni hodnota, po kterou je thickness 3
+        val THICKNESS_BREAKPOINT_3 = (1/3).toFloat()
+        val THICKNESS_BREAKPOINT_4 = (2/3).toFloat()
+        val THICKNESS_BREAKPOINT_5 = (1).toFloat()
+
+        val MINIMAL_SIMILARITY_SLIDER_MIN = 0.5f
+        val MINIMAL_SIMILARITY_SLIDER_MAX = 0.9f
+
 
         /**
          * Id akcí, při vyhodnocení

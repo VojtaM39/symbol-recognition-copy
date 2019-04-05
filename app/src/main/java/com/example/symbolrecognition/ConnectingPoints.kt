@@ -3,7 +3,7 @@ package com.example.symbolrecognition
 import kotlin.math.abs
 import kotlin.math.truncate
 import kotlin.math.round
-
+//TODO dodelat dopocet unit of thickness
 class ConnectingPoints
 {
     private var movesX = mutableListOf<Array<Short>>()
