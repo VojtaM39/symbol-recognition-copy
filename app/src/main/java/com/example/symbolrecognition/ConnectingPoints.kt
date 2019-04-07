@@ -198,7 +198,7 @@ class ConnectingPoints
                     }
                 }
             }
-            //osetrime, abychom nemeli v poli navic hodnoty nul
+            //osetrime, abychom nemeli v poli navic hodnoty 0
             if(i == endingPointShorterAxis)
             {
                 while(index <= (connectedTwoPoints[0].size - 1)) //cyklus while pojede, dokud bude index, ktery je narade mensi nebo roven delce connectedTwoPoints - 1
