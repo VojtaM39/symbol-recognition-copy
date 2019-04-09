@@ -245,7 +245,7 @@ class Evaulator {
 
             if(drewGestureLength >= databaseGestureLength) //vetsi je prave nakreslene gesto
             {
-                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
+                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY, this.context)
                 var databaseGesturePoints = connectingPoints.connectPoints()
                 var databaseGestureThickness = connectingPoints.getThickness()
 
@@ -256,7 +256,7 @@ class Evaulator {
                 if(!alreadyExistsDrewGestureThickness)
                 {
                     //ziskat tloustku z prave nakresleneho gesta
-                    val connectingPoints = ConnectingPoints(movesX, movesY)
+                    val connectingPoints = ConnectingPoints(movesX, movesY, this.context)
                     drewGesturePoints = connectingPoints.connectPoints()
                     drewGestureThickness = connectingPoints.getThickness()
                     alreadyExistsDrewGestureThickness = true
@@ -353,7 +353,7 @@ class Evaulator {
 
             if(drewGestureLength >= databaseGestureLength) //vetsi je prave nakreslene gesto
             {
-                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY)
+                val connectingPoints = ConnectingPoints(gestureMovesX, gestureMovesY, this.context)
                 var databaseGesturePoints = connectingPoints.connectPoints()
                 var databaseGestureThickness = connectingPoints.getThickness()
 
@@ -364,7 +364,7 @@ class Evaulator {
                 if(!alreadyExistsDrewGestureThickness)
                 {
                     //ziskat tloustku z prave nakresleneho gesta
-                    val connectingPoints = ConnectingPoints(movesXExtra, movesYExtra)
+                    val connectingPoints = ConnectingPoints(movesXExtra, movesYExtra, this.context)
                     drewGesturePoints = connectingPoints.connectPoints()
                     drewGestureThickness = connectingPoints.getThickness()
                     alreadyExistsDrewGestureThickness = true

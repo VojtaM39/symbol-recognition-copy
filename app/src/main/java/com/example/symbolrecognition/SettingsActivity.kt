@@ -50,6 +50,14 @@ class SettingsActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+
+    /**
+     * Nastavi seek bar na default value
+     */
+    fun resetToDefaultValue(view: View) {
+        accuracy_seekbar.progress = (Constants.ACCURACY_DEFAULT_VALUE*100).toInt()
+    }
+
     /**
      * Metoda vraci aktualni presnost, prevedeno z float 0-1 na int 0-100
      */
@@ -58,6 +66,8 @@ class SettingsActivity : AppCompatActivity() {
         val accurayFloat = sharedPref.getFloat(getString(R.string.settings_accuracy),Constants.ACCURACY_DEFAULT_VALUE)
         return (accurayFloat*100).toInt()
     }
+
+
 
 
 }

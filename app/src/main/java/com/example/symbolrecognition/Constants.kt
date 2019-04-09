@@ -9,16 +9,21 @@ class Constants {
 
         val SQUARE_SIZE = 50
 
-        val ACCURACY_DEFAULT_VALUE = 0.4f
+        val ACCURACY_DEFAULT_VALUE = 0.5f
 
         val UNIT_OF_THICKNESS = 4
         //maximalni hodnota, po kterou je thickness 3
         val THICKNESS_BREAKPOINT_3 = (1/3).toFloat()
+        //maximalni hodnota, po kterou je thickness 4
         val THICKNESS_BREAKPOINT_4 = (2/3).toFloat()
+        //maximalni hodnota, po kterou je thickness 5
         val THICKNESS_BREAKPOINT_5 = (1).toFloat()
 
         val MINIMAL_SIMILARITY_SLIDER_MIN = 0.5f
         val MINIMAL_SIMILARITY_SLIDER_MAX = 0.9f
+
+        val THICKNESS_BREAKPOINTS = arrayOf(0.33f, 0.67f, 1f)
+        val THICKNESS_VALUES = arrayOf(3,4,5)
 
 
         /**

@@ -1,8 +1,10 @@
 package com.example.symbolrecognition
 
+import android.preference.PreferenceManager
 import kotlin.math.abs
 import kotlin.math.truncate
 import kotlin.math.round
+import android.content.Context
 //TODO dodelat dopocet unit of thickness
 class ConnectingPoints
 {
@@ -14,13 +16,15 @@ class ConnectingPoints
     private var helpArrayYThickness = arrayOf<Short>()
     private val SQUARE_SIZE: Int
     private var unitOfThickness: Int
+    private val context : Context
 
-    constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>)
+    constructor(movesX: MutableList<Array<Short>>, movesY: MutableList<Array<Short>>, context : Context)
     {
         this.movesX = movesX
         this.movesY = movesY
+        this.context = context
         this.SQUARE_SIZE = Constants.SQUARE_SIZE
-        this.unitOfThickness = Constants.UNIT_OF_THICKNESS //unitOfThickness = 4 //jedna se o jednotky tloustky +n dalsi body do kazde strany
+        this.unitOfThickness = getUnitOfThickness()
         this.connectedPoints = connectAllPoints(movesX, movesY, SQUARE_SIZE, unitOfThickness)
         this.helpArrayXThickness = helpArrayXThickness
         this.helpArrayYThickness = helpArrayYThickness
@@ -437,4 +441,23 @@ class ConnectingPoints
         val step = if (this > to) -1 else 1
         return IntProgression.fromClosedRange(this, to, step)
     }
+
+    /**
+     * Metoda vypocita podle hodnoty z shared preferences unit of thickness
+     */
+
+    private fun getUnitOfThickness() : Int {
+        val sharedPref = PreferenceManager.getDefaultSharedPreferences(this.context)
+        val accuracy = sharedPref.getFloat("accuracy",Constants.ACCURACY_DEFAULT_VALUE)
+        var result : Int
+        if(accuracy < Constants.THICKNESS_BREAKPOINTS[0])
+            result = Constants.THICKNESS_VALUES[0]
+        else if(accuracy >= Constants.THICKNESS_BREAKPOINTS[0] && accuracy < Constants.THICKNESS_BREAKPOINTS[1])
+            result = Constants.THICKNESS_VALUES[1]
+        else
+            result = Constants.THICKNESS_VALUES[2]
+        return result
+
+    }
+
 }
