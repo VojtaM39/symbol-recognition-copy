@@ -17,6 +17,7 @@ class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        title = "Settings"
         accuracy_value.text = getCurrentConvertedAccuracy().toString()
         Log.i("Accuracy", getCurrentConvertedAccuracy().toString())
         accuracy_seekbar.progress = getCurrentConvertedAccuracy()
