@@ -25,7 +25,7 @@ class AddActivity : AppCompatActivity()
     private var editingGestureId : Long = 0
     private var successSaveToast = "Contact was created successfully"
     private val context = this
-    private val MAX_SIMILARITY = 0.70f
+    private val MAX_SIMILARITY = 0.80f
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add)
