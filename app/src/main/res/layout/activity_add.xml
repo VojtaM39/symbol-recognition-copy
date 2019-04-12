@@ -27,7 +27,7 @@
             android:layout_height="0px"
             android:layout_weight="1"
     >
-        <com.example.symbolrecognition.DrawView
+        <com.ovapp.symbolrecognition.DrawView
                 android:layout_width="match_parent"
                 app:timer="false"
                 android:layout_height="match_parent" android:id="@+id/drawView" android:layout_weight="1"/>

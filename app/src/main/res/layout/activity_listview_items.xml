@@ -13,7 +13,7 @@
         android:orientation="horizontal">
 
 
-    <com.example.symbolrecognition.GesturePreviewView
+    <com.ovapp.symbolrecognition.GesturePreviewView
             android:id="@+id/preview"
             android:layout_height="84dp" android:layout_width="84dp"
             android:padding="5dp" app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="4dp"

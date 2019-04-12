@@ -8,7 +8,7 @@
         tools:context=".DrawingActivity"
         android:id="@+id/constraintLayout">
 
-    <com.example.symbolrecognition.DrawView
+    <com.ovapp.symbolrecognition.DrawView
             android:id="@+id/draw_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:layout_marginTop="8dp"
